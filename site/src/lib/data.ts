@@ -216,3 +216,29 @@ export function leadSentence() {
     second: b === 0 ? `${best.name} didn't ship any.` : `${best.name} did in only ${b}.`,
   };
 }
+
+/** Breaking changes per month across every API, from the first month all of them had a public spec. */
+export function heroSeries() {
+  const start = apis.map((a) => a.firstMonth).sort().at(-1)!;
+  const months = monthRange(start, nowMonth);
+  const perApi = apis
+    .map((api) => {
+      const by = new Map(api.intervals.filter((i) => !i.gap && !i.error).map((i) => [i.to, i.hard]));
+      return { api, by, sum: months.reduce((n, m) => n + (by.get(m) ?? 0), 0) };
+    })
+    // Biggest contributors sit at the base of every column so the stack reads the same way all along.
+    .sort((a, b) => b.sum - a.sum);
+  const cols = months.map((m) => {
+    const segs = perApi.map(({ api, by }) => ({ api, n: by.get(m) ?? 0 })).filter((s) => s.n > 0);
+    return { m, segs, total: segs.reduce((n, s) => n + s.n, 0), partial: m === nowMonth };
+  });
+  const full = cols.filter((c) => !c.partial);
+  const peak = full.reduce((a, b) => (b.total > a.total ? b : a));
+  return {
+    start,
+    cols,
+    peak,
+    top: Math.max(...cols.map((c) => c.total)),
+    last12: full.slice(-12).reduce((n, c) => n + c.total, 0),
+  };
+}

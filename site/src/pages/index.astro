@@ -1,23 +1,36 @@
 ---
 import Base from "../layouts/Base.astro";
 import Feed from "../components/Feed.astro";
+import HeroChart from "../components/HeroChart.astro";
 import HistoryChart from "../components/HistoryChart.astro";
-import { REPO_URL, apis, leadSentence, updatedOn } from "../lib/data";
+import { REPO_URL, allMonths, apis, heroSeries, leadSentence, monthLong, monthShortYear, updatedOn } from "../lib/data";
 
 const lead = leadSentence();
+const hero = heroSeries();
 ---
 
 <Base title="API Weather: how often popular APIs break their clients" description={`${lead.first} ${lead.second}`}>
   <header class="intro">
-    <h1>How often do popular APIs break their clients?</h1>
+    <h1>{apis.length} popular APIs shipped {hero.last12.toLocaleString("en-US")} breaking changes in the past year.</h1>
     <p class="standfirst">
-      This site diffs the public OpenAPI specs of {apis.length} APIs every day and counts the changes that would break existing
-      code. Over the past year, {lead.first} {lead.second}
+      {monthLong(hero.peak.m)} was the worst month since all {apis.length} published a spec, with {hero.peak.total}. Over the
+      past year, {lead.first} {lead.second}
     </p>
-    <p class="meta">Updated {updatedOn}. <a href={REPO_URL}>Data and code on GitHub</a>.</p>
   </header>
 
-  <section id="ranking" class="main-chart" aria-label="Ranking and history">
+  <section class="hero" aria-label="Breaking changes per month, all APIs">
+    <HeroChart />
+  </section>
+
+  <section id="ranking" class="ranking" aria-labelledby="ranking-title">
+    <header class="sec-head">
+      <h2 id="ranking-title">Who's breaking things</h2>
+      <p>
+        Each API's full record since {monthShortYear(allMonths[0])}, ranked by stability score. This site diffs each vendor's
+        public OpenAPI spec every day and counts the changes that would break existing code. Updated {updatedOn};{" "}
+        <a href={REPO_URL}>data and code on GitHub</a>.
+      </p>
+    </header>
     <HistoryChart />
   </section>
 
@@ -26,10 +39,10 @@ const lead = leadSentence();
 
 <style>
   .intro {
-    padding-block: clamp(2rem, 5vw, 3.5rem) clamp(2rem, 4vw, 2.75rem);
+    padding-block: clamp(2rem, 5vw, 3.5rem) clamp(1.75rem, 3vw, 2.5rem);
     display: grid;
     gap: 1rem;
-    max-width: 42rem;
+    max-width: 46rem;
   }
 
   h1 {
@@ -40,21 +53,32 @@ const lead = leadSentence();
 
   .standfirst {
     font-size: 1.1875rem;
-    line-height: 1.45;
-    letter-spacing: -0.01em;
+    line-height: 1.5;
     color: var(--ink-2);
+    max-width: 40rem;
   }
 
-  .meta {
-    font-size: var(--t-1);
-    color: var(--ink-3);
+  .hero {
+    margin-bottom: 5.5rem;
   }
 
-  .meta a {
-    color: inherit;
+  .ranking {
+    margin-bottom: 5.5rem;
   }
 
-  .main-chart {
-    margin-bottom: 5rem;
+  .sec-head {
+    display: grid;
+    gap: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .sec-head h2 {
+    font-size: var(--t3);
+    letter-spacing: -0.03em;
+  }
+
+  .sec-head p {
+    color: var(--ink-2);
+    max-width: 40rem;
   }
 </style>
