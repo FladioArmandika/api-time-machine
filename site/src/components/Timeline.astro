@@ -1,0 +1,175 @@
+---
+// Full-history column chart: one column per month, breaking changes at the base, soft changes stacked on top.
+import { cellLabel, monthCells, monthRange, nowMonth, type ApiData } from "../lib/data";
+
+interface Props {
+  api: ApiData;
+}
+const { api } = Astro.props;
+const months = monthRange(api.firstMonth, nowMonth);
+const cells = monthCells(api, months);
+const peak = Math.max(1, ...cells.map((c) => c.hard + c.soft));
+
+// Clean tick values: 1, 2 or 5 × 10^n, three lines including zero.
+function niceMax(v: number) {
+  const exp = 10 ** Math.floor(Math.log10(v));
+  for (const m of [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * exp >= v) return m * exp;
+  return v;
+}
+const top = niceMax(peak);
+const ticks = [top, top / 2, 0];
+const pct = (n: number) => `${(n / top) * 100}%`;
+const fmt = (n: number) => (n >= 1000 ? `${n / 1000}K` : String(n));
+---
+
+<figure class="timeline">
+  <figcaption class="sr">
+    Monthly breaking and soft changes to the {api.name} spec since {api.firstMonth}. The same numbers are in the change log below.
+  </figcaption>
+  <div class="frame">
+    <ol class="ticks" aria-hidden="true">
+      {ticks.map((t) => <li style={`bottom:${pct(t)}`}><span>{fmt(t)}</span></li>)}
+    </ol>
+    <div class="scroll">
+      <ol class="cols" style={`--n:${months.length}`} aria-hidden="true">
+        {
+          cells.map((c) => (
+            <li class:list={[c.state, { partial: c.partial }]} data-tip={cellLabel(c)}>
+              {c.state === "gap" ? (
+                <span class="gapfill" />
+              ) : (
+                <>
+                  {c.hard > 0 && <span class="bar hard" style={`height:${pct(c.hard)}`} />}
+                  {c.soft > 0 && <span class="bar soft" style={`height:${pct(c.soft)}`} />}
+                </>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+      <ol class="years" style={`--n:${months.length}`} aria-hidden="true">
+        {
+          months.map((m, i) => (
+            <li>{m.endsWith("-01") || (i === 0 && Number(m.slice(5)) <= 9) ? m.slice(0, 4) : ""}</li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</figure>
+
+<style>
+  .timeline {
+    margin: 0;
+  }
+
+  .frame {
+    position: relative;
+    padding-left: 2.75rem;
+  }
+
+  .ticks {
+    position: absolute;
+    inset: 0 0 1.75rem 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+  }
+
+  .ticks li {
+    position: absolute;
+    left: 2.75rem;
+    right: 0;
+    border-top: 1px solid var(--rule);
+  }
+
+  .ticks span {
+    position: absolute;
+    right: calc(100% + 0.5rem);
+    top: -0.65em;
+    font-size: var(--s-1);
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scroll {
+    overflow-x: auto;
+  }
+
+  .cols,
+  .years {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(4px, 1fr));
+    gap: 2px;
+    min-width: calc(var(--n) * 6px);
+  }
+
+  .cols {
+    height: 14rem;
+    align-items: end;
+  }
+
+  /* The whole column is the hover target; the bars inside stack from the baseline. */
+  .cols li {
+    height: 100%;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 2px;
+    position: relative;
+  }
+
+  .bar {
+    display: block;
+    width: 100%;
+    max-width: 24px;
+    margin-inline: auto;
+    min-height: 2px;
+  }
+
+  .bar.hard {
+    background: var(--hard);
+  }
+
+  .bar.soft {
+    background: var(--soft);
+    border-radius: 4px 4px 0 0;
+  }
+
+  .bar.hard:last-child {
+    border-radius: 4px 4px 0 0;
+  }
+
+  .gapfill {
+    display: block;
+    height: 100%;
+    background: repeating-linear-gradient(135deg, var(--calm) 0 3px, transparent 3px 6px);
+  }
+
+  .cols li:hover {
+    background: color-mix(in srgb, var(--calm) 60%, transparent);
+  }
+
+  .years {
+    height: 1.75rem;
+    padding-top: 0.4rem;
+    font-size: var(--s-1);
+    color: var(--ink-3);
+  }
+
+  .years li {
+    white-space: nowrap;
+    overflow: visible;
+  }
+
+  .sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+</style>

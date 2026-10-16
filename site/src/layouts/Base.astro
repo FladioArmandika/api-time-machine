@@ -1,0 +1,308 @@
+---
+import { REPO_URL, updatedOn } from "../lib/data";
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const path = Astro.url.pathname.replace(base, "") || "/";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Public+Sans:ital,wght@0,400;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href={`${base}/`}>
+        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M9 21h13a5 5 0 0 0 .6-9.96A7 7 0 0 0 9.3 13.2 4 4 0 0 0 9 21z" /></svg>
+        API Weather
+      </a>
+      <nav aria-label="Site">
+        <a href={`${base}/#leaderboard`}>Leaderboard</a>
+        <a href={`${base}/methodology/`} aria-current={path.startsWith("/methodology") ? "page" : undefined}>Methodology</a>
+        <a href={REPO_URL}>Source</a>
+      </nav>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div>
+      <p>
+        Data refreshed daily from each vendor's published OpenAPI spec and diffed with
+        <a href="https://github.com/oasdiff/oasdiff">oasdiff</a>. Last updated {updatedOn}.
+      </p>
+      <p>A side project by <a href="https://github.com/FladioArmandika">Fladio Armandika</a>.</p>
+      </div>
+    </footer>
+    <div class="tip" role="tooltip" hidden></div>
+    <script>
+      // One shared tooltip for every element with data-tip (forecast cells, chart columns).
+      const tip = document.querySelector<HTMLElement>(".tip")!;
+      const show = (el: HTMLElement, x: number, y: number) => {
+        tip.textContent = el.dataset.tip ?? "";
+        tip.hidden = false;
+        const w = tip.offsetWidth;
+        const left = Math.min(Math.max(8, x - w / 2), window.innerWidth - w - 8);
+        tip.style.left = `${left}px`;
+        tip.style.top = `${y - tip.offsetHeight - 12}px`;
+      };
+      document.addEventListener("pointerover", (e) => {
+        const el = (e.target as HTMLElement).closest<HTMLElement>("[data-tip]");
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        show(el, r.left + r.width / 2, r.top);
+      });
+      document.addEventListener("pointerout", (e) => {
+        if ((e.target as HTMLElement).closest("[data-tip]")) tip.hidden = true;
+      });
+      document.addEventListener("focusin", (e) => {
+        const el = (e.target as HTMLElement).closest<HTMLElement>("[data-tip]");
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        show(el, r.left + r.width / 2, r.top);
+      });
+      document.addEventListener("focusout", () => (tip.hidden = true));
+      window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    color-scheme: light dark;
+    /* Overcast sky. Storm indigo carries everything that breaks. */
+    --sky: #e7edf1;
+    --surface: #f2f5f7;
+    --ink: #172631;
+    --ink-2: #44555f;
+    --ink-3: #66767f;
+    --rule: #d3dce2;
+    --hard: #2e3a8c;
+    --soft: #7b8cd8;
+    --calm: #dde4e9;
+    --score-clear: #84b0dc;
+    --score-fair: #5c8bcf;
+    --score-showers: #3d5ab3;
+    --score-storms: #252f7c;
+    --link: #2e3a8c;
+    --focus: #2e3a8c;
+
+    --display: "Bricolage Grotesque", "Avenir Next", system-ui, sans-serif;
+    --text: "Public Sans", system-ui, sans-serif;
+
+    --s-1: 0.8125rem;
+    --s0: 1rem;
+    --s1: 1.125rem;
+    --s2: 1.3125rem;
+    --s3: 1.75rem;
+    --s4: 2.25rem;
+    --s5: 3.25rem;
+    --s6: 4.5rem;
+
+    --measure: 68ch;
+    --page: 72rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --sky: #0e171e;
+      --surface: #121d25;
+      --ink: #e3eaef;
+      --ink-2: #b3c0c9;
+      --ink-3: #8b9aa4;
+      --rule: #24333d;
+      --hard: #a9b5f4;
+      --soft: #4c5bb0;
+      --calm: #1c2a33;
+      --score-clear: #30557d;
+      --score-fair: #4372b2;
+      --score-showers: #7096db;
+      --score-storms: #b1bff7;
+      --link: #a9b5f4;
+      --focus: #a9b5f4;
+    }
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--sky);
+  }
+
+  body {
+    margin: 0;
+    background: var(--sky);
+    color: var(--ink);
+    font: 400 var(--s0) / 1.6 var(--text);
+    font-size: 1.0625rem;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--display);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  p {
+    margin: 0;
+    max-width: var(--measure);
+  }
+
+  a {
+    color: var(--link);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+  }
+
+  a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    background: var(--calm);
+    padding: 0.05em 0.3em;
+    border-radius: 3px;
+    overflow-wrap: anywhere;
+  }
+
+  .skip {
+    position: absolute;
+    left: -999px;
+  }
+
+  .skip:focus {
+    left: 1rem;
+    top: 1rem;
+    background: var(--surface);
+    padding: 0.5rem 1rem;
+    z-index: 10;
+  }
+
+  .site-header,
+  main,
+  .site-footer {
+    max-width: var(--page);
+    margin: 0 auto;
+    padding-inline: clamp(1rem, 4vw, 2.5rem);
+  }
+
+  .site-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 1.25rem;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: var(--s1);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .brand svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    fill: var(--hard);
+  }
+
+  .site-header nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .site-header nav a {
+    color: var(--ink-2);
+    text-decoration: none;
+  }
+
+  .site-header nav a:hover,
+  .site-header nav a[aria-current="page"] {
+    color: var(--ink);
+    text-decoration: underline;
+  }
+
+  .site-footer {
+    margin-top: 6rem;
+    padding-bottom: 3rem;
+    color: var(--ink-3);
+    font-size: var(--s-1);
+  }
+
+  .site-footer > div {
+    border-top: 1px solid var(--rule);
+    padding-top: 2rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .site-footer a {
+    color: inherit;
+  }
+
+  .tip {
+    position: fixed;
+    z-index: 20;
+    pointer-events: none;
+    max-width: 18rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    background: var(--ink);
+    color: var(--sky);
+    font-size: var(--s-1);
+    line-height: 1.4;
+  }
+
+  .num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>

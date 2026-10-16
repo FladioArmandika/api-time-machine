@@ -128,7 +128,10 @@ async function runDiff(p: Prepared, from: SnapshotOut, to: SnapshotOut): Promise
   const summary = await diffSpecs(a, b);
   rmSync(a);
   rmSync(b);
-  writeJson(out, summary, false);
+  // A timeout or OOM on the still-open month may just be a busy runner: leave it uncached so tomorrow retries.
+  // On a closed month it's recorded, so a pathological pair (Stripe, spring 2019) isn't re-run every day.
+  const transient = summary.error?.includes("ran out of") || summary.error?.includes("out of memory");
+  if (!(transient && to.month === new Date().toISOString().slice(0, 7))) writeJson(out, summary, false);
   log(`${p.api.id} ${from.month}→${to.month}: ${summary.hard} hard, ${summary.soft} soft (${((Date.now() - started) / 1000).toFixed(0)}s)${summary.error ? " ERROR " + summary.error.slice(0, 120) : ""}`);
 }
 

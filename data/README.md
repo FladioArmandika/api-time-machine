@@ -19,7 +19,7 @@ Consecutive snapshots are compared with `oasdiff changelog`. A snapshot that is 
 
 Vendor specs are often slightly invalid: a `$ref` to a deleted schema, a ref into an unpublished file, or a ref that points inside another component. oasdiff refuses to load those. When that happens, the pair is diffed again on repaired copies: broken refs become empty schemas, deep refs are inlined, and dead discriminator mappings are dropped (`pipeline/src/sanitize.ts`). The interval records `repairedRefs`, and changes inside the broken parts are invisible. Most of PagerDuty's and Cloudflare's history needs this.
 
-Each diff gets 2 minutes and 10 GB (`OASDIFF_MAX_GB`). One Stripe pair from spring 2019 makes oasdiff use more than 14 GB, so it's recorded as an error interval and left out of the counts.
+Each diff gets 6 minutes and 10 GB (`OASDIFF_MAX_GB`). If the current month runs out of either, it is retried on the next run. One Stripe pair from spring 2019 makes oasdiff use more than 14 GB, so it's recorded as an error interval and left out of the counts.
 
 ## What counts as a breaking change
 

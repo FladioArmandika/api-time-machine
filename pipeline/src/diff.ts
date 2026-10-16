@@ -113,9 +113,9 @@ async function oasdiff(base: string, revision: string, extra: string[] = []): Pr
   const { stdout } = await run(
     cmd,
     argv,
-    // A few historical pairs make oasdiff balloon past 14 GB (Stripe, spring 2019). Cap the time
+    // A few historical pairs make oasdiff balloon past 14 GB (Stripe, spring 2019). Cap the time (6 min)
     // so one pathological pair can't take down a CI runner; it's recorded as an error interval.
-    { maxBuffer: 1024 * 1024 * 1024, timeout: 120_000, killSignal: "SIGKILL" },
+    { maxBuffer: 1024 * 1024 * 1024, timeout: 360_000, killSignal: "SIGKILL" },
   );
   return stdout.trim() ? JSON.parse(stdout) : [];
 }

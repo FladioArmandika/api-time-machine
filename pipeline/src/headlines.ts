@@ -8,7 +8,7 @@ export interface Headline {
   figure?: string;
 }
 
-const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+const plural = (n: number, word: string) => `${n.toLocaleString("en-US")} ${word}${n === 1 ? "" : "s"}`;
 
 function monthName(month: string): string {
   const [y, m] = month.split("-").map(Number);

@@ -1,0 +1,144 @@
+---
+import Base from "../layouts/Base.astro";
+import { REPO_URL, apis, meta } from "../lib/data";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const s = meta.score;
+---
+
+<Base title="Methodology: API Weather" description="How API Weather samples spec history, counts breaking changes and computes the stability score.">
+  <article class="prose">
+    <h1>How this works</h1>
+    <p class="lede">
+      Each vendor publishes an OpenAPI description of their API in a public GitHub repo. Its git history is a record of every
+      change to the contract. API Weather reads that history, compares one month to the next, and counts what would break a
+      client.
+    </p>
+
+    <h2>Which specs</h2>
+    <p>
+      {apis.length} APIs, each tracked through a single spec file in the vendor's own repository. The list, with file paths, is
+      in <a href={`${REPO_URL}/blob/main/apis.json`}><code>apis.json</code></a>. Each API's page links to its exact file.
+    </p>
+
+    <h2>Sampling</h2>
+    <p>
+      For every month since the file first appeared, the pipeline takes the spec as it stood on the default branch at the end of
+      that month. Months where it didn't change are skipped. The current month is a running snapshot and is replaced on every
+      daily run.
+    </p>
+    <p>
+      If a month's spec is missing or isn't OpenAPI 3, the timeline shows a hatched gap and nothing across it is counted. OpenAI's
+      spec, for example, disappeared from its repo for most of a year.
+    </p>
+
+    <h2>What counts as breaking</h2>
+    <p>
+      Consecutive snapshots are compared with <a href="https://github.com/oasdiff/oasdiff">oasdiff</a>
+      ({meta.oasdiff.replace("oasdiff version ", "")}), using its own breaking-change rules with one adjustment:
+    </p>
+    <ul>
+      <li>
+        <strong>Breaking</strong> is anything oasdiff rates as an error: a removed endpoint or field, a changed type, a request
+        field that became required, a response field that can now be null.
+      </li>
+      <li>
+        <strong>Soft</strong> covers oasdiff's warnings plus additive response changes, such as a new enum value or a new
+        <code>oneOf</code> branch. Strictly generated clients can fail on these, but most vendors document them as safe, so they
+        count for a quarter.
+      </li>
+    </ul>
+    <p>
+      oasdiff reports a schema change once for every endpoint and nesting path that uses it. A single new Stripe enum value can
+      produce 7,000 findings. They're grouped back into one change, with a count of the endpoints it touches. Every number on this
+      site is a grouped count.
+    </p>
+
+    <h2>The stability score</h2>
+    <p>For each of the last {s.windowMonths} months, the penalty is breaking changes plus soft changes at {s.softWeight} weight, per 100 endpoints:</p>
+    <pre><code>penalty(month) = (breaking + {s.softWeight} × soft) / (endpoints / 100)
+pressure       = Σ penalty(month) × 0.5 ^ (months ago / {s.halfLifeMonths})
+score          = 100 × e ^ (−pressure / {s.k})</code></pre>
+    <ul>
+      <li>Dividing by endpoints keeps a large API from looking worse just for being large.</li>
+      <li>Recent months weigh more, halving every {s.halfLifeMonths} months.</li>
+      <li>
+        The constant {s.k} was set once, after the first full run, so a typical API lands near 70. It stays fixed so scores can be
+        compared over time.
+      </li>
+    </ul>
+    <p>Labels: Clear from 85, Fair from 70, Showers from 50, Storms below that.</p>
+
+    <h2>What this doesn't tell you</h2>
+    <ul>
+      <li>
+        <strong>Versioned APIs.</strong> Stripe, GitHub and Plaid version their APIs. A breaking change to the latest contract
+        doesn't reach clients pinned to an older version until they upgrade.
+      </li>
+      <li>
+        <strong>The spec isn't the API.</strong> When a vendor corrects an inaccurate spec, it shows up here as a change even if the
+        live API never moved.
+      </li>
+      <li>
+        <strong>Broken specs.</strong> Some specs reference schemas that don't exist. Those references are replaced with empty
+        schemas so oasdiff can read the file, which hides changes inside them. Each API page says how often that happened.
+      </li>
+      <li>
+        <strong>Within-month churn.</strong> Something added and removed in the same month never shows up.
+      </li>
+    </ul>
+
+    <h2>Reproduce it</h2>
+    <p>
+      The pipeline, raw data and this site are in <a href={REPO_URL}>one repository</a>. A GitHub Action re-runs the pipeline
+      daily and commits the results. See the <a href={`${REPO_URL}/blob/main/data/README.md`}>data README</a> for file formats.
+    </p>
+    <p><a href={`${base}/`}>Back to the report</a></p>
+  </article>
+</Base>
+
+<style>
+  .prose {
+    padding-top: clamp(2rem, 6vw, 4rem);
+    max-width: 44rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 7vw, var(--s5));
+    margin-bottom: 0.5rem;
+  }
+
+  .lede {
+    font-size: var(--s1);
+    color: var(--ink-2);
+  }
+
+  h2 {
+    font-size: var(--s2);
+    margin-top: 1.75rem;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.5rem;
+    max-width: var(--measure);
+  }
+
+  pre {
+    margin: 0.5rem 0;
+    padding: 1rem 1.25rem;
+    background: var(--surface);
+    border-radius: 10px;
+    overflow-x: auto;
+    line-height: 1.7;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+  }
+</style>

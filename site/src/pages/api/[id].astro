@@ -1,0 +1,431 @@
+---
+import Base from "../../layouts/Base.astro";
+import Forecast from "../../components/Forecast.astro";
+import Legend from "../../components/Legend.astro";
+import Timeline from "../../components/Timeline.astro";
+import Weather from "../../components/Weather.astro";
+import {
+  apis, codeParts, leaderboard, monthLong, monthShortYear, plural, rawJsonUrl, ruleName,
+  type ApiData, type Change,
+} from "../../lib/data";
+
+export function getStaticPaths() {
+  return apis.map((api) => ({ params: { id: api.id }, props: { api } }));
+}
+
+interface Props {
+  api: ApiData;
+}
+const { api } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const rank = leaderboard.find((r) => r.id === api.id)!.rank;
+const l12 = api.last12;
+
+const lede =
+  l12.breakingMonths === 0
+    ? `No breaking changes to ${api.name}'s spec in the last 12 months.`
+    : `${api.name} shipped breaking changes in ${l12.breakingMonths} of the last 12 months.`;
+
+// Months with anything to report, newest first. Large months are capped; the full list is in the JSON.
+const HARD_CAP = 25;
+const SOFT_CAP = 10;
+const log = api.intervals
+  .filter((i) => !i.gap && !i.error && i.hard + i.soft > 0)
+  .reverse();
+const years = Object.entries(api.byYear).sort(([a], [b]) => b.localeCompare(a));
+const problems = api.intervals.filter((i) => i.gap || i.error);
+const repaired = api.intervals.filter((i) => i.repairedRefs).length;
+
+const hardOf = (cs: Change[]) => cs.filter((c) => c.level === "hard");
+const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
+---
+
+<Base title={`${api.name}: API Weather`} description={`${lede} Stability score ${api.score.value}/100.`}>
+  <article>
+    <header class="api-head">
+      <p class="crumb"><a href={`${base}/#leaderboard`}>Leaderboard</a>, rank {rank} of {apis.length}</p>
+      <h1>{api.name}</h1>
+      <p class="lede">{lede}</p>
+      <div class="score-row">
+        <Weather score={api.score} size="large" />
+        <dl class="facts">
+          <div><dt>Breaking changes, 12 months</dt><dd class="num">{l12.hard.toLocaleString("en-US")}</dd></div>
+          <div><dt>Soft changes, 12 months</dt><dd class="num">{l12.soft.toLocaleString("en-US")}</dd></div>
+          <div><dt>Endpoints in the spec</dt><dd class="num">{api.operations.toLocaleString("en-US")}</dd></div>
+          <div><dt>Tracked since</dt><dd>{monthShortYear(api.firstMonth)}</dd></div>
+        </dl>
+      </div>
+      <div class="strip">
+        <Forecast api={api} size="large" />
+      </div>
+      {api.notes && <p class="note">{api.notes}</p>}
+    </header>
+
+    <section aria-labelledby="history">
+      <div class="section-head">
+        <h2 id="history">Every month since {monthShortYear(api.firstMonth)}</h2>
+        <Legend />
+      </div>
+      <div class="panel">
+        <Timeline api={api} />
+      </div>
+      {
+        api.worstMonth && (
+          <p class="aside">
+            The roughest month was {monthLong(api.worstMonth.month)}: {plural(api.worstMonth.hard, "breaking change")} across{" "}
+            {plural(api.worstMonth.hardOperations, "endpoint")}.
+          </p>
+        )
+      }
+    </section>
+
+    <section aria-labelledby="years">
+      <h2 id="years">By year</h2>
+      <div class="panel">
+        <table class="years">
+          <thead>
+            <tr>
+              <th scope="col">Year</th>
+              <th scope="col" class="n">Breaking changes</th>
+              <th scope="col" class="n">Soft changes</th>
+              <th scope="col" class="n">Months with a breaking change</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              years.map(([y, v]) => (
+                <tr>
+                  <th scope="row">{y}</th>
+                  <td class="n num">{v.hard.toLocaleString("en-US")}</td>
+                  <td class="n num">{v.soft.toLocaleString("en-US")}</td>
+                  <td class="n num">{v.breakingMonths} of {v.changedMonths} that changed</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="log">
+      <h2 id="log">Change log</h2>
+      <p class="intro">
+        What oasdiff flagged, month by month. One change can touch many endpoints; the count says how many.
+      </p>
+      <div class="log">
+        {
+          log.map((i, idx) => {
+            const hard = hardOf(i.changes);
+            const soft = softOf(i.changes);
+            return (
+              <details open={idx < 2}>
+                <summary>
+                  <span class="m">{monthLong(i.to)}{i.partial ? " so far" : ""}</span>
+                  <span class="counts">
+                    {i.hard > 0 && <span class="pill hard">{plural(i.hard, "breaking change")}</span>}
+                    {i.soft > 0 && <span class="pill soft">{plural(i.soft, "soft change")}</span>}
+                  </span>
+                </summary>
+                {hard.length > 0 && (
+                  <ul class="changes">
+                    {hard.slice(0, HARD_CAP).map((c) => (
+                      <li>
+                        <p class="rule">{ruleName(c.id)}</p>
+                        <p class="what">
+                          {codeParts(c.text).map((p) => (p.code ? <code>{p.text}</code> : p.text))}
+                        </p>
+                        {c.enumValueCount && c.enumValueCount > 1 && (
+                          <p class="meta">
+                            {plural(c.enumValueCount, "value")}: {c.enumValues!.join(", ")}
+                            {c.enumValueCount > c.enumValues!.length ? ", and more" : ""}
+                          </p>
+                        )}
+                        {c.operations.length > 0 && (
+                          <p class="meta">
+                            {c.operationCount > 1 ? `${plural(c.operationCount, "endpoint")}, e.g. ` : ""}
+                            <code>{c.operations[0]}</code>
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {hard.length > HARD_CAP && (
+                  <p class="more">
+                    {plural(hard.length - HARD_CAP, "more breaking change")} this month, in the <a href={rawJsonUrl(api)}>raw data</a>.
+                  </p>
+                )}
+                {soft.length > 0 && (
+                  <details class="soft-list">
+                    <summary>Soft changes ({soft.length.toLocaleString("en-US")})</summary>
+                    <ul class="changes">
+                      {soft.slice(0, SOFT_CAP).map((c) => (
+                        <li>
+                          <p class="what">{codeParts(c.text).map((p) => (p.code ? <code>{p.text}</code> : p.text))}</p>
+                        </li>
+                      ))}
+                    </ul>
+                    {soft.length > SOFT_CAP && (
+                      <p class="more">
+                        {plural(soft.length - SOFT_CAP, "more")} in the <a href={rawJsonUrl(api)}>raw data</a>.
+                      </p>
+                    )}
+                  </details>
+                )}
+              </details>
+            );
+          })
+        }
+      </div>
+    </section>
+
+    <section aria-labelledby="source">
+      <h2 id="source">Source</h2>
+      <p>
+        Spec: <a href={api.sourceUrl}><code>{api.repo}/{api.path}</code></a>, OpenAPI {api.openapi}. Raw numbers for this page:{" "}
+        <a href={rawJsonUrl(api)}><code>data/apis/{api.id}.json</code></a>.
+      </p>
+      {
+        (problems.length > 0 || repaired > 0) && (
+          <p class="aside">
+            {problems.length > 0 && `${plural(problems.length, "month")} couldn't be compared and ${problems.length === 1 ? "is" : "are"} shown as hatched. `}
+            {repaired > 0 && `${plural(repaired, "month")} needed broken references in the spec repaired before comparing. `}
+            <a href={`${base}/methodology/`}>Why</a>.
+          </p>
+        )
+      }
+    </section>
+  </article>
+</Base>
+
+<style>
+  article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.5rem;
+  }
+
+  .api-head {
+    padding-top: clamp(2rem, 6vw, 4rem);
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .crumb {
+    color: var(--ink-3);
+    font-size: var(--s-1);
+  }
+
+  .crumb a {
+    color: var(--ink-2);
+  }
+
+  h1 {
+    font-size: clamp(2.75rem, 8vw, var(--s6));
+    font-variation-settings: "opsz" 96;
+  }
+
+  .lede {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: var(--s3);
+    line-height: 1.2;
+    max-width: 30ch;
+  }
+
+  .score-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem 3rem;
+    margin-top: 0.5rem;
+  }
+
+  .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+    margin: 0;
+  }
+
+  .facts dt {
+    color: var(--ink-3);
+    font-size: var(--s-1);
+  }
+
+  .facts dd {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: var(--s2);
+  }
+
+  .strip {
+    max-width: 52rem;
+  }
+
+  .note {
+    color: var(--ink-2);
+    border-left: 3px solid var(--soft);
+    padding-left: 1rem;
+  }
+
+  h2 {
+    font-size: var(--s3);
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  section > h2 {
+    margin-bottom: 1rem;
+  }
+
+  .panel {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 1.25rem 1rem 0.75rem;
+    overflow-x: auto;
+  }
+
+  .aside,
+  .intro {
+    margin-top: 0.75rem;
+    color: var(--ink-2);
+  }
+
+  .intro {
+    margin: -0.25rem 0 1.25rem;
+  }
+
+  table.years {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 30rem;
+  }
+
+  .years th,
+  .years td {
+    padding: 0.55rem 0.5rem;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+  }
+
+  .years thead th {
+    font-weight: 600;
+    font-size: var(--s-1);
+    color: var(--ink-3);
+  }
+
+  .years tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  .n {
+    text-align: right !important;
+  }
+
+  .log {
+    display: grid;
+    gap: 0.5rem;
+    max-width: 52rem;
+  }
+
+  .log > details {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 0.25rem 1.25rem;
+  }
+
+  summary {
+    cursor: pointer;
+    padding-block: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+  }
+
+  .m {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: var(--s1);
+    min-width: 10rem;
+  }
+
+  .counts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--s-1);
+    color: var(--ink-2);
+  }
+
+  .pill::before {
+    content: "";
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 2px;
+  }
+
+  .pill.hard::before {
+    background: var(--hard);
+  }
+
+  .pill.soft::before {
+    background: var(--soft);
+  }
+
+  .changes {
+    list-style: none;
+    margin: 0 0 1rem;
+    padding: 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .changes li {
+    border-top: 1px solid var(--rule);
+    padding-top: 0.9rem;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .rule {
+    font-size: var(--s-1);
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+
+  .meta,
+  .more {
+    font-size: var(--s-1);
+    color: var(--ink-3);
+  }
+
+  .more {
+    margin-bottom: 1rem;
+  }
+
+  .soft-list {
+    margin-bottom: 0.75rem;
+  }
+
+  .soft-list summary {
+    font-size: var(--s-1);
+    color: var(--ink-2);
+    padding-block: 0.5rem;
+  }
+</style>

@@ -188,16 +188,16 @@
     "id": "cloudflare",
     "name": "Cloudflare",
     "score": {
-      "value": 30,
-      "pressure": 18.076,
+      "value": 27,
+      "pressure": 19.499,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 604,
-      "soft": 1260,
-      "breakingMonths": 11,
-      "changedMonths": 11
+      "hard": 636,
+      "soft": 1346,
+      "breakingMonths": 12,
+      "changedMonths": 12
     },
     "operations": 3761,
     "worstMonth": {

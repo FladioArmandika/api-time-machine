@@ -2,7 +2,7 @@
 
 How often do popular public APIs break their clients? API Weather reads the git history of each vendor's published OpenAPI spec, diffs it month by month with [oasdiff](https://github.com/oasdiff/oasdiff), and turns the result into a stability score and a few headlines.
 
-> Work in progress. The data pipeline and the daily refresh are done. The site comes next.
+**Live:** https://fladioarmandika.github.io/api-time-machine/
 
 ## Run the pipeline
 
@@ -20,6 +20,16 @@ Spec repos are cloned blobless into `.cache/repos/`. Results land in [`data/`](d
 ## Daily refresh
 
 [`.github/workflows/update-data.yml`](.github/workflows/update-data.yml) re-runs the pipeline every day at 05:17 UTC, and you can also start it by hand from the Actions tab. Past months are cached in `data/cache/`, so a run only compares each API's newest spec with its last month-end version. It commits `data/` only when the numbers actually change.
+
+## Site
+
+An [Astro](https://astro.build) static site in [`site/`](site/) reads `data/` at build time. It has a home page that leads with the headlines and the leaderboard, a page per API, and a methodology page. [`deploy.yml`](.github/workflows/deploy.yml) publishes it to GitHub Pages after every data update.
+
+```sh
+cd site
+npm install
+npm run dev
+```
 
 ## APIs tracked
 
