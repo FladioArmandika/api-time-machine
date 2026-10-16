@@ -23,7 +23,7 @@ const path = Astro.url.pathname.replace(base, "") || "/";
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..900;1,400&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -34,7 +34,7 @@ const path = Astro.url.pathname.replace(base, "") || "/";
       <nav aria-label="Site">
         <a href={`${base}/#ranking`}>Ranking</a>
         <a href={`${base}/methodology/`} aria-current={path.startsWith("/methodology") ? "page" : undefined}>Methodology</a>
-        <a href={REPO_URL}>Source</a>
+        <a href={REPO_URL}>GitHub</a>
       </nav>
     </header>
     <main id="main">
@@ -99,19 +99,19 @@ const path = Astro.url.pathname.replace(base, "") || "/";
     --link: #1b1f24;
     --focus: #cf222e;
 
-    --sans: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
-    --mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+    --sans: "Geist", "Helvetica Neue", Arial, sans-serif;
+    --mono: "Geist Mono", ui-monospace, Menlo, Consolas, monospace;
 
     --t-1: 0.8125rem;
-    --t0: 1rem;
-    --t1: 1.1875rem;
-    --t2: 1.5rem;
-    --t3: 2rem;
-    --t4: 2.75rem;
-    --t5: 4rem;
+    --t0: 0.9375rem;
+    --t1: 1.0625rem;
+    --t2: 1.3125rem;
+    --t3: 1.75rem;
+    --t4: 2.5rem;
+    --t5: 3.25rem;
 
-    --measure: 64ch;
-    --page: 74rem;
+    --measure: 62ch;
+    --page: 72rem;
     --gutter: clamp(1rem, 4vw, 2.5rem);
   }
 
@@ -146,16 +146,16 @@ const path = Astro.url.pathname.replace(base, "") || "/";
   body {
     margin: 0;
     color: var(--ink);
-    font: 400 1.0625rem / 1.55 var(--sans);
+    font: 400 var(--t0) / 1.6 var(--sans);
     -webkit-font-smoothing: antialiased;
   }
 
   h1,
   h2,
   h3 {
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
     margin: 0;
     text-wrap: balance;
   }
@@ -218,8 +218,8 @@ const path = Astro.url.pathname.replace(base, "") || "/";
   }
 
   .brand {
-    font-weight: 800;
-    font-size: var(--t1);
+    font-weight: 600;
+    font-size: var(--t0);
     letter-spacing: -0.02em;
     color: var(--ink);
     text-decoration: none;
@@ -228,6 +228,7 @@ const path = Astro.url.pathname.replace(base, "") || "/";
   .site-header nav {
     display: flex;
     gap: 1.5rem;
+    font-size: var(--t0);
   }
 
   .site-header nav a {
@@ -242,8 +243,8 @@ const path = Astro.url.pathname.replace(base, "") || "/";
   }
 
   .site-footer {
-    margin-top: 6rem;
-    padding-bottom: 3rem;
+    margin-top: 5rem;
+    padding-bottom: 2.5rem;
     color: var(--ink-3);
     font-size: var(--t-1);
   }
@@ -272,9 +273,8 @@ const path = Astro.url.pathname.replace(base, "") || "/";
     line-height: 1.4;
   }
 
-  /* Schibsted's tabular figures space out commas, so numbers keep proportional figures. */
   .num {
-    font-variant-numeric: lining-nums;
+    font-variant-numeric: tabular-nums;
   }
 
   .sr {

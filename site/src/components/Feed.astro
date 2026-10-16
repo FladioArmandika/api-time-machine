@@ -1,125 +1,120 @@
 ---
-// Last month's breaking changes, one real example per API, set like lines removed in a diff.
+// Last month's breaking changes: one real example per API, as oasdiff reported it.
 import { codeParts, lastFullMonth, lastMonthBreaks, monthLong, plural } from "../lib/data";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const rows = lastMonthBreaks();
 const total = rows.reduce((n, r) => n + r.count, 0);
+const sentence = (t: string) => (t.charAt(0).toUpperCase() + t.slice(1)).replace(/^Api /, "API ");
 ---
 
-<figure class="feed">
-  <figcaption>
-    <span class="title">Broken in {monthLong(lastFullMonth)}</span>
-    <span class="sum num">{`${plural(total, "breaking change")} across ${rows.length} APIs`}</span>
-  </figcaption>
+<section class="feed" aria-labelledby="feed-title">
+  <div class="intro">
+    <h2 id="feed-title">What broke in {monthLong(lastFullMonth)}</h2>
+    <p>
+      {plural(total, "breaking change")} across {rows.length} APIs. One example from each, with the endpoint it hit.
+    </p>
+  </div>
   <ol>
     {
       rows.map(({ api, count, change }) => (
         <li>
-          <a href={`${base}/api/${api.id}/`}>
-            <span class="who">
-              <span class="name">{api.name}</span>
-              <span class="count num">{plural(count, "breaking change")}</span>
-            </span>
-            <code class="op">{change.operations[0]}</code>
-            <span class="what">{codeParts(change.text).map((p) => (p.code ? <code>{p.text}</code> : p.text))}</span>
+          <a class="who" href={`${base}/api/${api.id}/`}>
+            <span class="name">{api.name}</span>
+            <span class="count num">{count.toLocaleString("en-US")}</span>
           </a>
+          <div class="what">
+            <code class="op">{change.operations[0]}</code>
+            <p>{codeParts(sentence(change.text)).map((p) => (p.code ? <code>{p.text}</code> : p.text))}</p>
+          </div>
         </li>
       ))
     }
   </ol>
-</figure>
+</section>
 
 <style>
   .feed {
-    margin: 0;
-    border: 1px solid var(--rule);
-    border-radius: 6px;
-    overflow: hidden;
-    font-size: 0.9375rem;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem 4rem;
   }
 
-  figcaption {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 0.25rem 1rem;
-    padding: 0.6rem 1rem;
-    background: var(--wash);
-    border-bottom: 1px solid var(--rule);
+  @media (min-width: 60rem) {
+    .feed {
+      grid-template-columns: 16rem minmax(0, 1fr);
+    }
   }
 
-  .title {
-    font-weight: 700;
+  h2 {
+    font-size: var(--t2);
   }
 
-  .sum {
-    color: var(--ink-3);
+  .intro p {
+    margin-top: 0.5rem;
+    color: var(--ink-2);
   }
 
   ol {
     list-style: none;
     margin: 0;
     padding: 0;
+    border-top: 1px solid var(--ink);
   }
 
-  li + li {
-    border-top: 1px solid var(--red-line);
-  }
-
-  a {
+  li {
     display: grid;
-    gap: 0.15rem;
-    padding: 0.65rem 1rem 0.7rem 2.25rem;
-    position: relative;
-    background: var(--red-wash);
-    color: var(--ink);
-    text-decoration: none;
-  }
-
-  /* The diff gutter. */
-  a::before {
-    content: "−";
-    position: absolute;
-    left: 0.85rem;
-    top: 0.6rem;
-    color: var(--red);
-    font-family: var(--mono);
-    font-weight: 500;
-  }
-
-  a:hover .name {
-    text-decoration: underline;
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: 0.25rem 1.5rem;
+    padding-block: 0.85rem;
+    border-bottom: 1px solid var(--rule);
   }
 
   .who {
     display: flex;
     justify-content: space-between;
+    align-items: baseline;
     gap: 1rem;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .who:hover .name {
+    text-decoration: underline;
   }
 
   .name {
-    font-weight: 700;
+    font-weight: 600;
   }
 
   .count {
     color: var(--red);
-    font-size: var(--t-1);
-    white-space: nowrap;
-  }
-
-  .op {
-    color: var(--ink);
-    font-size: 0.8125rem;
+    font-weight: 500;
   }
 
   .what {
-    color: var(--ink-2);
-    font-size: 0.875rem;
-    line-height: 1.45;
+    display: grid;
+    gap: 0.2rem;
   }
 
-  .what code {
+  .op {
     font-size: 0.8125rem;
+    color: var(--ink);
+  }
+
+  .what p {
+    color: var(--ink-2);
+    font-size: 0.875rem;
+  }
+
+  .what p code {
+    font-size: 0.8125rem;
+    color: var(--ink);
+  }
+
+  @media (max-width: 40rem) {
+    li {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 </style>

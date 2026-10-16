@@ -1,0 +1,275 @@
+---
+// The main chart: every API's breaking changes per month, one row each, on a shared time axis and a shared linear scale.
+import { allMonths, apiById, cellLabel, last12Months, leaderboard, monthLong, monthCells, plural } from "../lib/data";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const n = allMonths.length;
+const rows = leaderboard.map((row) => {
+  const api = apiById(row.id);
+  const cells = monthCells(api, allMonths);
+  // Longest run of months with no readable spec, labelled when it's long enough to read as a hole.
+  let best = { start: -1, len: 0 };
+  let cur = { start: -1, len: 0 };
+  cells.forEach((c, i) => {
+    if (c.state === "gap") {
+      cur = cur.len ? { start: cur.start, len: cur.len + 1 } : { start: i, len: 1 };
+      if (cur.len > best.len) best = cur;
+    } else cur = { start: -1, len: 0 };
+  });
+  return { row, api, cells, gap: best.len >= 6 ? best : null };
+});
+const peak = Math.max(...rows.flatMap((r) => r.cells.map((c) => c.hard)));
+const peakRow = rows.find((r) => r.cells.some((c) => c.hard === peak))!;
+const peakIdx = peakRow.cells.findIndex((c) => c.hard === peak);
+const years = allMonths.map((m, i) => ({ y: Number(m.slice(0, 4)), i })).filter((_, i) => allMonths[i].endsWith("-01"));
+const x = (i: number) => `${(i / n) * 100}%`;
+---
+
+<figure class="chart">
+  <div class="head" aria-hidden="true">
+    <span></span><span>API</span>
+    <span class="plot">
+      {years.map((yr) => <span class:list={["yr", { odd: yr.y % 2 === 1 }]} style={`left:${x(yr.i)}`}>{yr.y}</span>)}
+    </span>
+    <span class="r">Score</span><span class="r">Last 12 mo</span>
+  </div>
+  <ol>
+    {
+      rows.map(({ row, api, cells, gap }) => (
+        <li>
+          <span class="rank num">{row.rank}</span>
+          <a class="name" href={`${base}/api/${row.id}/`}>{row.name}</a>
+          <span class="plot" aria-hidden="true">
+            {years.map((yr) => <span class="yl" style={`left:${x(yr.i)}`} />)}
+            <span class="bars" style={`--n:${n}`}>
+              {cells.map((c) => (
+                <span class:list={["m", c.state]} data-tip={`${api.name}, ${cellLabel(c)}`}>
+                  {c.hard > 0 && <span class="bar" style={`height:${Math.sqrt(c.hard / peak) * 100}%`} />}
+                </span>
+              ))}
+            </span>
+            {gap && <span class="note gap-note" style={`left:${x(gap.start)};width:${x(gap.len)}`}>No spec</span>}
+            {api === peakRow.api && (
+              <span class="note peak-note" style={`left:calc(${x(peakIdx + 1)} + 4px)`}>
+                {peak} in {monthLong(allMonths[peakIdx])}, the most on record
+              </span>
+            )}
+          </span>
+          <span class="r score num">{row.score.value}</span>
+          <span class="r total num">{row.last12.hard.toLocaleString("en-US")}</span>
+          <span class="sr">
+            Stability score {row.score.value}. {plural(row.last12.hard, "breaking change")} in the last 12 months, in{" "}
+            {plural(row.last12.breakingMonths, "month")} of 12.
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+  <figcaption>
+    Each bar is one month: the breaking changes oasdiff found between that month's spec and the previous one. Every row
+    shares one square-root scale, so a single change is still visible. Last 12 mo counts breaking changes since
+    {monthLong(last12Months[0])}. Score is out of 100; <a href={`${base}/methodology/`}>how it's calculated</a>.
+  </figcaption>
+</figure>
+
+<style>
+  .chart {
+    margin: 0;
+    --cols: 1.5rem 7rem minmax(0, 1fr) 3rem 4.5rem;
+  }
+
+  .head,
+  li,
+  .axis {
+    display: grid;
+    grid-template-columns: var(--cols);
+    column-gap: 1rem;
+    align-items: end;
+  }
+
+  .head {
+    font-size: var(--t-1);
+    color: var(--ink-3);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .head .plot {
+    height: 1.25rem;
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  li > * {
+    padding-bottom: 0.45rem;
+  }
+
+  .rank {
+    color: var(--ink-3);
+    font-size: var(--t-1);
+  }
+
+  .name {
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .name:hover {
+    text-decoration: underline;
+  }
+
+  .r {
+    text-align: right;
+  }
+
+  .score {
+    font-weight: 600;
+  }
+
+  .total {
+    color: var(--ink-2);
+  }
+
+  .plot {
+    position: relative;
+    display: block;
+    padding-bottom: 0 !important;
+  }
+
+  li .plot {
+    height: 3.5rem;
+  }
+
+  .yl {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid var(--rule);
+  }
+
+  .bars {
+    position: absolute;
+    inset: 0.5rem 0 0 0;
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    column-gap: 1px;
+    align-items: end;
+  }
+
+  .m {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .m:not(.before):hover {
+    background: var(--wash);
+  }
+
+  .bar {
+    width: 100%;
+    background: var(--red);
+  }
+
+  .gap {
+    background: repeating-linear-gradient(135deg, var(--rule) 0 1px, transparent 1px 4px);
+  }
+
+  .note {
+    position: absolute;
+    font-size: 0.75rem;
+    line-height: 1.2;
+    color: var(--ink-2);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .gap-note {
+    bottom: 0.4rem;
+    text-align: center;
+    color: var(--ink-3);
+  }
+
+  .peak-note {
+    top: 0.45rem;
+  }
+
+  .yr {
+    position: absolute;
+    bottom: 0;
+    padding-left: 0.3rem;
+    font-size: var(--t-1);
+    color: var(--ink-3);
+  }
+
+  figcaption {
+    margin-top: 1rem;
+    max-width: var(--measure);
+    font-size: var(--t-1);
+    color: var(--ink-3);
+  }
+
+  figcaption a {
+    color: inherit;
+  }
+
+  /* Phones: name and numbers on one line, the plot full width beneath. */
+  @media (max-width: 40rem) {
+    .head {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .head > :not(.plot) {
+      display: none;
+    }
+
+    li {
+      grid-template-columns: 1.25rem minmax(0, 1fr) auto auto;
+      grid-template-areas: "rank name score total" "plot plot plot plot";
+      column-gap: 0.75rem;
+      padding-top: 0.75rem;
+      align-items: baseline;
+    }
+
+    li > * {
+      padding-bottom: 0;
+    }
+
+    .rank { grid-area: rank; }
+    .name { grid-area: name; }
+    .score { grid-area: score; }
+    .total { grid-area: total; min-width: 2.5rem; }
+
+    li .plot {
+      grid-area: plot;
+      height: 3rem;
+      margin-top: 0.25rem;
+    }
+
+    .score::after {
+      content: " score";
+      font-weight: 400;
+      color: var(--ink-3);
+      font-size: var(--t-1);
+    }
+
+    .total::after {
+      content: " in 12 mo";
+      color: var(--ink-3);
+      font-size: var(--t-1);
+    }
+
+    .odd {
+      display: none;
+    }
+  }
+</style>

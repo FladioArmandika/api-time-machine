@@ -191,7 +191,10 @@ export function lastMonthBreaks() {
       if (!i) return null;
       const hard = i.changes.filter((c) => c.level === "hard" && c.operations.length > 0);
       const pick = [...hard].sort(
-        (a, b) => Number(b.id.includes("removed")) - Number(a.id.includes("removed")) || b.operationCount - a.operationCount,
+        (a, b) =>
+          Number(!b.text.includes("…")) - Number(!a.text.includes("…")) ||
+          Number(b.id.includes("removed")) - Number(a.id.includes("removed")) ||
+          b.operationCount - a.operationCount,
       )[0];
       return pick ? { api, count: i.hard, change: pick } : null;
     })
@@ -209,7 +212,7 @@ export function leadSentence() {
   return {
     worst,
     best,
-    first: w === 12 ? `${worst.name} shipped a breaking API change every month for a year.` : `${worst.name} shipped breaking API changes in ${w} of the last 12 months.`,
-    second: b === 0 ? `${best.name} didn't ship one.` : `${best.name} did in only ${b}.`,
+    first: w === 12 ? `${worst.name} shipped a breaking change every month.` : `${worst.name} shipped breaking changes in ${w} of 12 months.`,
+    second: b === 0 ? `${best.name} didn't ship any.` : `${best.name} did in only ${b}.`,
   };
 }

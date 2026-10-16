@@ -1,269 +1,60 @@
 ---
 import Base from "../layouts/Base.astro";
 import Feed from "../components/Feed.astro";
-import Multiples from "../components/Multiples.astro";
-import Sparkbars from "../components/Sparkbars.astro";
-import { apiById, apis, leadSentence, leaderboard, monthShortYear, allMonths, plural } from "../lib/data";
+import HistoryChart from "../components/HistoryChart.astro";
+import { REPO_URL, apis, leadSentence, updatedOn } from "../lib/data";
 
-const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const lead = leadSentence();
-const sparkMax = Math.max(...apis.map((a) => Math.max(...a.intervals.slice(-12).map((i) => i.hard))));
-const ranked = leaderboard.map((row) => ({ row, api: apiById(row.id) }));
 ---
 
 <Base title="API Weather: how often popular APIs break their clients" description={`${lead.first} ${lead.second}`}>
-  <section class="hero" aria-labelledby="lead">
-    <div class="copy">
-      <h1 id="lead">
-        <a href={`${base}/api/${lead.worst.id}/`}>{lead.first}</a>{" "}
-        <a href={`${base}/api/${lead.best.id}/`}>{lead.second}</a>
-      </h1>
-      <p class="deck">
-        Every day this site diffs the published OpenAPI specs of {apis.length} popular APIs and counts the changes that would
-        break an existing client: removed endpoints and fields, changed types, new required parameters. The history goes back
-        to {monthShortYear(allMonths[0])}.
-      </p>
-    </div>
-    <Feed />
-  </section>
-
-  <section id="ranking" aria-labelledby="ranking-title">
-    <header class="sec-head">
-      <h2 id="ranking-title">Stability ranking</h2>
-      <p>
-        Score out of 100, from breaking changes per endpoint over the last year, with recent months weighted most.
-        <a href={`${base}/methodology/`}>How it's calculated</a>
-      </p>
-    </header>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col" class="rank"><span class="sr">Rank</span></th>
-            <th scope="col">API</th>
-            <th scope="col" class="score-col">Score</th>
-            <th scope="col" class="spark-col">Breaking changes, last 12 months</th>
-            <th scope="col" class="n">Total</th>
-            <th scope="col" class="n hide-s">Endpoints</th>
-          </tr>
-        </thead>
-        <tbody>
-          {
-            ranked.map(({ row, api }) => (
-              <tr>
-                <td class="rank num">{row.rank}</td>
-                <th scope="row"><a href={`${base}/api/${row.id}/`}>{row.name}</a></th>
-                <td class="score-col">
-                  <span class="score num">{row.score.value}</span>
-                  <span class="meter" aria-hidden="true"><span style={`width:${row.score.value}%`} /></span>
-                </td>
-                <td class="spark-col">
-                  <Sparkbars api={api} max={sparkMax} />
-                  <span class="sr">Breaking changes in {plural(row.last12.breakingMonths, "month")} of 12.</span>
-                </td>
-                <td class="n num">{row.last12.hard.toLocaleString("en-US")}</td>
-                <td class="n num hide-s">{row.operations.toLocaleString("en-US")}</td>
-              </tr>
-            ))
-          }
-        </tbody>
-      </table>
-    </div>
-    <p class="fine">
-      One change reported on many endpoints counts once. Bars use a square-root scale so small months stay visible.
+  <header class="intro">
+    <h1>How often do popular APIs break their clients?</h1>
+    <p class="standfirst">
+      This site diffs the public OpenAPI specs of {apis.length} APIs every day and counts the changes that would break existing
+      code. Over the past year, {lead.first} {lead.second}
     </p>
+    <p class="meta">Updated {updatedOn}. <a href={REPO_URL}>Data and code on GitHub</a>.</p>
+  </header>
+
+  <section id="ranking" class="main-chart" aria-label="Ranking and history">
+    <HistoryChart />
   </section>
 
-  <section aria-labelledby="history-title">
-    <header class="sec-head">
-      <h2 id="history-title">Every month on record</h2>
-      <p>
-        Breaking changes per month for each API since its spec was first published. Hatched months had no readable spec.
-      </p>
-    </header>
-    <Multiples apis={ranked.map((r) => r.api)} />
-  </section>
+  <Feed />
 </Base>
 
 <style>
-  .hero {
+  .intro {
+    padding-block: clamp(2rem, 5vw, 3.5rem) clamp(2rem, 4vw, 2.75rem);
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2.5rem 4rem;
-    padding-block: clamp(2rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem);
-    align-items: start;
-  }
-
-  @media (min-width: 62rem) {
-    .hero {
-      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
-    }
-  }
-
-  .copy {
-    display: grid;
-    gap: 1.75rem;
+    gap: 1rem;
+    max-width: 42rem;
   }
 
   h1 {
-    font-size: clamp(2.25rem, 5.2vw, var(--t5));
-    font-weight: 800;
-    line-height: 1.02;
+    font-size: clamp(2rem, 4.4vw, var(--t5));
+    line-height: 1.08;
     letter-spacing: -0.035em;
   }
 
-  h1 a {
-    color: var(--ink);
-    text-decoration: none;
-  }
-
-  h1 a:hover {
-    text-decoration: underline;
-    text-decoration-thickness: 3px;
-    text-underline-offset: 0.12em;
-  }
-
-  .deck {
-    font-size: var(--t1);
-    line-height: 1.5;
-    color: var(--ink-2);
-    max-width: 40ch;
-  }
-
-  section + section {
-    margin-top: 5rem;
-  }
-
-  .sec-head {
-    display: grid;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .sec-head h2 {
-    font-size: var(--t3);
-  }
-
-  .sec-head p {
+  .standfirst {
+    font-size: 1.1875rem;
+    line-height: 1.45;
+    letter-spacing: -0.01em;
     color: var(--ink-2);
   }
 
-  .table-wrap {
-    overflow-x: auto;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 36rem;
-  }
-
-  th,
-  td {
-    text-align: left;
-    padding: 0.7rem 0.75rem 0.7rem 0;
-    border-bottom: 1px solid var(--rule);
-    vertical-align: middle;
-  }
-
-  thead th {
-    font-weight: 400;
+  .meta {
     font-size: var(--t-1);
     color: var(--ink-3);
-    vertical-align: bottom;
-    border-bottom-color: var(--ink);
   }
 
-  tbody th {
-    font-weight: 700;
-    font-size: var(--t1);
-    white-space: nowrap;
+  .meta a {
+    color: inherit;
   }
 
-  tbody th a {
-    color: var(--ink);
-    text-decoration: none;
-  }
-
-  tbody tr:hover th a {
-    text-decoration: underline;
-  }
-
-  .rank {
-    width: 2rem;
-    color: var(--ink-3);
-  }
-
-  .score-col {
-    width: 9rem;
-    white-space: nowrap;
-  }
-
-  .score {
-    display: inline-block;
-    width: 2.25rem;
-    font-weight: 700;
-    font-size: var(--t1);
-  }
-
-  .meter {
-    display: inline-block;
-    vertical-align: middle;
-    width: 5rem;
-    height: 4px;
-    background: var(--rule);
-  }
-
-  .meter span {
-    display: block;
-    height: 100%;
-    background: var(--ink);
-  }
-
-  .spark-col {
-    width: 34%;
-    min-width: 11rem;
-  }
-
-  .n {
-    text-align: right;
-    padding-right: 0;
-    padding-left: 1rem;
-  }
-
-  td.n {
-    font-weight: 600;
-  }
-
-  .fine {
-    margin-top: 0.75rem;
-    color: var(--ink-3);
-    font-size: var(--t-1);
-  }
-
-  @media (max-width: 40rem) {
-    .hide-s {
-      display: none;
-    }
-
-    table {
-      min-width: 0;
-    }
-
-    .meter {
-      display: none;
-    }
-
-    .score-col {
-      width: 2.5rem;
-    }
-
-    .spark-col {
-      min-width: 7rem;
-    }
-
-    tbody th {
-      font-size: var(--t0);
-    }
+  .main-chart {
+    margin-bottom: 5rem;
   }
 </style>

@@ -209,14 +209,14 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   h1 {
-    font-size: clamp(3rem, 9vw, 6.5rem);
-    letter-spacing: -0.045em;
-    line-height: 0.95;
+    font-size: clamp(2.25rem, 5vw, var(--t5));
+    letter-spacing: -0.035em;
+    line-height: 1.05;
   }
 
   .lede {
     font-size: var(--t2);
-    line-height: 1.25;
+    line-height: 1.4;
     color: var(--ink-2);
     letter-spacing: -0.01em;
   }
@@ -237,9 +237,9 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 
   .facts dd {
     margin: 0;
-    font-weight: 700;
+    font-weight: 600;
     font-size: var(--t3);
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
   }
 
   .facts dd span {
@@ -339,7 +339,7 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   .years tbody th {
-    font-weight: 700;
+    font-weight: 600;
   }
 
   .n {
@@ -366,7 +366,7 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   .m {
-    font-weight: 700;
+    font-weight: 600;
     min-width: 11rem;
   }
 
@@ -386,50 +386,24 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 
   .changes {
     list-style: none;
-    margin: 0 0 1rem;
+    margin: 0 0 1.25rem;
     padding: 0;
-    border: 1px solid var(--red-line);
-    border-radius: 6px;
-    overflow: hidden;
   }
 
-  /* Each breaking change is set like a removed line in a diff. */
+  /* A thin red rule marks each breaking change; soft ones get a grey one. */
   .changes li {
-    position: relative;
-    padding: 0.6rem 1rem 0.65rem 2.25rem;
-    background: var(--red-wash);
+    padding: 0.5rem 0 0.55rem 1rem;
+    border-left: 2px solid var(--red);
     display: grid;
-    gap: 0.15rem;
+    gap: 0.1rem;
   }
 
   .changes li + li {
-    border-top: 1px solid var(--red-line);
-  }
-
-  .changes li::before {
-    content: "−";
-    position: absolute;
-    left: 0.85rem;
-    top: 0.55rem;
-    font-family: var(--mono);
-    color: var(--red);
-  }
-
-  .changes.soft {
-    border-color: var(--rule);
+    margin-top: 0.5rem;
   }
 
   .changes.soft li {
-    background: var(--wash);
-  }
-
-  .changes.soft li + li {
-    border-top-color: var(--rule);
-  }
-
-  .changes.soft li::before {
-    content: "~";
-    color: var(--ink-3);
+    border-left-color: var(--soft);
   }
 
   .op {
@@ -443,6 +417,11 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 
   .what {
     font-size: 0.9375rem;
+  }
+
+  .what code,
+  .op code {
+    font-size: 0.8125rem;
   }
 
   .meta,
