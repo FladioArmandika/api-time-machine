@@ -90,7 +90,7 @@ const fmt = (n: number) => (n >= 1000 ? `${n / 1000}K` : String(n));
     top: -0.65em;
     font-size: var(--t-1);
     color: var(--ink-3);
-    font-variant-numeric: tabular-nums;
+    
   }
 
   .scroll {
@@ -131,26 +131,26 @@ const fmt = (n: number) => (n >= 1000 ? `${n / 1000}K` : String(n));
   }
 
   .bar.hard {
-    background: var(--s4);
+    background: var(--red);
   }
 
   .bar.soft {
-    background: var(--s1);
-    border-radius: 4px 4px 0 0;
+    background: var(--soft);
+    border-radius: 0;
   }
 
   .bar.hard:last-child {
-    border-radius: 4px 4px 0 0;
+    border-radius: 0;
   }
 
   .gapfill {
     display: block;
     height: 100%;
-    background: repeating-linear-gradient(135deg, var(--calm) 0 3px, transparent 3px 6px);
+    background: repeating-linear-gradient(135deg, var(--rule) 0 2px, transparent 2px 5px);
   }
 
   .cols li:hover {
-    background: color-mix(in srgb, var(--calm) 60%, transparent);
+    background: var(--wash);
   }
 
   .years {

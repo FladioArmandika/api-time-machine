@@ -177,24 +177,39 @@ export function rawJsonUrl(api: ApiData) {
   return `${REPO_URL}/blob/main/data/apis/${api.id}.json`;
 }
 
-// ---------- intensity bins (the stripe colours) ----------
+// ---------- home page ----------
 
-export type Bin = "before" | "gap" | "calm" | "b0" | "b1" | "b2" | "b3" | "b4";
+/** Every month from the oldest tracked spec to now: the shared axis for the small multiples. */
+export const allMonths = monthRange(apis.map((a) => a.firstMonth).sort()[0], nowMonth);
+export const lastFullMonth = addMonths(nowMonth, -1);
 
-/** b0 = soft changes only; b1..b4 = 1–4, 5–19, 20–99, 100+ breaking changes. */
-export function binOf(c: MonthCell): Bin {
-  if (c.state === "before" || c.state === "gap" || c.state === "calm") return c.state;
-  if (c.state === "soft") return "b0";
-  return c.hard >= 100 ? "b4" : c.hard >= 20 ? "b3" : c.hard >= 5 ? "b2" : "b1";
+/** One representative breaking change per API from the last full month, biggest months first. */
+export function lastMonthBreaks() {
+  return apis
+    .map((api) => {
+      const i = api.intervals.find((x) => x.to === lastFullMonth && !x.gap && !x.error && x.hard > 0);
+      if (!i) return null;
+      const hard = i.changes.filter((c) => c.level === "hard" && c.operations.length > 0);
+      const pick = [...hard].sort(
+        (a, b) => Number(b.id.includes("removed")) - Number(a.id.includes("removed")) || b.operationCount - a.operationCount,
+      )[0];
+      return pick ? { api, count: i.hard, change: pick } : null;
+    })
+    .filter((x) => x !== null)
+    .sort((a, b) => b!.count - a!.count) as { api: ApiData; count: number; change: Change }[];
 }
 
-export const BINS: { bin: Bin; label: string }[] = [
-  { bin: "b0", label: "Soft only" },
-  { bin: "b1", label: "1–4" },
-  { bin: "b2", label: "5–19" },
-  { bin: "b3", label: "20–99" },
-  { bin: "b4", label: "100+" },
-];
-
-/** Every month from the oldest tracked spec to now: the shared axis on the home page. */
-export const allMonths = monthRange(apis.map((a) => a.firstMonth).sort()[0], nowMonth);
+/** The contrast the home page leads with: most and least breaking over the last 12 months. */
+export function leadSentence() {
+  const by = [...apis].sort((a, b) => b.last12.breakingMonths - a.last12.breakingMonths || b.last12.hard - a.last12.hard);
+  const worst = by[0];
+  const best = by.at(-1)!;
+  const w = worst.last12.breakingMonths;
+  const b = best.last12.breakingMonths;
+  return {
+    worst,
+    best,
+    first: w === 12 ? `${worst.name} shipped a breaking API change every month for a year.` : `${worst.name} shipped breaking API changes in ${w} of the last 12 months.`,
+    second: b === 0 ? `${best.name} didn't ship one.` : `${best.name} did in only ${b}.`,
+  };
+}

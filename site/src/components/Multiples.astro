@@ -1,0 +1,151 @@
+---
+// Every API's full history on one shared time axis and one shared scale, so the panels compare directly.
+import { allMonths, cellLabel, monthCells, type ApiData } from "../lib/data";
+
+interface Props {
+  apis: ApiData[];
+}
+const { apis } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const all = apis.map((api) => ({ api, cells: monthCells(api, allMonths) }));
+const peak = Math.max(...all.flatMap((a) => a.cells.map((c) => c.hard)));
+const top = Math.ceil(peak / 50) * 50;
+const n = allMonths.length;
+const years = allMonths.map((m, i) => ({ m, i })).filter(({ m }) => m.endsWith("-01"));
+---
+
+<div class="multiples">
+  {
+    all.map(({ api, cells }) => (
+      <figure>
+        <figcaption>
+          <a href={`${base}/api/${api.id}/`}>{api.name}</a>
+          <span class="num">{api.worstMonth ? `Peak ${api.worstMonth.hard}` : ""}</span>
+        </figcaption>
+        <div class="plot" aria-hidden="true" style={`--n:${n}`}>
+          {cells.map((c) => (
+            <span class:list={["m", c.state]} data-tip={`${api.name}, ${cellLabel(c)}`}>
+              {c.hard > 0 && <span class="bar" style={`height:${Math.max(3, (c.hard / top) * 100)}%`} />}
+            </span>
+          ))}
+        </div>
+        <span class="sr">{api.name}: breaking changes per month since {api.firstMonth}; peak {api.worstMonth?.hard ?? 0}.</span>
+      </figure>
+    ))
+  }
+  <ol class="axis" aria-hidden="true">
+    {years.map(({ m, i }) => <li style={`left:${(i / n) * 100}%`}>{Number(m.slice(0, 4)) % 2 === 0 ? m.slice(0, 4) : ""}</li>)}
+  </ol>
+  <p class="scale">Bar height is breaking changes in a month, on the same scale in every panel (top = {top}).</p>
+</div>
+
+<style>
+  .multiples {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+  }
+
+  figure {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr);
+    gap: 1rem;
+    align-items: end;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  figcaption {
+    display: grid;
+    padding-bottom: 0.3rem;
+    line-height: 1.25;
+  }
+
+  figcaption a {
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--ink);
+  }
+
+  figcaption a:hover {
+    text-decoration: underline;
+  }
+
+  figcaption span {
+    font-size: var(--t-1);
+    color: var(--ink-3);
+  }
+
+  .plot {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    column-gap: 1px;
+    height: 4.5rem;
+    align-items: end;
+  }
+
+  .m {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .m:hover {
+    background: var(--wash);
+  }
+
+  .bar {
+    width: 100%;
+    background: var(--red);
+  }
+
+  .before {
+    pointer-events: none;
+  }
+
+  .gap {
+    background: repeating-linear-gradient(135deg, var(--rule) 0 2px, transparent 2px 5px);
+  }
+
+  .axis {
+    position: relative;
+    list-style: none;
+    margin: 0 0 0 9rem;
+    padding: 0;
+    height: 1.4rem;
+    font-size: var(--t-1);
+    color: var(--ink-3);
+  }
+
+  .axis li {
+    position: absolute;
+    top: 0.2rem;
+    white-space: nowrap;
+  }
+
+  .scale {
+    max-width: none;
+    margin-left: 9rem;
+    margin-top: 0.75rem;
+    font-size: var(--t-1);
+    color: var(--ink-3);
+  }
+
+  @media (max-width: 40rem) {
+    figure {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.25rem;
+      padding-top: 0.75rem;
+    }
+
+    figcaption {
+      grid-auto-flow: column;
+      justify-content: space-between;
+    }
+
+    .axis,
+    .scale {
+      margin-left: 0;
+    }
+  }
+</style>

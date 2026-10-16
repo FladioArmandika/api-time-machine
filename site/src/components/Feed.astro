@@ -1,0 +1,125 @@
+---
+// Last month's breaking changes, one real example per API, set like lines removed in a diff.
+import { codeParts, lastFullMonth, lastMonthBreaks, monthLong, plural } from "../lib/data";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const rows = lastMonthBreaks();
+const total = rows.reduce((n, r) => n + r.count, 0);
+---
+
+<figure class="feed">
+  <figcaption>
+    <span class="title">Broken in {monthLong(lastFullMonth)}</span>
+    <span class="sum num">{`${plural(total, "breaking change")} across ${rows.length} APIs`}</span>
+  </figcaption>
+  <ol>
+    {
+      rows.map(({ api, count, change }) => (
+        <li>
+          <a href={`${base}/api/${api.id}/`}>
+            <span class="who">
+              <span class="name">{api.name}</span>
+              <span class="count num">{plural(count, "breaking change")}</span>
+            </span>
+            <code class="op">{change.operations[0]}</code>
+            <span class="what">{codeParts(change.text).map((p) => (p.code ? <code>{p.text}</code> : p.text))}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</figure>
+
+<style>
+  .feed {
+    margin: 0;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 0.9375rem;
+  }
+
+  figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    padding: 0.6rem 1rem;
+    background: var(--wash);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .title {
+    font-weight: 700;
+  }
+
+  .sum {
+    color: var(--ink-3);
+  }
+
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li + li {
+    border-top: 1px solid var(--red-line);
+  }
+
+  a {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.65rem 1rem 0.7rem 2.25rem;
+    position: relative;
+    background: var(--red-wash);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  /* The diff gutter. */
+  a::before {
+    content: "−";
+    position: absolute;
+    left: 0.85rem;
+    top: 0.6rem;
+    color: var(--red);
+    font-family: var(--mono);
+    font-weight: 500;
+  }
+
+  a:hover .name {
+    text-decoration: underline;
+  }
+
+  .who {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .name {
+    font-weight: 700;
+  }
+
+  .count {
+    color: var(--red);
+    font-size: var(--t-1);
+    white-space: nowrap;
+  }
+
+  .op {
+    color: var(--ink);
+    font-size: 0.8125rem;
+  }
+
+  .what {
+    color: var(--ink-2);
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  .what code {
+    font-size: 0.8125rem;
+  }
+</style>

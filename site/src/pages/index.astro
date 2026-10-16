@@ -1,343 +1,269 @@
 ---
 import Base from "../layouts/Base.astro";
-import Ramp from "../components/Ramp.astro";
-import Score from "../components/Score.astro";
-import Stripes from "../components/Stripes.astro";
-import YearAxis from "../components/YearAxis.astro";
-import { allMonths, apiById, apis, headlines, leaderboard, monthLong, monthShortYear, plural, updatedOn } from "../lib/data";
+import Feed from "../components/Feed.astro";
+import Multiples from "../components/Multiples.astro";
+import Sparkbars from "../components/Sparkbars.astro";
+import { apiById, apis, leadSentence, leaderboard, monthShortYear, allMonths, plural } from "../lib/data";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const [lead, ...rest] = headlines;
-
-// The single worst month across every API gets a callout on the chart.
-const worstApi = [...apis].filter((a) => a.worstMonth).sort((a, b) => b.worstMonth!.hard - a.worstMonth!.hard)[0];
-const worst = worstApi?.worstMonth;
-const worstRow = leaderboard.findIndex((r) => r.id === worstApi?.id);
-const worstPct = worst ? (allMonths.indexOf(worst.month) / allMonths.length) * 100 : 0;
+const lead = leadSentence();
+const sparkMax = Math.max(...apis.map((a) => Math.max(...a.intervals.slice(-12).map((i) => i.hard))));
+const ranked = leaderboard.map((row) => ({ row, api: apiById(row.id) }));
 ---
 
-<Base
-  title="API Weather: how often popular APIs break their clients"
-  description={lead?.text ?? "Stability scores for popular public APIs, from the git history of their OpenAPI specs."}
->
+<Base title="API Weather: how often popular APIs break their clients" description={`${lead.first} ${lead.second}`}>
   <section class="hero" aria-labelledby="lead">
-    <p class="dateline">
-      <span>{apis.length} public APIs</span><span>{allMonths.length} months of spec history</span><span>Updated {updatedOn}</span>
-    </p>
-    <h1 id="lead">{lead?.text}</h1>
-    <p class="deck">
-      {
-        rest.map((h, i) => (
-          <>
-            {i > 0 && " "}
-            {h.apiId ? <a href={`${base}/api/${h.apiId}/`}>{h.text}</a> : h.text}
-          </>
-        ))
-      }
+    <div class="copy">
+      <h1 id="lead">
+        <a href={`${base}/api/${lead.worst.id}/`}>{lead.first}</a>{" "}
+        <a href={`${base}/api/${lead.best.id}/`}>{lead.second}</a>
+      </h1>
+      <p class="deck">
+        Every day this site diffs the published OpenAPI specs of {apis.length} popular APIs and counts the changes that would
+        break an existing client: removed endpoints and fields, changed types, new required parameters. The history goes back
+        to {monthShortYear(allMonths[0])}.
+      </p>
+    </div>
+    <Feed />
+  </section>
+
+  <section id="ranking" aria-labelledby="ranking-title">
+    <header class="sec-head">
+      <h2 id="ranking-title">Stability ranking</h2>
+      <p>
+        Score out of 100, from breaking changes per endpoint over the last year, with recent months weighted most.
+        <a href={`${base}/methodology/`}>How it's calculated</a>
+      </p>
+    </header>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col" class="rank"><span class="sr">Rank</span></th>
+            <th scope="col">API</th>
+            <th scope="col" class="score-col">Score</th>
+            <th scope="col" class="spark-col">Breaking changes, last 12 months</th>
+            <th scope="col" class="n">Total</th>
+            <th scope="col" class="n hide-s">Endpoints</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            ranked.map(({ row, api }) => (
+              <tr>
+                <td class="rank num">{row.rank}</td>
+                <th scope="row"><a href={`${base}/api/${row.id}/`}>{row.name}</a></th>
+                <td class="score-col">
+                  <span class="score num">{row.score.value}</span>
+                  <span class="meter" aria-hidden="true"><span style={`width:${row.score.value}%`} /></span>
+                </td>
+                <td class="spark-col">
+                  <Sparkbars api={api} max={sparkMax} />
+                  <span class="sr">Breaking changes in {plural(row.last12.breakingMonths, "month")} of 12.</span>
+                </td>
+                <td class="n num">{row.last12.hard.toLocaleString("en-US")}</td>
+                <td class="n num hide-s">{row.operations.toLocaleString("en-US")}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="fine">
+      One change reported on many endpoints counts once. Bars use a square-root scale so small months stay visible.
     </p>
   </section>
 
-  <section class="record" id="leaderboard" aria-labelledby="record-title">
-    <div class="record-head">
-      <h2 id="record-title">Every month, every API</h2>
+  <section aria-labelledby="history-title">
+    <header class="sec-head">
+      <h2 id="history-title">Every month on record</h2>
       <p>
-        Each stripe is one month of an API's published OpenAPI spec, from {monthShortYear(allMonths[0])} to now. The stronger the
-        colour, the more changes that month would break a client. Ranked by <a href={`${base}/methodology/`}>stability score</a>,
-        which weighs the last year most.
+        Breaking changes per month for each API since its spec was first published. Hatched months had no readable spec.
       </p>
-    </div>
-
-    <div class="chart" style={`--worst-row:${worstRow + 4}`}>
-      <div class="hrow" aria-hidden="true">
-        <span></span><span>API</span><span></span><span class="r">Score</span><span class="r hide-s">Broke in</span>
-      </div>
-      <span class="spacer" aria-hidden="true"></span>
-      {
-        worst && (
-          <div class="callout" style={`--x:${worstPct}%`} data-flip={worstPct > 55 ? "" : undefined} aria-hidden="true">
-            <p>
-              <strong>{worstApi.name}, {monthLong(worst.month)}.</strong> {plural(worst.hard, "breaking change")}, the most in any
-              month on record.
-            </p>
-          </div>
-        )
-      }
-      <ol class="rows">
-        {
-          leaderboard.map((row, i) => {
-            const api = apiById(row.id);
-            return (
-              <li style={`--r:${i + 3}`}>
-                <span class="rank num">{row.rank}</span>
-                <a class="name" href={`${base}/api/${row.id}/`}>{row.name}</a>
-                <a class="band" href={`${base}/api/${row.id}/`} tabindex="-1" aria-hidden="true">
-                  <Stripes api={api} months={allMonths} mark={row.id === worstApi?.id ? worst?.month : undefined} />
-                </a>
-                <span class="r"><Score score={row.score} /></span>
-                <span class="r hide-s months num">
-                  {row.last12.breakingMonths}<span class="of">/12 mo</span>
-                </span>
-                <span class="sr">
-                  Score {row.score.value}, {row.score.label}. Breaking changes in {row.last12.breakingMonths} of the last 12 months,{" "}
-                  {plural(row.last12.hard, "breaking change")} in total.
-                </span>
-              </li>
-            );
-          })
-        }
-      </ol>
-      <div class="axis-row" style={`--r:${leaderboard.length + 3}`}><YearAxis months={allMonths} /></div>
-    </div>
-
-    <div class="record-foot">
-      <Ramp />
-      <p class="fine">
-        “Broke in” counts the last 12 months with at least one breaking change. One change reported on many endpoints counts once.
-      </p>
-    </div>
+    </header>
+    <Multiples apis={ranked.map((r) => r.api)} />
   </section>
 </Base>
 
 <style>
   .hero {
-    padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(2.5rem, 6vw, 4.5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem 4rem;
+    padding-block: clamp(2rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem);
+    align-items: start;
+  }
+
+  @media (min-width: 62rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    }
+  }
+
+  .copy {
     display: grid;
     gap: 1.75rem;
   }
 
-  .dateline {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.5rem;
-    font-size: var(--t-1);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--ink-3);
-    max-width: none;
+  h1 {
+    font-size: clamp(2.25rem, 5.2vw, var(--t5));
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.035em;
   }
 
-  .hero h1 {
-    font-size: clamp(2.6rem, 7.4vw, var(--t6));
-    line-height: 0.95;
-    letter-spacing: -0.02em;
-    max-width: 11em;
-    font-variation-settings: "wdth" 75, "opsz" 96;
+  h1 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  h1 a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.12em;
   }
 
   .deck {
     font-size: var(--t1);
+    line-height: 1.5;
     color: var(--ink-2);
-    max-width: 58ch;
+    max-width: 40ch;
   }
 
-  .deck a {
-    color: inherit;
-    text-decoration-color: var(--rule);
-    text-underline-offset: 0.25em;
+  section + section {
+    margin-top: 5rem;
   }
 
-  .deck a:hover {
-    text-decoration-color: var(--s3);
-    color: var(--ink);
-  }
-
-  .record {
-    border-top: 2px solid var(--ink);
-    padding-top: 1.25rem;
-  }
-
-  .record-head {
+  .sec-head {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.75rem 3rem;
-    margin-bottom: 2rem;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
   }
 
-  @media (min-width: 60rem) {
-    .record-head {
-      grid-template-columns: 20rem minmax(0, 1fr);
-    }
-  }
-
-  .record-head h2 {
+  .sec-head h2 {
     font-size: var(--t3);
   }
 
-  .record-head p {
+  .sec-head p {
     color: var(--ink-2);
   }
 
-  /* One grid for header, callout, rows and axis, so the callout can reach down to its stripe. */
-  .chart {
-    display: grid;
-    grid-template-columns: 1.5rem minmax(4.5rem, 7.5rem) minmax(0, 1fr) 6.5rem 4.5rem;
-    column-gap: 1rem;
-    align-items: center;
+  .table-wrap {
+    overflow-x: auto;
   }
 
-  .hrow,
-  .rows,
-  .rows li {
-    display: contents;
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 36rem;
   }
 
-  .hrow > span {
-    font-size: var(--t-1);
-    color: var(--ink-3);
-    padding-bottom: 0.25rem;
+  th,
+  td {
+    text-align: left;
+    padding: 0.7rem 0.75rem 0.7rem 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
   }
 
-  .rows {
-    list-style: none;
-  }
-
-  /* Every cell is placed explicitly: the callout overlaps the band column and must not push cells around. */
-  .rows li > * {
-    grid-row: var(--r);
-    padding-block: 0.3rem;
-  }
-
-  .hrow > * {
-    grid-row: 1;
-  }
-
-  .hrow > :nth-child(1), .rank { grid-column: 1; }
-  .hrow > :nth-child(2), .name { grid-column: 2; }
-  .hrow > :nth-child(3), .band { grid-column: 3; }
-  .hrow > :nth-child(4), .rows .r:not(.months) { grid-column: 4; }
-  .hrow > :nth-child(5), .rows .months { grid-column: 5; }
-
-  .rank {
-    color: var(--ink-3);
-    font-size: var(--t-1);
-  }
-
-  .name {
-    font-family: var(--display);
-    font-variation-settings: "wdth" 80;
-    font-weight: 600;
-    font-size: var(--t1);
-    color: var(--ink);
-    text-decoration: none;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .name:hover {
-    text-decoration: underline;
-  }
-
-  .band {
-    display: block;
-  }
-
-  .r {
-    text-align: right;
-    justify-self: end;
-  }
-
-  .months {
-    font-family: var(--display);
-    font-variation-settings: "wdth" 80;
-    font-weight: 600;
-  }
-
-  .of {
-    font-family: var(--text);
+  thead th {
     font-weight: 400;
     font-size: var(--t-1);
     color: var(--ink-3);
-    margin-left: 0.1rem;
+    vertical-align: bottom;
+    border-bottom-color: var(--ink);
   }
 
-  .callout {
-    grid-column: 3;
-    grid-row: 2 / var(--worst-row);
-    align-self: stretch;
-    position: relative;
-    pointer-events: none;
-    z-index: 2;
+  tbody th {
+    font-weight: 700;
+    font-size: var(--t1);
+    white-space: nowrap;
   }
 
-  .spacer {
-    grid-row: 2;
-    grid-column: 1;
-    height: 3.5rem;
-  }
-
-  .callout::after {
-    content: "";
-    position: absolute;
-    left: var(--x);
-    top: 3.25rem;
-    bottom: 1.05rem;
-    border-left: 1px solid var(--ink);
-  }
-
-  .callout p {
-    position: absolute;
-    left: var(--x);
-    top: 0;
-    width: max-content;
-    max-width: min(24rem, 60vw);
-    padding-left: 0.5rem;
-    border-left: 1px solid var(--ink);
-    font-size: var(--t-1);
-    line-height: 1.3;
-    color: var(--ink-2);
-  }
-
-  .callout[data-flip] p {
-    left: auto;
-    right: calc(100% - var(--x));
-    padding: 0 0.5rem 0 0;
-    border-left: 0;
-    border-right: 1px solid var(--ink);
-    text-align: right;
-  }
-
-  .callout strong {
+  tbody th a {
     color: var(--ink);
+    text-decoration: none;
   }
 
-  .axis-row {
-    grid-column: 3;
-    grid-row: var(--r);
-    padding-top: 0.4rem;
+  tbody tr:hover th a {
+    text-decoration: underline;
   }
 
-  .record-foot {
-    margin-top: 1.5rem;
-    display: grid;
-    gap: 0.75rem;
+  .rank {
+    width: 2rem;
+    color: var(--ink-3);
+  }
+
+  .score-col {
+    width: 9rem;
+    white-space: nowrap;
+  }
+
+  .score {
+    display: inline-block;
+    width: 2.25rem;
+    font-weight: 700;
+    font-size: var(--t1);
+  }
+
+  .meter {
+    display: inline-block;
+    vertical-align: middle;
+    width: 5rem;
+    height: 4px;
+    background: var(--rule);
+  }
+
+  .meter span {
+    display: block;
+    height: 100%;
+    background: var(--ink);
+  }
+
+  .spark-col {
+    width: 34%;
+    min-width: 11rem;
+  }
+
+  .n {
+    text-align: right;
+    padding-right: 0;
+    padding-left: 1rem;
+  }
+
+  td.n {
+    font-weight: 600;
   }
 
   .fine {
+    margin-top: 0.75rem;
     color: var(--ink-3);
     font-size: var(--t-1);
   }
 
   @media (max-width: 40rem) {
-    .chart {
-      grid-template-columns: 1rem 4.75rem minmax(0, 1fr) 2rem;
-      column-gap: 0.6rem;
-    }
-
     .hide-s {
       display: none;
     }
 
-    .name {
-      font-size: var(--t0);
+    table {
+      min-width: 0;
     }
 
-    .r :global(.label) {
+    .meter {
       display: none;
     }
 
-    .callout p {
-      max-width: 13rem;
+    .score-col {
+      width: 2.5rem;
+    }
+
+    .spark-col {
+      min-width: 7rem;
+    }
+
+    tbody th {
+      font-size: var(--t0);
     }
   }
 </style>
