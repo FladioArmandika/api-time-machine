@@ -1,0 +1,1 @@
+{"hard":1,"soft":0,"info":25,"raw":{"hard":1,"soft":0,"info":25},"hardOperations":1,"changes":[{"id":"request-body-one-of-removed","level":"hard","text":"removed `subschema #1, subschema #2` from the request body `oneOf` list","occurrences":1,"operationCount":1,"operations":["POST /user/codespaces"]}]}

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "most-break-months",
+    "apiId": "cloudflare",
+    "figure": "12/12",
+    "text": "Cloudflare shipped a breaking change in 12 of the last 12 months."
+  },
+  {
+    "id": "worst-month",
+    "apiId": "stripe",
+    "figure": "223",
+    "text": "The single roughest month on record: Stripe in May 2018, with 223 breaking changes across 191 endpoints."
+  },
+  {
+    "id": "calmest",
+    "apiId": "twilio",
+    "figure": "100",
+    "text": "Twilio hasn't shipped a breaking change in 12 months."
+  },
+  {
+    "id": "most-soft",
+    "apiId": "cloudflare",
+    "figure": "1338",
+    "text": "Cloudflare made 1338 \"soft\" changes in a year: new enum values and response types that strict clients can trip on."
+  },
+  {
+    "id": "this-year",
+    "apiId": "cloudflare",
+    "figure": "586",
+    "text": "Cloudflare leads 2026 with 586 breaking changes so far."
+  }
+]

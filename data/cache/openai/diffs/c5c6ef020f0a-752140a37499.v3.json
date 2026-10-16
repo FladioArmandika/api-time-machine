@@ -1,0 +1,1 @@
+{"hard":1,"soft":0,"info":12,"raw":{"hard":1,"soft":0,"info":12},"hardOperations":1,"changes":[{"id":"request-property-max-items-set","level":"hard","text":"the `functions` request property's maxItems was set to `128`","occurrences":1,"operationCount":1,"operations":["POST /chat/completions"]}]}

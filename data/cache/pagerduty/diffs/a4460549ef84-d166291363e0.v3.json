@@ -1,0 +1,1 @@
+{"hard":0,"soft":1,"info":48,"raw":{"hard":0,"soft":2,"info":48},"hardOperations":0,"changes":[{"id":"request-property-all-of-added","level":"soft","text":"added `User, subschema #2` to the `user` request property `allOf` list","occurrences":2,"operationCount":2,"operations":["POST /users","PUT /users/{id}"]}],"repairedRefs":207}

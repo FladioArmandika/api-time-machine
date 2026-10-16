@@ -1,0 +1,78 @@
+[
+  {
+    "id": "stripe",
+    "name": "Stripe",
+    "repo": "stripe/openapi",
+    "branch": "master",
+    "path": "openapi/spec3.json",
+    "notes": "Stripe versions its API. Changes here are to the latest version; clients pinned to an older version are not affected until they upgrade."
+  },
+  {
+    "id": "github",
+    "name": "GitHub",
+    "repo": "github/rest-api-description",
+    "branch": "main",
+    "path": "descriptions/api.github.com/api.github.com.json",
+    "notes": "GitHub versions its REST API by date. This file tracks the latest version, so a new dated version shows up here as changes."
+  },
+  {
+    "id": "openai",
+    "name": "OpenAI",
+    "repo": "openai/openai-openapi",
+    "branch": "main",
+    "path": "openapi.yaml",
+    "notes": "The spec was removed from this file in June 2025 and restored in May 2026. Months in between have no data."
+  },
+  {
+    "id": "twilio",
+    "name": "Twilio",
+    "repo": "twilio/twilio-oai",
+    "branch": "main",
+    "path": "spec/json/twilio_api_v2010.json",
+    "notes": "Core REST API (2010-04-01). Twilio's other products have separate spec files."
+  },
+  {
+    "id": "cloudflare",
+    "name": "Cloudflare",
+    "repo": "cloudflare/api-schemas",
+    "branch": "main",
+    "path": "openapi.json"
+  },
+  {
+    "id": "discord",
+    "name": "Discord",
+    "repo": "discord/discord-api-spec",
+    "branch": "main",
+    "path": "specs/openapi.json"
+  },
+  {
+    "id": "pagerduty",
+    "name": "PagerDuty",
+    "repo": "PagerDuty/api-schema",
+    "branch": "main",
+    "path": "reference/REST/openapiv3.json"
+  },
+  {
+    "id": "plaid",
+    "name": "Plaid",
+    "repo": "plaid/plaid-openapi",
+    "branch": "master",
+    "path": "2020-09-14.yml",
+    "notes": "Plaid versions its API by date; this is the 2020-09-14 version, which Plaid keeps updating."
+  },
+  {
+    "id": "asana",
+    "name": "Asana",
+    "repo": "Asana/openapi",
+    "branch": "master",
+    "path": "defs/asana_oas.yaml"
+  },
+  {
+    "id": "box",
+    "name": "Box",
+    "repo": "box/box-openapi",
+    "branch": "main",
+    "path": "openapi.json",
+    "notes": "Compiled spec at the repo root, published since September 2023."
+  }
+]

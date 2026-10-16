@@ -1,0 +1,1 @@
+{"hard":1,"soft":0,"info":10,"raw":{"hard":1,"soft":0,"info":10},"hardOperations":1,"changes":[{"id":"api-removed-without-deprecation","level":"hard","text":"api removed without deprecation","occurrences":1,"operationCount":1,"operations":["POST /event_orchestrations/{id}"]}]}

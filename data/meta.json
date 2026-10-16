@@ -1,0 +1,10 @@
+{
+  "generatedAt": "2026-10-16T09:03:59.877Z",
+  "oasdiff": "oasdiff version main",
+  "score": {
+    "softWeight": 0.25,
+    "halfLifeMonths": 6,
+    "windowMonths": 12,
+    "k": 15
+  }
+}

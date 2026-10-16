@@ -1,0 +1,187 @@
+{
+  "850ef36950b017d069c7a1764d216b6119b31d99": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 18
+  },
+  "f0e038be933b5e7066b920105a5444de0363094b": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 18
+  },
+  "18324cd9cc99464fadfa636189cc88c70407fc86": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 20
+  },
+  "121a0097ff5328d100ebf6a69273a243c7db0c5f": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 21
+  },
+  "5f4ba9c608e1feae30666256e6c8ac66bb525598": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 22
+  },
+  "dcd61929a4a0232e7078b5f8f6b2726b0a7d5a7d": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 25
+  },
+  "a0b74fd137242e9dc14f2803de13bc90b5fff70b": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 25
+  },
+  "6d77f43cbff5412a7f43f7708c266004bba79891": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 25
+  },
+  "8962cccc777890d9d935e8b7df394bbfec3da249": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 28
+  },
+  "c99e454e9c3bad8692d68308415e7593dfae236c": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 23
+  },
+  "c5c6ef020f0af4287b8c369cda0c0f4836000896": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 23
+  },
+  "752140a374990d4141f51783224e833ffe5de70d": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 23
+  },
+  "8944fbcbbd26bb642f8c098cf41e2a894dc35d7c": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 28
+  },
+  "a1266253636547778d88886ecf9c6ccc4355eba6": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 28
+  },
+  "143355963d8b5e8463b5b4a251ae9ef1ba6926dc": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 57
+  },
+  "803b5a885606810518c43e18f2a606b72179ec10": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 57
+  },
+  "0f2b1a95d3b6b298607be4be579c68420ccb244d": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 51
+  },
+  "aa2f96a49f54690fc0f07af2096968c735fa71aa": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 51
+  },
+  "d8d76d140f18d3787d1b785329a524ec6a8359f6": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 51
+  },
+  "8f3f3ef2301f7b9f94203eed6f1b56579371d2f3": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 64
+  },
+  "aa28be92ecf9dad2920aa56bb048a22d86e9f852": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 64
+  },
+  "893818439294289472ce2648f6266471f3da30a3": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 64
+  },
+  "5e29193a5df4c7b2e3392214b0e05c51e3372333": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 68
+  },
+  "009a12e72afccb3e07f6ee3bda08c9a868cb73e6": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 94
+  },
+  "e7de9a1a7fc45f7e5c97abb1bbe33be27da280d2": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 94
+  },
+  "7752078fd0c88b50b79809c18b3c7e40bcf1376c": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 94
+  },
+  "813a8a83058a794bd9f7bfe019c9fe258dee7fbe": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 96
+  },
+  "1c0b1faddf14bad1ec1deee627c8700b24a7b524": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 110
+  },
+  "848fee9829b25a7285296e5296372949cd852647": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 110
+  },
+  "96ad028dea65edd1c91e12c6d88895c518dae779": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 110
+  },
+  "01ec62ad3bfe2cae1cc5e0870fb2454b627a4ac5": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 126
+  },
+  "2e3e33faf0c58a4dda3b27f117ca3274154ce4ed": {
+    "valid": true,
+    "openapi": "3.0.0",
+    "operations": 148
+  },
+  "ccc56933caec51a7b4ff29de8d3882179e44abc8": {
+    "valid": true,
+    "openapi": "3.1.0",
+    "operations": 242
+  },
+  "d37e9ec40f413e2b98ece0f9afb761fa948cbbaf": {
+    "valid": true,
+    "openapi": "3.1.0",
+    "operations": 288
+  },
+  "936f765a9ecf2bf0c7fdc744366670260ed4ffd2": {
+    "valid": true,
+    "openapi": "3.1.0",
+    "operations": 288
+  },
+  "711789c3748ee29b839660d9a79f9c767e31624d": {
+    "valid": true,
+    "openapi": "3.1.0",
+    "operations": 353
+  },
+  "cea888f0befa52a64e83a67590430785cad96d24": {
+    "valid": true,
+    "openapi": "3.1.0",
+    "operations": 360
+  }
+}

@@ -1,0 +1,1 @@
+{"hard":0,"soft":1,"info":26,"raw":{"hard":0,"soft":2,"info":26},"hardOperations":0,"changes":[{"id":"response-property-all-of-removed","level":"soft","text":"removed `subschema #1` from the `signers` response property `allOf` list","occurrences":2,"operationCount":2,"operations":["GET /sign_templates","GET /sign_templates/{template_id}"]}]}

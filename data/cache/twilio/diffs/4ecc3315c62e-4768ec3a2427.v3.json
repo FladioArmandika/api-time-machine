@@ -1,0 +1,1 @@
+{"hard":0,"soft":1,"info":4,"raw":{"hard":0,"soft":1,"info":4},"hardOperations":0,"changes":[{"id":"request-property-removed","level":"soft","text":"removed the request property `CallToken`","occurrences":1,"operationCount":1,"operations":["POST /2010-04-01/Accounts/{AccountSid}/Conferences/{ConferenceSid}/Participants.json"]}]}

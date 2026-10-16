@@ -1,0 +1,1 @@
+{"hard":0,"soft":1,"info":4,"raw":{"hard":0,"soft":2,"info":4},"hardOperations":0,"changes":[{"id":"request-property-removed","level":"soft","text":"removed the request property `default_value`","occurrences":2,"operationCount":2,"operations":["POST /services/custom_fields","PUT /services/custom_fields/{field_id}"]}],"repairedRefs":442}

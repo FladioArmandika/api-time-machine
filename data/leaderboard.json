@@ -1,0 +1,232 @@
+[
+  {
+    "rank": 1,
+    "id": "twilio",
+    "name": "Twilio",
+    "score": {
+      "value": 100,
+      "pressure": 0.071,
+      "label": "Clear",
+      "icon": "☀️"
+    },
+    "last12": {
+      "hard": 0,
+      "soft": 1,
+      "breakingMonths": 0,
+      "changedMonths": 10
+    },
+    "operations": 197,
+    "worstMonth": {
+      "month": "2021-02",
+      "hard": 206,
+      "hardOperations": 160
+    }
+  },
+  {
+    "rank": 2,
+    "id": "box",
+    "name": "Box",
+    "score": {
+      "value": 92,
+      "pressure": 1.228,
+      "label": "Clear",
+      "icon": "☀️"
+    },
+    "last12": {
+      "hard": 3,
+      "soft": 12,
+      "breakingMonths": 3,
+      "changedMonths": 12
+    },
+    "operations": 297,
+    "worstMonth": {
+      "month": "2023-11",
+      "hard": 12,
+      "hardOperations": 7
+    }
+  },
+  {
+    "rank": 3,
+    "id": "pagerduty",
+    "name": "PagerDuty",
+    "score": {
+      "value": 79,
+      "pressure": 3.476,
+      "label": "Fair",
+      "icon": "🌤"
+    },
+    "last12": {
+      "hard": 15,
+      "soft": 21,
+      "breakingMonths": 3,
+      "changedMonths": 11
+    },
+    "operations": 466,
+    "worstMonth": {
+      "month": "2020-08",
+      "hard": 43,
+      "hardOperations": 45
+    }
+  },
+  {
+    "rank": 4,
+    "id": "discord",
+    "name": "Discord",
+    "score": {
+      "value": 72,
+      "pressure": 5.005,
+      "label": "Fair",
+      "icon": "🌤"
+    },
+    "last12": {
+      "hard": 16,
+      "soft": 19,
+      "breakingMonths": 6,
+      "changedMonths": 11
+    },
+    "operations": 246,
+    "worstMonth": {
+      "month": "2023-09",
+      "hard": 53,
+      "hardOperations": 57
+    }
+  },
+  {
+    "rank": 5,
+    "id": "asana",
+    "name": "Asana",
+    "score": {
+      "value": 71,
+      "pressure": 5.187,
+      "label": "Fair",
+      "icon": "🌤"
+    },
+    "last12": {
+      "hard": 13,
+      "soft": 37,
+      "breakingMonths": 8,
+      "changedMonths": 12
+    },
+    "operations": 251,
+    "worstMonth": {
+      "month": "2023-07",
+      "hard": 7,
+      "hardOperations": 23
+    }
+  },
+  {
+    "rank": 6,
+    "id": "github",
+    "name": "GitHub",
+    "score": {
+      "value": 67,
+      "pressure": 5.9,
+      "label": "Showers",
+      "icon": "🌧"
+    },
+    "last12": {
+      "hard": 132,
+      "soft": 66,
+      "breakingMonths": 11,
+      "changedMonths": 12
+    },
+    "operations": 1242,
+    "worstMonth": {
+      "month": "2021-04",
+      "hard": 127,
+      "hardOperations": 93
+    }
+  },
+  {
+    "rank": 7,
+    "id": "stripe",
+    "name": "Stripe",
+    "score": {
+      "value": 64,
+      "pressure": 6.655,
+      "label": "Showers",
+      "icon": "🌧"
+    },
+    "last12": {
+      "hard": 43,
+      "soft": 94,
+      "breakingMonths": 6,
+      "changedMonths": 10
+    },
+    "operations": 612,
+    "worstMonth": {
+      "month": "2018-05",
+      "hard": 223,
+      "hardOperations": 191
+    }
+  },
+  {
+    "rank": 8,
+    "id": "plaid",
+    "name": "Plaid",
+    "score": {
+      "value": 38,
+      "pressure": 14.458,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 56,
+      "soft": 92,
+      "breakingMonths": 10,
+      "changedMonths": 11
+    },
+    "operations": 350,
+    "worstMonth": {
+      "month": "2021-08",
+      "hard": 34,
+      "hardOperations": 12
+    }
+  },
+  {
+    "rank": 9,
+    "id": "cloudflare",
+    "name": "Cloudflare",
+    "score": {
+      "value": 27,
+      "pressure": 19.445,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 636,
+      "soft": 1338,
+      "breakingMonths": 12,
+      "changedMonths": 12
+    },
+    "operations": 3761,
+    "worstMonth": {
+      "month": "2026-09",
+      "hard": 122,
+      "hardOperations": 355
+    }
+  },
+  {
+    "rank": 10,
+    "id": "openai",
+    "name": "OpenAI",
+    "score": {
+      "value": 7,
+      "pressure": 39.595,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 124,
+      "soft": 105,
+      "breakingMonths": 4,
+      "changedMonths": 4
+    },
+    "operations": 360,
+    "worstMonth": {
+      "month": "2026-09",
+      "hard": 61,
+      "hardOperations": 48
+    }
+  }
+]

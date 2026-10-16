@@ -1,0 +1,1 @@
+{"hard":1,"soft":0,"info":524,"raw":{"hard":2,"soft":0,"info":524},"hardOperations":2,"changes":[{"id":"api-security-scope-added","level":"hard","text":"the security scope `custom_types:read` was added to the endpoint's security scheme `oauth2`","occurrences":2,"operationCount":2,"operations":["GET /custom_types","GET /custom_types/{custom_type_gid}"]}]}
