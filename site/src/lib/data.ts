@@ -176,3 +176,25 @@ export function codeParts(text: string): { code: boolean; text: string }[] {
 export function rawJsonUrl(api: ApiData) {
   return `${REPO_URL}/blob/main/data/apis/${api.id}.json`;
 }
+
+// ---------- intensity bins (the stripe colours) ----------
+
+export type Bin = "before" | "gap" | "calm" | "b0" | "b1" | "b2" | "b3" | "b4";
+
+/** b0 = soft changes only; b1..b4 = 1–4, 5–19, 20–99, 100+ breaking changes. */
+export function binOf(c: MonthCell): Bin {
+  if (c.state === "before" || c.state === "gap" || c.state === "calm") return c.state;
+  if (c.state === "soft") return "b0";
+  return c.hard >= 100 ? "b4" : c.hard >= 20 ? "b3" : c.hard >= 5 ? "b2" : "b1";
+}
+
+export const BINS: { bin: Bin; label: string }[] = [
+  { bin: "b0", label: "Soft only" },
+  { bin: "b1", label: "1–4" },
+  { bin: "b2", label: "5–19" },
+  { bin: "b3", label: "20–99" },
+  { bin: "b4", label: "100+" },
+];
+
+/** Every month from the oldest tracked spec to now: the shared axis on the home page. */
+export const allMonths = monthRange(apis.map((a) => a.firstMonth).sort()[0], nowMonth);

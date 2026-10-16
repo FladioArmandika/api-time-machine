@@ -1,0 +1,44 @@
+---
+// Year labels under a stripe band, placed at each January.
+interface Props {
+  months: string[];
+}
+const { months } = Astro.props;
+const n = months.length;
+const years = months
+  .map((m, i) => ({ m, i }))
+  .filter(({ m, i }) => m.endsWith("-01") || (i === 0 && Number(m.slice(5)) <= 6))
+  .map(({ m, i }) => ({ year: m.slice(0, 4), left: (i / n) * 100 }));
+---
+
+<ol class="axis" aria-hidden="true">
+  {years.map((y, k) => <li class:list={{ odd: k % 2 === 1 }} style={`left:${y.left}%`}>{k === 0 ? y.year : `’${y.year.slice(2)}`}</li>)}
+</ol>
+
+<style>
+  .axis {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 1.4rem;
+    font-size: var(--t-1);
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  li {
+    position: absolute;
+    top: 0;
+    padding-left: 0.3rem;
+    border-left: 1px solid var(--rule);
+    line-height: 1.4rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 40rem) {
+    .odd {
+      display: none;
+    }
+  }
+</style>

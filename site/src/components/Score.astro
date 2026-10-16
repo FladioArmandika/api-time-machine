@@ -1,0 +1,50 @@
+---
+// The stability score with its forecast word. Plain type, no icon.
+import type { Score } from "../lib/data";
+
+interface Props {
+  score: Score;
+  size?: "small" | "large";
+}
+const { score, size = "small" } = Astro.props;
+---
+
+<span class:list={["score", size]}>
+  <span class="value num">{score.value}</span>
+  <span class="label">{score.label}</span>
+</span>
+
+<style>
+  .score {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    white-space: nowrap;
+  }
+
+  .value {
+    font-family: var(--display);
+    font-variation-settings: "wdth" 80;
+    font-weight: 700;
+    font-size: var(--t1);
+    min-width: 2ch;
+    text-align: right;
+  }
+
+  .label {
+    font-size: var(--t-1);
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .large .value {
+    font-size: var(--t6);
+    line-height: 0.85;
+    text-align: left;
+  }
+
+  .large .label {
+    font-size: var(--t0);
+  }
+</style>

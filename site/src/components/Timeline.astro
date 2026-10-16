@@ -88,7 +88,7 @@ const fmt = (n: number) => (n >= 1000 ? `${n / 1000}K` : String(n));
     position: absolute;
     right: calc(100% + 0.5rem);
     top: -0.65em;
-    font-size: var(--s-1);
+    font-size: var(--t-1);
     color: var(--ink-3);
     font-variant-numeric: tabular-nums;
   }
@@ -131,11 +131,11 @@ const fmt = (n: number) => (n >= 1000 ? `${n / 1000}K` : String(n));
   }
 
   .bar.hard {
-    background: var(--hard);
+    background: var(--s4);
   }
 
   .bar.soft {
-    background: var(--soft);
+    background: var(--s1);
     border-radius: 4px 4px 0 0;
   }
 
@@ -156,7 +156,7 @@ const fmt = (n: number) => (n >= 1000 ? `${n / 1000}K` : String(n));
   .years {
     height: 1.75rem;
     padding-top: 0.4rem;
-    font-size: var(--s-1);
+    font-size: var(--t-1);
     color: var(--ink-3);
   }
 

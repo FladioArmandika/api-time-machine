@@ -1,11 +1,12 @@
 ---
 import Base from "../../layouts/Base.astro";
-import Forecast from "../../components/Forecast.astro";
-import Legend from "../../components/Legend.astro";
+import Ramp from "../../components/Ramp.astro";
+import Score from "../../components/Score.astro";
+import Stripes from "../../components/Stripes.astro";
 import Timeline from "../../components/Timeline.astro";
-import Weather from "../../components/Weather.astro";
+import YearAxis from "../../components/YearAxis.astro";
 import {
-  apis, codeParts, leaderboard, monthLong, monthShortYear, plural, rawJsonUrl, ruleName,
+  apis, codeParts, leaderboard, monthLong, monthRange, monthShortYear, nowMonth, plural, rawJsonUrl, ruleName,
   type ApiData, type Change,
 } from "../../lib/data";
 
@@ -20,6 +21,7 @@ const { api } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const rank = leaderboard.find((r) => r.id === api.id)!.rank;
 const l12 = api.last12;
+const history = monthRange(api.firstMonth, nowMonth);
 
 const lede =
   l12.breakingMonths === 0
@@ -43,28 +45,34 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 <Base title={`${api.name}: API Weather`} description={`${lede} Stability score ${api.score.value}/100.`}>
   <article>
     <header class="api-head">
-      <p class="crumb"><a href={`${base}/#leaderboard`}>Leaderboard</a>, rank {rank} of {apis.length}</p>
+      <p class="crumb"><a href={`${base}/#leaderboard`}>All APIs</a><span>Rank {rank} of {apis.length}</span></p>
       <h1>{api.name}</h1>
-      <p class="lede">{lede}</p>
-      <div class="score-row">
-        <Weather score={api.score} size="large" />
-        <dl class="facts">
-          <div><dt>Breaking changes, 12 months</dt><dd class="num">{l12.hard.toLocaleString("en-US")}</dd></div>
-          <div><dt>Soft changes, 12 months</dt><dd class="num">{l12.soft.toLocaleString("en-US")}</dd></div>
-          <div><dt>Endpoints in the spec</dt><dd class="num">{api.operations.toLocaleString("en-US")}</dd></div>
-          <div><dt>Tracked since</dt><dd>{monthShortYear(api.firstMonth)}</dd></div>
-        </dl>
+      <div class="summary">
+        <p class="lede">{lede}</p>
+        <Score score={api.score} size="large" />
       </div>
-      <div class="strip">
-        <Forecast api={api} size="large" />
-      </div>
+      <dl class="facts">
+        <div><dt>Breaking, 12 mo</dt><dd class="num">{l12.hard.toLocaleString("en-US")}</dd></div>
+        <div><dt>Soft, 12 mo</dt><dd class="num">{l12.soft.toLocaleString("en-US")}</dd></div>
+        <div><dt>Endpoints</dt><dd class="num">{api.operations.toLocaleString("en-US")}</dd></div>
+        <div><dt>Tracked since</dt><dd>{monthShortYear(api.firstMonth)}</dd></div>
+      </dl>
+      <figure class="band">
+        <Stripes api={api} months={history} size="large" mark={api.worstMonth?.month} />
+        <YearAxis months={history} />
+        <figcaption class="sr">Each stripe is one month since {monthLong(api.firstMonth)}; stronger colour means more breaking changes.</figcaption>
+      </figure>
+      <Ramp />
       {api.notes && <p class="note">{api.notes}</p>}
     </header>
 
     <section aria-labelledby="history">
       <div class="section-head">
-        <h2 id="history">Every month since {monthShortYear(api.firstMonth)}</h2>
-        <Legend />
+        <h2 id="history">Changes per month</h2>
+        <ul class="key-list">
+          <li><span class="pill hard">Breaking</span></li>
+          <li><span class="pill soft">Soft</span></li>
+        </ul>
       </div>
       <div class="panel">
         <Timeline api={api} />
@@ -118,7 +126,7 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
             const hard = hardOf(i.changes);
             const soft = softOf(i.changes);
             return (
-              <details open={idx < 2}>
+              <details open={idx === 0}>
                 <summary>
                   <span class="m">{monthLong(i.to)}{i.partial ? " so far" : ""}</span>
                   <span class="counts">
@@ -206,14 +214,18 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   .api-head {
-    padding-top: clamp(2rem, 6vw, 4rem);
+    padding-top: clamp(2rem, 5vw, 3.5rem);
     display: grid;
-    gap: 1.25rem;
+    gap: 1.5rem;
   }
 
   .crumb {
+    display: flex;
+    gap: 1.25rem;
+    font-size: var(--t-1);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
     color: var(--ink-3);
-    font-size: var(--s-1);
   }
 
   .crumb a {
@@ -221,57 +233,73 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   h1 {
-    font-size: clamp(2.75rem, 8vw, var(--s6));
-    font-variation-settings: "opsz" 96;
+    font-size: clamp(3.5rem, 13vw, 9rem);
+    line-height: 0.85;
+    letter-spacing: -0.03em;
+    font-variation-settings: "wdth" 75, "opsz" 96;
+  }
+
+  .summary {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1.5rem 3rem;
+    border-top: 2px solid var(--ink);
+    padding-top: 1.25rem;
   }
 
   .lede {
     font-family: var(--display);
+    font-variation-settings: "wdth" 80;
     font-weight: 600;
-    font-size: var(--s3);
-    line-height: 1.2;
-    max-width: 30ch;
-  }
-
-  .score-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1.5rem 3rem;
-    margin-top: 0.5rem;
+    font-size: var(--t3);
+    line-height: 1.1;
+    max-width: 22ch;
   }
 
   .facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem 2.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 1rem 2rem;
     margin: 0;
+    border-block: 1px solid var(--rule);
+    padding-block: 1rem;
   }
 
   .facts dt {
     color: var(--ink-3);
-    font-size: var(--s-1);
+    font-size: var(--t-1);
   }
 
   .facts dd {
     margin: 0;
     font-family: var(--display);
+    font-variation-settings: "wdth" 80;
     font-weight: 600;
-    font-size: var(--s2);
+    font-size: var(--t2);
   }
 
-  .strip {
-    max-width: 52rem;
+  .band {
+    margin: 0.5rem 0 0;
+  }
+
+  .key-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 1.25rem;
   }
 
   .note {
     color: var(--ink-2);
-    border-left: 3px solid var(--soft);
+    border-left: 3px solid var(--s1);
     padding-left: 1rem;
   }
 
   h2 {
-    font-size: var(--s3);
+    font-size: var(--t3);
   }
 
   .section-head {
@@ -288,8 +316,9 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   .panel {
-    background: var(--surface);
-    border-radius: 10px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
     padding: 1.25rem 1rem 0.75rem;
     overflow-x: auto;
   }
@@ -319,7 +348,7 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 
   .years thead th {
     font-weight: 600;
-    font-size: var(--s-1);
+    font-size: var(--t-1);
     color: var(--ink-3);
   }
 
@@ -338,8 +367,9 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   .log > details {
-    background: var(--surface);
-    border-radius: 10px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
     padding: 0.25rem 1.25rem;
   }
 
@@ -355,7 +385,7 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   .m {
     font-family: var(--display);
     font-weight: 600;
-    font-size: var(--s1);
+    font-size: var(--t1);
     min-width: 10rem;
   }
 
@@ -369,7 +399,7 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: var(--s-1);
+    font-size: var(--t-1);
     color: var(--ink-2);
   }
 
@@ -381,11 +411,11 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   .pill.hard::before {
-    background: var(--hard);
+    background: var(--s4);
   }
 
   .pill.soft::before {
-    background: var(--soft);
+    background: var(--s1);
   }
 
   .changes {
@@ -404,14 +434,14 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   .rule {
-    font-size: var(--s-1);
+    font-size: var(--t-1);
     font-weight: 600;
     color: var(--ink-2);
   }
 
   .meta,
   .more {
-    font-size: var(--s-1);
+    font-size: var(--t-1);
     color: var(--ink-3);
   }
 
@@ -424,7 +454,7 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
   }
 
   .soft-list summary {
-    font-size: var(--s-1);
+    font-size: var(--t-1);
     color: var(--ink-2);
     padding-block: 0.5rem;
   }
