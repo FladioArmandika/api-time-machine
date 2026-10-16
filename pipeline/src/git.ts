@@ -81,7 +81,8 @@ export async function monthlySnapshots(api: ApiConfig, now = new Date()): Promis
     }
     if (blob === prevBlob) continue;
     prevBlob = blob;
-    out.push({ month, commit, commitDate, blob });
+    // Normalised: git versions disagree on "+00:00" vs "Z", which would churn the data on every machine change.
+    out.push({ month, commit, commitDate: new Date(commitDate).toISOString(), blob });
   }
   return out;
 }
