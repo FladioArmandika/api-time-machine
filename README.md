@@ -1,40 +1,93 @@
 # API Weather
 
-How often do popular public APIs break their clients? API Weather reads the git history of each vendor's published OpenAPI spec, diffs it month by month with [oasdiff](https://github.com/oasdiff/oasdiff), and turns the result into a stability score and a few headlines.
+**How often do popular APIs break the code that depends on them?**
 
-**Live:** https://fladioarmandika.github.io/api-time-machine/
+API Weather tracks the public OpenAPI specs of 10 well-known APIs, compares every month with the one before, and counts the changes that would break an existing client. It updates itself every day.
 
-## Run the pipeline
+**→ [See the live site](https://fladioarmandika.github.io/api-time-machine/)**
 
-You need Node 22+ and [oasdiff](https://github.com/oasdiff/oasdiff#installation) 1.33+ on your `PATH` (or set `OASDIFF=/path/to/oasdiff`).
+![The API Weather home page: a stacked bar chart of breaking changes per month across 10 APIs](docs/home.png)
+
+## What the data shows
+
+As of October 2026:
+
+- **These 10 APIs shipped more than 1,000 breaking changes in the past year.** September 2026 was the worst month since all ten had a public spec.
+- **Cloudflare shipped a breaking change every single month** of the past year. **Twilio didn't ship one.**
+- **The roughest month on record** was Stripe in May 2018: 223 breaking changes across 191 endpoints.
+
+The live site has the current numbers, a page for every API with its full history, and a log of each change.
+
+## The APIs tracked
+
+| API | Spec it reads |
+| --- | --- |
+| Stripe | [stripe/openapi](https://github.com/stripe/openapi) |
+| GitHub | [github/rest-api-description](https://github.com/github/rest-api-description) |
+| OpenAI | [openai/openai-openapi](https://github.com/openai/openai-openapi) |
+| Twilio | [twilio/twilio-oai](https://github.com/twilio/twilio-oai) |
+| Cloudflare | [cloudflare/api-schemas](https://github.com/cloudflare/api-schemas) |
+| Discord | [discord/discord-api-spec](https://github.com/discord/discord-api-spec) |
+| PagerDuty | [PagerDuty/api-schema](https://github.com/PagerDuty/api-schema) |
+| Plaid | [plaid/plaid-openapi](https://github.com/plaid/plaid-openapi) |
+| Asana | [Asana/openapi](https://github.com/Asana/openapi) |
+| Box | [box/box-openapi](https://github.com/box/box-openapi) |
+
+The exact file for each one is in [`apis.json`](apis.json).
+
+## What counts as a breaking change
+
+A change that could make working client code fail, for example:
+
+- an endpoint or a response field is removed
+- a field changes type, say from a string to an object
+- a request parameter that used to be optional becomes required
+- a response field that was always present can now be missing or null
+
+Changes that only add things, like a new enum value, are counted separately as **soft** changes. Strict clients can still trip on them, so they count for a little in the score, but they aren't called breaking.
+
+The detection itself is done by [oasdiff](https://github.com/oasdiff/oasdiff), an open-source OpenAPI diff tool. When one schema change shows up on hundreds of endpoints, it's counted once.
+
+## The stability score
+
+Each API gets a score out of 100. It's based on breaking changes per endpoint over the last 12 months, with recent months weighted more, so a big API isn't punished just for being big. 100 means nothing broke all year. The [methodology page](https://fladioarmandika.github.io/api-time-machine/methodology/) has the formula.
+
+## Things to keep in mind
+
+- **The spec isn't the API.** When a vendor corrects a mistake in its spec, that shows up here as a change even if the live API never moved.
+- **Versioned APIs.** Stripe, GitHub and Plaid version their APIs. These numbers track the latest version, and clients pinned to an older one may not be affected until they upgrade.
+- **Monthly snapshots.** Something added and removed within the same month won't show up.
+
+## How it works
+
+1. A daily [GitHub Action](.github/workflows/update-data.yml) clones each vendor's spec repo.
+2. It takes the spec as it stood at the end of every month and compares each month with the previous one using oasdiff.
+3. The results are written as JSON to [`data/`](data/) and committed back to this repo.
+4. A static [Astro](https://astro.build) site in [`site/`](site/) is rebuilt from that data and published to GitHub Pages.
+
+There's no server and no database. Everything is in this repo, and the data format is documented in [`data/README.md`](data/README.md).
+
+## Run it yourself
+
+You need Node 22 or newer and [oasdiff](https://github.com/oasdiff/oasdiff#installation) 1.33 or newer.
 
 ```sh
+# Rebuild the data (the first run downloads the full history and takes a while)
 cd pipeline
 npm install
-npm run build              # all APIs; first run backfills the full history
-ONLY=stripe npm run build  # one API
-```
+npm run build
+ONLY=stripe npm run build   # just one API
 
-Spec repos are cloned blobless into `.cache/repos/`. Results land in [`data/`](data/), where the data format and the methodology are written up.
-
-## Daily refresh
-
-[`.github/workflows/update-data.yml`](.github/workflows/update-data.yml) re-runs the pipeline every day at 05:17 UTC, and you can also start it by hand from the Actions tab. Past months are cached in `data/cache/`, so a run only compares each API's newest spec with its last month-end version. It commits `data/` only when the numbers actually change.
-
-## Site
-
-An [Astro](https://astro.build) static site in [`site/`](site/) reads `data/` at build time. It has a home page that leads with the headlines and the leaderboard, a page per API, and a methodology page. [`deploy.yml`](.github/workflows/deploy.yml) publishes it to GitHub Pages after every data update.
-
-```sh
-cd site
+# Run the site locally
+cd ../site
 npm install
 npm run dev
 ```
 
-## APIs tracked
+## Add an API
 
-The registry is in [`apis.json`](apis.json). It covers Stripe, GitHub, OpenAI, Twilio, Cloudflare, Discord, PagerDuty, Plaid, Asana and Box. Each entry is one spec file in the vendor's own GitHub repo.
+Any API that publishes an OpenAPI 3 spec in a public GitHub repo can be added. Add an entry to [`apis.json`](apis.json) with the repo, branch and file path, run the pipeline, and open a pull request.
 
 ## License
 
-MIT
+MIT. Built by [Fladio Armandika](https://github.com/FladioArmandika).
