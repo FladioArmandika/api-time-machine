@@ -238,6 +238,8 @@ export function heroSeries() {
     start,
     cols,
     peak,
+    /** Every API with its total over the charted months, in stack order (largest first). */
+    order: perApi.map(({ api, sum }) => ({ api, sum })),
     top: Math.max(...cols.map((c) => c.total)),
     last12: full.slice(-12).reduce((n, c) => n + c.total, 0),
   };

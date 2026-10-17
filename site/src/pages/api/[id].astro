@@ -17,6 +17,10 @@ interface Props {
 const { api } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const rank = leaderboard.find((r) => r.id === api.id)!.rank;
+// Neighbours in the ranking, so readers can walk the list without going back to the home page.
+const idx = leaderboard.findIndex((r) => r.id === api.id);
+const prev = leaderboard[idx - 1];
+const next = leaderboard[idx + 1];
 const l12 = api.last12;
 
 const lede =
@@ -51,6 +55,13 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
         <div><dt>Endpoints</dt><dd class="num">{api.operations.toLocaleString("en-US")}</dd></div>
       </dl>
       {api.notes && <p class="note">{api.notes}</p>}
+      <nav class="jump" aria-label="On this page">
+        <a href="#history">History</a>
+        <a href="#years">By year</a>
+        <a href="#log">Change log</a>
+        <a href="#badge">Badge</a>
+        <a href="#source">Source</a>
+      </nav>
     </header>
 
     <section aria-labelledby="history">
@@ -101,7 +112,10 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
     </section>
 
     <section aria-labelledby="log">
-      <h2 id="log">Change log</h2>
+      <div class="section-head">
+        <h2 id="log">Change log</h2>
+        <button type="button" class="toggle-all" data-open="false">Expand all</button>
+      </div>
       <p class="intro">What oasdiff flagged, month by month. One change can touch many endpoints; the count says how many.</p>
       <div class="log">
         {
@@ -190,8 +204,39 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
         )
       }
     </section>
+
+    <nav class="pager" aria-label="Other APIs">
+      {
+        prev ? (
+          <a class="prev" href={`${base}/api/${prev.id}/`}>
+            <span>Previous: #{prev.rank}</span>
+            <strong>{prev.name} <span class="num">{prev.score.value}/100</span></strong>
+          </a>
+        ) : <span />
+      }
+      {
+        next && (
+          <a class="next" href={`${base}/api/${next.id}/`}>
+            <span>Next: #{next.rank}</span>
+            <strong>{next.name} <span class="num">{next.score.value}/100</span></strong>
+          </a>
+        )
+      }
+    </nav>
   </article>
 </Base>
+
+<script>
+  // One button opens or closes every month of the change log.
+  const btn = document.querySelector<HTMLButtonElement>(".toggle-all");
+  const months = document.querySelectorAll<HTMLDetailsElement>(".log details");
+  btn?.addEventListener("click", () => {
+    const open = btn.dataset.open !== "true";
+    for (const d of months) d.open = open;
+    btn.dataset.open = String(open);
+    btn.textContent = open ? "Collapse all" : "Expand all";
+  });
+</script>
 
 <style>
   article {
@@ -204,6 +249,86 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
     padding-top: clamp(1.5rem, 5vw, 3.5rem);
     display: grid;
     gap: 1rem;
+  }
+
+  .jump {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.25rem;
+    margin-top: 0.5rem;
+    font-size: var(--t-1);
+  }
+
+  .jump a {
+    color: var(--ink-2);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .jump a:hover {
+    color: var(--ink);
+    border-color: var(--ink);
+  }
+
+  .toggle-all {
+    font: inherit;
+    font-size: var(--t-1);
+    color: var(--ink-2);
+    background: none;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    cursor: pointer;
+  }
+
+  .toggle-all:hover {
+    color: var(--ink);
+    border-color: var(--ink-3);
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .pager a {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    color: var(--ink);
+    font-weight: 600;
+    text-decoration: none;
+    transition: border-color 160ms ease-out, background-color 160ms ease-out;
+  }
+
+  .pager a:hover {
+    border-color: var(--ink-3);
+    background: var(--wash);
+  }
+
+  .pager a > span:first-child {
+    font-size: var(--t-1);
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+
+  .pager strong {
+    font-weight: 600;
+  }
+
+  .pager a .num {
+    font-weight: 400;
+    color: var(--ink-3);
+  }
+
+  .pager .next {
+    text-align: right;
+    grid-column: 2;
   }
 
   .crumb {

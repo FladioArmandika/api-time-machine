@@ -44,7 +44,7 @@ const path = Astro.url.pathname.replace(base, "") || "/";
       <a class="brand" href={`${base}/`}>API Weather</a>
       <nav aria-label="Site">
         <a href={`${base}/#ranking`}>Ranking</a>
-        <a href={`${base}/search/`} aria-current={path.startsWith("/search") ? "page" : undefined}>Search</a>
+        <a href={`${base}/search/`} aria-current={path.startsWith("/search") ? "page" : undefined} aria-keyshortcuts="/">Search <kbd>/</kbd></a>
         <a href={`${base}/methodology/`} aria-current={path.startsWith("/methodology") ? "page" : undefined}>Methodology</a>
         <a href={REPO_URL}>GitHub</a>
       </nav>
@@ -101,6 +101,17 @@ const path = Astro.url.pathname.replace(base, "") || "/";
       });
       document.addEventListener("focusout", hide);
       window.addEventListener("scroll", hide, { passive: true });
+
+      // "/" jumps to search from anywhere, unless the reader is already typing somewhere.
+      document.addEventListener("keydown", (e) => {
+        if (e.key !== "/" || e.metaKey || e.ctrlKey || e.altKey) return;
+        const t = e.target as HTMLElement;
+        if (t.closest("input, textarea, select, [contenteditable]")) return;
+        e.preventDefault();
+        const q = document.querySelector<HTMLInputElement>("#q");
+        if (q) q.focus();
+        else location.href = document.querySelector<HTMLAnchorElement>("a[aria-keyshortcuts]")!.href;
+      });
     </script>
   </body>
 </html>
@@ -311,6 +322,36 @@ const path = Astro.url.pathname.replace(base, "") || "/";
 
   a {
     transition: text-decoration-color 150ms ease-out, color 150ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  [id] {
+    scroll-margin-top: 1.5rem;
+  }
+
+  kbd {
+    display: inline-block;
+    min-width: 1.1rem;
+    padding: 0 0.25rem;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-family: "Geist Mono", ui-monospace, monospace;
+    font-size: 0.6875rem;
+    line-height: 1.1rem;
+    text-align: center;
+    color: var(--ink-3);
+    vertical-align: 0.1em;
+  }
+
+  @media (hover: none) {
+    kbd {
+      display: none;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

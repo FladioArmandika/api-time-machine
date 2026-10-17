@@ -26,17 +26,17 @@ const x = (i: number) => `${(i / n) * 100}%`;
 ---
 
 <figure class="chart">
-  <div class="head" aria-hidden="true">
-    <span></span><span>API</span>
-    <span class="plot">
+  <div class="head">
+    <span></span><button type="button" data-sort="name">API</button>
+    <span class="plot" aria-hidden="true">
       {years.map((yr) => <span class:list={["yr", { odd: yr.y % 2 === 1 }]} style={`left:${x(yr.i)}`}>{yr.y}</span>)}
     </span>
-    <span class="r">Score</span><span class="r">Last 12 mo</span>
+    <button type="button" class="r" data-sort="rank" aria-pressed="true">Score</button><button type="button" class="r" data-sort="l12">Last 12 mo</button>
   </div>
   <ol>
     {
       rows.map(({ row, api, cells, gap }) => (
-        <li>
+        <li data-rank={row.rank} data-name={row.name.toLowerCase()} data-l12={row.last12.hard}>
           <span class="rank num">{row.rank}</span>
           <a class="name" href={`${base}/api/${row.id}/`}>{row.name}</a>
           <span class="plot" aria-hidden="true">
@@ -72,6 +72,42 @@ const x = (i: number) => `${(i / n) * 100}%`;
   </figcaption>
 </figure>
 
+<script>
+  // Column headers sort the rows; clicking the active one again flips the order.
+  for (const chart of document.querySelectorAll<HTMLElement>(".chart")) {
+    const list = chart.querySelector("ol")!;
+    const buttons = chart.querySelectorAll<HTMLButtonElement>(".head button");
+    const first: Record<string, number> = { rank: 1, l12: -1, name: 1 };
+    let key = "rank";
+    let dir = 1;
+    for (const b of buttons) {
+      b.addEventListener("click", () => {
+        const k = b.dataset.sort!;
+        dir = k === key ? -dir : first[k];
+        key = k;
+        const rows = [...list.children] as HTMLElement[];
+        rows.sort((a, z) => {
+          const x = a.dataset[k]!;
+          const y = z.dataset[k]!;
+          return dir * (k === "name" ? x.localeCompare(y) : Number(x) - Number(y));
+        });
+        list.append(...rows);
+        for (const o of buttons) {
+          o.setAttribute("aria-pressed", String(o === b));
+          o.dataset.dir = o === b ? (dir === first[k] ? "default" : "flipped") : "";
+        }
+      });
+    }
+
+    // The whole row opens the API's page, not only its name.
+    list.addEventListener("click", (e) => {
+      const li = (e.target as HTMLElement).closest("li");
+      if (!li || (e.target as HTMLElement).closest("a") || getSelection()?.toString()) return;
+      li.querySelector<HTMLAnchorElement>("a.name")!.click();
+    });
+  }
+</script>
+
 <style>
   .chart {
     margin: 0;
@@ -96,6 +132,36 @@ const x = (i: number) => `${(i / n) * 100}%`;
 
   .head .plot {
     height: 1.25rem;
+  }
+
+  .head button {
+    all: unset;
+    cursor: pointer;
+    font: inherit;
+    color: inherit;
+    white-space: nowrap;
+  }
+
+  .head button:hover,
+  .head button[aria-pressed="true"] {
+    color: var(--ink);
+  }
+
+  .head button:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 2px;
+  }
+
+  .head button[aria-pressed="true"]::after {
+    content: " ↓";
+  }
+
+  .head button[aria-pressed="true"][data-dir="flipped"]::after {
+    content: " ↑";
+  }
+
+  li {
+    cursor: pointer;
   }
 
   ol {

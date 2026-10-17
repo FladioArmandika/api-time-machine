@@ -2,20 +2,20 @@
 // The front-page chart: all breaking changes per month across every API, since the month all of them had a public spec.
 import { apis, heroSeries, monthLong, monthShort, plural } from "../lib/data";
 
-const { start, cols, peak, top } = heroSeries();
+const { start, cols, peak, top, order } = heroSeries();
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 // Each API's total over the charted months, for the caption that answers a hover.
-const totals = new Map<string, { name: string; n: number }>();
-for (const c of cols) for (const s of c.segs) {
-  const t = totals.get(s.api.id) ?? { name: s.api.name, n: 0 };
-  t.n += s.n;
-  totals.set(s.api.id, t);
-}
-const caption = `Breaking changes per month, all ${apis.length} APIs stacked, largest contributor at the base. Hover a bar to follow one API.`;
+const totals = Object.fromEntries(order.map(({ api, sum }) => [api.id, { name: api.name, n: sum }]));
+// A few round gridlines, so bar heights can be read without hovering.
+const step = [25, 50, 100, 200, 500, 1000].find((s) => top / s <= 4) ?? 1000;
+const ticks = Array.from({ length: Math.floor(top / step) }, (_, i) => (i + 1) * step);
+const caption = `Breaking changes per month, all ${apis.length} APIs stacked, largest contributor at the base.`;
 const summary = `Breaking changes per month across all ${apis.length} APIs since ${monthLong(start)}. Peak: ${monthLong(peak.m)} with ${peak.total}.`;
 ---
 
 <figure class="hero-chart" aria-label={summary}>
   <div class="bars" style={`--n:${cols.length}`} aria-hidden="true">
+    {ticks.map((t) => <span class="tick" style={`bottom:${(t / top) * 100}%`}><span class="num">{t}</span></span>)}
     {
       cols.map((c, i) => (
         <div class:list={["col", { partial: c.partial, peak: c === peak }]} style={`--i:${i}`}>
@@ -38,7 +38,7 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
     {
       cols.map((c) =>
         c.partial ? (
-          <span class="now">{monthShort(c.m)}, {c.total} so far</span>
+          <span class="now">{monthShort(c.m)}<span class="long">, {c.total} so far</span></span>
         ) : (
           <span>{c.m.endsWith("-01") ? c.m.slice(0, 4) : ""}</span>
         ),
@@ -48,11 +48,26 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
   <figcaption
     aria-live="polite"
     data-default={caption}
-    data-totals={JSON.stringify(Object.fromEntries(totals))}
+    data-totals={JSON.stringify(totals)}
     data-since={monthLong(start)}
   >
     {caption}
   </figcaption>
+  <nav class="legend" aria-label="Open an API">
+    <p>Breaking changes per API since {monthLong(start)}. Point at one to follow it in the chart, or click to open its full record.</p>
+    <ul>
+      {
+        order.map(({ api, sum }) => (
+          <li>
+            <a href={`${base}/api/${api.id}/`} data-api={api.id}>
+              {api.name}
+              <span class="num">{sum.toLocaleString("en-US")}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
 </figure>
 
 <script>
@@ -61,11 +76,13 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
     const bars = fig.querySelector<HTMLElement>(".bars")!;
     const cap = fig.querySelector<HTMLElement>("figcaption")!;
     const totals: Record<string, { name: string; n: number }> = JSON.parse(cap.dataset.totals!);
+    const chips = fig.querySelectorAll<HTMLElement>(".legend a");
     let focus = "";
     const set = (id: string) => {
       if (id === focus) return;
       focus = id;
       for (const s of bars.querySelectorAll<HTMLElement>(".seg")) s.classList.toggle("on", s.dataset.api === id);
+      for (const c of chips) c.classList.toggle("on", c.dataset.api === id);
       bars.classList.toggle("focused", !!id);
       cap.textContent = id
         ? `${totals[id].name}: ${totals[id].n.toLocaleString("en-US")} breaking changes since ${cap.dataset.since}.`
@@ -73,6 +90,17 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
     };
     bars.addEventListener("pointerover", (e) => set((e.target as HTMLElement).closest<HTMLElement>(".seg")?.dataset.api ?? focus));
     bars.addEventListener("pointerleave", () => set(""));
+    // The legend drives the same focus, by pointer or keyboard, and its links open each API's page.
+    for (const c of chips) {
+      c.addEventListener("pointerenter", () => set(c.dataset.api!));
+      c.addEventListener("focus", () => set(c.dataset.api!));
+      c.addEventListener("pointerleave", () => set(""));
+      c.addEventListener("blur", () => set(""));
+    }
+    // On touch there is no pointer to leave, so a tap outside the chart clears the focus.
+    document.addEventListener("pointerdown", (e) => {
+      if (!fig.contains(e.target as Node)) set("");
+    });
   }
 
   // The headline total counts up while the bars rise; the server-rendered number is the no-JS fallback.
@@ -103,6 +131,7 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
   }
 
   .bars {
+    position: relative;
     height: clamp(14rem, 38vh, 24rem);
     align-items: end;
     border-bottom: 1px solid var(--ink);
@@ -208,5 +237,82 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
     margin-top: 1rem;
     font-size: var(--t-1);
     color: var(--ink-3);
+  }
+
+  /* Gridlines run behind the columns; each label sits on its line at the left edge, over the first column. */
+  .tick {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 0;
+    border-top: 1px dashed var(--rule);
+    pointer-events: none;
+  }
+
+  .tick span {
+    position: absolute;
+    left: 0;
+    transform: translateY(-50%);
+    padding-right: 0.3rem;
+    background: var(--bg);
+    font-size: 0.75rem;
+    line-height: 1;
+    color: var(--ink-3);
+    z-index: 2;
+  }
+
+  .col {
+    z-index: 1;
+  }
+
+  .legend {
+    margin-top: 1.5rem;
+  }
+
+  /* On phones the partial-month label shrinks to its month so it clears the year before it. */
+  @media (max-width: 40rem) {
+    .labels .long {
+      display: none;
+    }
+  }
+
+  .legend p {
+    font-size: var(--t-1);
+    color: var(--ink-3);
+    margin-bottom: 0.6rem;
+  }
+
+  .legend ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .legend a {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    padding: 0.3rem 0.65rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    font-size: var(--t-1);
+    font-weight: 500;
+    color: var(--ink);
+    text-decoration: none;
+    transition: border-color 160ms ease-out, background-color 160ms ease-out;
+  }
+
+  .legend a span {
+    color: var(--red);
+    font-weight: 600;
+  }
+
+  .legend a:hover,
+  .legend a.on {
+    border-color: var(--red-line);
+    background: var(--red-wash);
   }
 </style>
