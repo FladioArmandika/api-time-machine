@@ -1,1 +1,0 @@
-{"hard":0,"soft":1,"info":91,"raw":{"hard":0,"soft":3,"info":91},"hardOperations":0,"changes":[{"id":"response-property-any-of-added","level":"soft","text":"added `PortfolioMembershipCompactResponse` to the `data` response property `anyOf` list","occurrences":3,"operationCount":3,"operations":["GET /memberships","POST /memberships","PUT /memberships/{membership_gid}"]}]}

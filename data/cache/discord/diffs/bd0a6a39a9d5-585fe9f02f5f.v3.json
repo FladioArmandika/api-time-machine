@@ -1,1 +1,0 @@
-{"hard":1,"soft":0,"info":117,"raw":{"hard":1,"soft":0,"info":117},"hardOperations":1,"changes":[{"id":"request-property-max-decreased","level":"hard","text":"the `max_age` request property's max was decreased to `604800.00`","occurrences":1,"operationCount":1,"operations":["POST /channels/{channel_id}/invites"]}]}

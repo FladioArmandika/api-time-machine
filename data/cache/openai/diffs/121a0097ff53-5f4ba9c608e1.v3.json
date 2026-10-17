@@ -1,1 +1,0 @@
-{"hard":1,"soft":0,"info":212,"raw":{"hard":2,"soft":0,"info":212},"hardOperations":2,"changes":[{"id":"response-property-became-nullable","level":"hard","text":"the response property `created` became nullable","occurrences":2,"operationCount":2,"operations":["GET /engines","GET /engines/{engine_id}"]}]}

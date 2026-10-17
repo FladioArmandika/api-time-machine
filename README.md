@@ -12,11 +12,18 @@ API Weather tracks the public OpenAPI specs of 15 well-known APIs, compares ever
 
 As of October 2026:
 
-- **These 15 APIs shipped nearly 1,500 breaking changes in the past year.** September 2026 was the worst month since all of them had a public spec.
+- **These 15 APIs shipped more than 1,300 breaking changes in the past year.** September 2026 was the worst month since all of them had a public spec.
 - **Cloudflare shipped a breaking change every single month** of the past year. **Twilio didn't ship one.**
 - **The roughest month on record** was Stripe in May 2018: 223 breaking changes across 191 endpoints.
 
 The live site has the current numbers, a page for every API with its full history, and a log of each change.
+
+## Use it
+
+- **[Your stack](https://fladioarmandika.github.io/api-time-machine/stack/):** pick the APIs your product depends on to see their combined record and compare them side by side. The link keeps your picks, so you can share it.
+- **[Search](https://fladioarmandika.github.io/api-time-machine/search/):** find every breaking change that touched an endpoint or a field, for example `/v1/charges` or `total_tokens`.
+- **RSS feeds:** follow [every API](https://fladioarmandika.github.io/api-time-machine/feed.xml) or just one, such as [Stripe](https://fladioarmandika.github.io/api-time-machine/feed/stripe.xml), to hear about each month that broke something.
+- **README badges:** each API's page has a badge with its stability score, like ![Stripe API stability](https://fladioarmandika.github.io/api-time-machine/badge/stripe.svg), that updates with the data.
 
 ## The APIs tracked
 
@@ -61,6 +68,7 @@ Each API gets a score out of 100. It's based on breaking changes per endpoint ov
 
 - **The spec isn't the API.** When a vendor corrects a mistake in its spec, that shows up here as a change even if the live API never moved.
 - **Versioned APIs.** Stripe, GitHub and Plaid version their APIs. These numbers track the latest version, and clients pinned to an older one may not be affected until they upgrade.
+- **Beta endpoints.** Datadog, Cloudflare, Box, Okta, Sentry and GitHub mark preview endpoints in their specs. Breaking changes that only touch those are listed but not counted. The other APIs don't mark them, so everything counts.
 - **Monthly snapshots.** Something added and removed within the same month won't show up.
 
 ## How it works

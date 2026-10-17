@@ -13,7 +13,8 @@
       "hard": 0,
       "soft": 1,
       "breakingMonths": 0,
-      "changedMonths": 10
+      "changedMonths": 10,
+      "hardUnstable": 0
     },
     "operations": 197,
     "worstMonth": {
@@ -27,16 +28,17 @@
     "id": "okta",
     "name": "Okta",
     "score": {
-      "value": 92,
-      "pressure": 1.234,
+      "value": 94,
+      "pressure": 1.004,
       "label": "Clear",
       "icon": "☀️"
     },
     "last12": {
-      "hard": 14,
+      "hard": 11,
       "soft": 5,
       "breakingMonths": 2,
-      "changedMonths": 6
+      "changedMonths": 6,
+      "hardUnstable": 3
     },
     "operations": 731,
     "worstMonth": {
@@ -59,7 +61,8 @@
       "hard": 3,
       "soft": 12,
       "breakingMonths": 3,
-      "changedMonths": 12
+      "changedMonths": 12,
+      "hardUnstable": 0
     },
     "operations": 297,
     "worstMonth": {
@@ -82,7 +85,8 @@
       "hard": 15,
       "soft": 21,
       "breakingMonths": 3,
-      "changedMonths": 11
+      "changedMonths": 11,
+      "hardUnstable": 0
     },
     "operations": 466,
     "worstMonth": {
@@ -105,7 +109,8 @@
       "hard": 16,
       "soft": 19,
       "breakingMonths": 6,
-      "changedMonths": 11
+      "changedMonths": 11,
+      "hardUnstable": 0
     },
     "operations": 246,
     "worstMonth": {
@@ -128,7 +133,8 @@
       "hard": 13,
       "soft": 37,
       "breakingMonths": 8,
-      "changedMonths": 12
+      "changedMonths": 12,
+      "hardUnstable": 0
     },
     "operations": 251,
     "worstMonth": {
@@ -151,17 +157,42 @@
       "hard": 132,
       "soft": 66,
       "breakingMonths": 11,
-      "changedMonths": 12
+      "changedMonths": 12,
+      "hardUnstable": 0
     },
     "operations": 1242,
     "worstMonth": {
       "month": "2021-04",
-      "hard": 127,
-      "hardOperations": 93
+      "hard": 125,
+      "hardOperations": 81
     }
   },
   {
     "rank": 8,
+    "id": "datadog",
+    "name": "Datadog",
+    "score": {
+      "value": 67,
+      "pressure": 6.005,
+      "label": "Showers",
+      "icon": "🌧"
+    },
+    "last12": {
+      "hard": 96,
+      "soft": 113,
+      "breakingMonths": 11,
+      "changedMonths": 12,
+      "hardUnstable": 107
+    },
+    "operations": 1670,
+    "worstMonth": {
+      "month": "2026-08",
+      "hard": 18,
+      "hardOperations": 7
+    }
+  },
+  {
+    "rank": 9,
     "id": "figma",
     "name": "Figma",
     "score": {
@@ -174,7 +205,8 @@
       "hard": 4,
       "soft": 5,
       "breakingMonths": 1,
-      "changedMonths": 8
+      "changedMonths": 8,
+      "hardUnstable": 0
     },
     "operations": 54,
     "worstMonth": {
@@ -184,49 +216,27 @@
     }
   },
   {
-    "rank": 9,
+    "rank": 10,
     "id": "stripe",
     "name": "Stripe",
     "score": {
-      "value": 64,
-      "pressure": 6.655,
+      "value": 63,
+      "pressure": 6.856,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
-      "hard": 43,
-      "soft": 94,
-      "breakingMonths": 6,
-      "changedMonths": 10
+      "hard": 45,
+      "soft": 101,
+      "breakingMonths": 7,
+      "changedMonths": 11,
+      "hardUnstable": 0
     },
     "operations": 612,
     "worstMonth": {
       "month": "2018-05",
       "hard": 223,
       "hardOperations": 191
-    }
-  },
-  {
-    "rank": 10,
-    "id": "datadog",
-    "name": "Datadog",
-    "score": {
-      "value": 47,
-      "pressure": 11.43,
-      "label": "Storms",
-      "icon": "⛈"
-    },
-    "last12": {
-      "hard": 203,
-      "soft": 113,
-      "breakingMonths": 12,
-      "changedMonths": 12
-    },
-    "operations": 1670,
-    "worstMonth": {
-      "month": "2026-08",
-      "hard": 47,
-      "hardOperations": 32
     }
   },
   {
@@ -243,7 +253,8 @@
       "hard": 56,
       "soft": 92,
       "breakingMonths": 10,
-      "changedMonths": 11
+      "changedMonths": 11,
+      "hardUnstable": 0
     },
     "operations": 350,
     "worstMonth": {
@@ -266,7 +277,8 @@
       "hard": 24,
       "soft": 12,
       "breakingMonths": 7,
-      "changedMonths": 11
+      "changedMonths": 11,
+      "hardUnstable": 0
     },
     "operations": 142,
     "worstMonth": {
@@ -280,22 +292,23 @@
     "id": "cloudflare",
     "name": "Cloudflare",
     "score": {
-      "value": 27,
-      "pressure": 19.745,
+      "value": 29,
+      "pressure": 18.369,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 643,
+      "hard": 585,
       "soft": 1355,
       "breakingMonths": 12,
-      "changedMonths": 12
+      "changedMonths": 12,
+      "hardUnstable": 58
     },
     "operations": 3761,
     "worstMonth": {
       "month": "2026-09",
-      "hard": 122,
-      "hardOperations": 355
+      "hard": 107,
+      "hardOperations": 323
     }
   },
   {
@@ -312,7 +325,8 @@
       "hard": 124,
       "soft": 105,
       "breakingMonths": 4,
-      "changedMonths": 4
+      "changedMonths": 4,
+      "hardUnstable": 0
     },
     "operations": 360,
     "worstMonth": {
@@ -327,15 +341,16 @@
     "name": "Sentry",
     "score": {
       "value": 1,
-      "pressure": 66.696,
+      "pressure": 66.305,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 230,
+      "hard": 229,
       "soft": 53,
-      "breakingMonths": 12,
-      "changedMonths": 12
+      "breakingMonths": 11,
+      "changedMonths": 12,
+      "hardUnstable": 1
     },
     "operations": 256,
     "worstMonth": {

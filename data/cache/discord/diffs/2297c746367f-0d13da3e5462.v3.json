@@ -1,1 +1,0 @@
-{"hard":0,"soft":1,"info":5,"raw":{"hard":0,"soft":1,"info":5},"hardOperations":0,"changes":[{"id":"response-property-one-of-added","level":"soft","text":"added `subschema #73: GUILD_PROFILE_UPDATE` to the `action_type` response property `oneOf` list","occurrences":1,"operationCount":1,"operations":["GET /guilds/{guild_id}/audit-logs"]}]}

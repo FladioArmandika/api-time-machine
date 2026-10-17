@@ -1,1 +1,0 @@
-{"hard":1,"soft":0,"info":116,"raw":{"hard":1,"soft":0,"info":116},"hardOperations":1,"changes":[{"id":"api-security-removed","level":"hard","text":"the endpoint scheme security `OAuth2: [dm_channels.read, voice]` was removed from the API","occurrences":1,"operationCount":1,"operations":["POST /users/@me/channels"]}]}

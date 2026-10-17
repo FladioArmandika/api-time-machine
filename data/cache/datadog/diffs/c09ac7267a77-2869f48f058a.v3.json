@@ -1,1 +1,0 @@
-{"hard":1,"soft":0,"info":25,"raw":{"hard":2,"soft":0,"info":25},"hardOperations":2,"changes":[{"id":"api-security-scope-added","level":"hard","text":"the security scope `teams_manage` was added to the endpoint's security scheme `AuthZ`","occurrences":2,"operationCount":2,"operations":["POST /api/v2/team","DELETE /api/v2/team/{team_id}"]}]}

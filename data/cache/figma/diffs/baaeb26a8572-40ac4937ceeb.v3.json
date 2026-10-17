@@ -1,1 +1,0 @@
-{"hard":0,"soft":1,"info":277,"raw":{"hard":0,"soft":1,"info":277},"hardOperations":0,"changes":[{"id":"response-property-enum-value-added","level":"soft","text":"added the new `…` enum value to the `scopes` response property","occurrences":1,"operationCount":1,"operations":["GET /v1/files/{file_key}/variables/local"],"enumValueCount":1,"enumValues":["FONT_VARIATIONS"]}]}

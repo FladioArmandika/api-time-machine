@@ -1,1 +1,0 @@
-{"hard":0,"soft":1,"info":32,"raw":{"hard":0,"soft":1,"info":32},"hardOperations":0,"changes":[{"id":"request-parameter-removed","level":"soft","text":"deleted the `query` request parameter `project_slug`","occurrences":1,"operationCount":1,"operations":["GET /api/0/organizations/{organization_slug}/notifications/actions/"]}]}

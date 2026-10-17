@@ -3,7 +3,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { extname, join } from "node:path";
 import { promisify } from "node:util";
 import { CACHE_DIR, CONCURRENCY, DATA_DIR, OASDIFF, TMP_DIR, loadApis, type ApiConfig } from "./config.ts";
-import { diffSpecs, inspectSpec, type DiffSummary, type SpecInfo } from "./diff.ts";
+import { type Change, diffSpecs, inspectSpec, type DiffSummary, type SpecInfo } from "./diff.ts";
 import { monthlySnapshots, syncRepo, writeBlob, type Snapshot } from "./git.ts";
 import { buildHeadlines } from "./headlines.ts";
 import { HALF_LIFE_MONTHS, K, SOFT_WEIGHT, WINDOW_MONTHS, monthsAgo, stabilityScore, weatherLabel } from "./score.ts";
@@ -51,10 +51,12 @@ export interface Interval {
   partial: boolean;
   operations: number;
   hard: number;
+  /** Hard changes confined to operations the vendor marks beta or unstable; not in `hard` or the score. */
+  hardUnstable: number;
   soft: number;
   info: number;
   hardOperations: number;
-  changes: DiffSummary["changes"];
+  changes: (Omit<Change, "allOperations"> & { opIds: number[] })[];
   repairedRefs?: number;
   error?: string;
 }
@@ -108,7 +110,7 @@ async function prepare(api: ApiConfig, now: Date): Promise<Prepared> {
 }
 
 /** Bump when diff.ts changes what it stores, so cached diffs are recomputed (and old ones pruned). */
-const DIFF_VERSION = 3;
+const DIFF_VERSION = 4;
 
 function diffCachePath(p: Prepared, from: SnapshotOut, to: SnapshotOut): string {
   return join(p.cacheDir, "diffs", `${short(from.blob!)}-${short(to.blob!)}.v${DIFF_VERSION}.json`);
@@ -138,17 +140,26 @@ async function runDiff(p: Prepared, from: SnapshotOut, to: SnapshotOut): Promise
 function summarize(p: Prepared, now: Date) {
   const nowMonth = now.toISOString().slice(0, 7);
   const used = new Set<string>();
+  // Every endpoint any change touched, stored once; changes point into it by index.
+  const endpoints: string[] = [];
+  const endpointIdx = new Map<string, number>();
+  const idOf = (op: string) => {
+    let i = endpointIdx.get(op);
+    if (i === undefined) endpointIdx.set(op, (i = endpoints.push(op) - 1));
+    return i;
+  };
   const intervals: Interval[] = p.pairs.map(({ from, to, gap }) => {
     const base = {
       from: from.month, to: to.month, fromCommit: from.commit, toCommit: to.commit,
       gap, partial: to.month === nowMonth, operations: to.operations ?? 0,
     };
-    if (gap) return { ...base, hard: 0, soft: 0, info: 0, hardOperations: 0, changes: [] };
+    if (gap) return { ...base, hard: 0, hardUnstable: 0, soft: 0, info: 0, hardOperations: 0, changes: [] };
     const file = diffCachePath(p, from, to);
     used.add(file);
     const d = readJson<DiffSummary | null>(file, null);
-    if (!d) return { ...base, hard: 0, soft: 0, info: 0, hardOperations: 0, changes: [], error: "not diffed" };
-    return { ...base, hard: d.hard, soft: d.soft, info: d.info, hardOperations: d.hardOperations, changes: d.changes, repairedRefs: d.repairedRefs, error: d.error };
+    if (!d) return { ...base, hard: 0, hardUnstable: 0, soft: 0, info: 0, hardOperations: 0, changes: [], error: "not diffed" };
+    const changes = d.changes.map(({ allOperations, ...c }) => ({ ...c, opIds: (allOperations ?? c.operations).map(idOf) }));
+    return { ...base, hard: d.hard, hardUnstable: d.hardUnstable, soft: d.soft, info: d.info, hardOperations: d.hardOperations, changes, repairedRefs: d.repairedRefs, error: d.error };
   });
 
   // Prune diffs for pairs that no longer exist (yesterday's partial month, mostly).
@@ -186,6 +197,7 @@ function summarize(p: Prepared, now: Date) {
       soft: inWindow.reduce((s, i) => s + i.soft, 0),
       breakingMonths: inWindow.filter((i) => i.hard > 0).length,
       changedMonths: inWindow.length,
+      hardUnstable: inWindow.reduce((s, i) => s + i.hardUnstable, 0),
     },
     operations: latest?.operations ?? 0,
     openapi: latest?.openapi,
@@ -195,6 +207,7 @@ function summarize(p: Prepared, now: Date) {
     gaps: intervals.filter((i) => i.gap).map((i) => ({ from: i.from, to: i.to })),
     snapshots: p.snapshots.map(({ month, commit, commitDate, valid, openapi, operations, invalidReason }) =>
       ({ month, commit, commitDate, valid, openapi, operations, invalidReason })),
+    endpoints,
     intervals,
   };
 }

@@ -1,1 +1,0 @@
-{"hard":1,"soft":0,"info":29,"raw":{"hard":1,"soft":0,"info":29},"hardOperations":1,"changes":[{"id":"request-property-enum-value-removed","level":"hard","text":"removed the enum value `…` of the request property `permission`","occurrences":1,"operationCount":1,"operations":["POST /orgs/{org}/teams"],"enumValueCount":1,"enumValues":["admin"]}]}

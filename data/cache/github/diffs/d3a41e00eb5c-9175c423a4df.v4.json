@@ -1,0 +1,1 @@
+{"hard":1,"hardUnstable":0,"soft":0,"info":23,"raw":{"hard":1,"soft":0,"info":23},"hardOperations":1,"changes":[{"id":"request-property-one-of-removed","level":"hard","text":"removed `subschema #1, subschema #2, subschema #3` from the `public` request property `oneOf` list","occurrences":1,"operationCount":1,"operations":["POST /gists"],"allOperations":["POST /gists"]}]}

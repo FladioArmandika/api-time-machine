@@ -1,1 +1,0 @@
-{"hard":0,"soft":1,"info":5,"raw":{"hard":0,"soft":1,"info":5},"hardOperations":0,"changes":[{"id":"request-property-removed","level":"soft","text":"removed the request property `team`","occurrences":1,"operationCount":1,"operations":["PUT /api/0/projects/{organization_slug}/{project_slug}/"]}]}

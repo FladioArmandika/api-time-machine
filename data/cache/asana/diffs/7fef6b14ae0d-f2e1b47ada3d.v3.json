@@ -1,1 +1,0 @@
-{"hard":1,"soft":0,"info":134,"raw":{"hard":1,"soft":0,"info":134},"hardOperations":1,"changes":[{"id":"response-success-status-removed","level":"hard","text":"removed the success response with the status `200`","occurrences":1,"operationCount":1,"operations":["POST /memberships"]}]}

@@ -1,0 +1,1 @@
+{"hard":1,"hardUnstable":0,"soft":0,"info":5,"raw":{"hard":1,"soft":0,"info":5},"hardOperations":1,"changes":[{"id":"response-property-became-nullable","level":"hard","text":"the response property `audience_id` became nullable","occurrences":1,"operationCount":1,"operations":["GET /broadcasts/{id}"],"allOperations":["GET /broadcasts/{id}"]}]}

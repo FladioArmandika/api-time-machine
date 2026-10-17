@@ -1,1 +1,0 @@
-{"hard":1,"soft":0,"info":19,"raw":{"hard":1,"soft":0,"info":19},"hardOperations":1,"changes":[{"id":"request-property-type-changed","level":"hard","text":"the `Parameter` request property `type` changed from `any` to `object`","occurrences":1,"operationCount":1,"operations":["POST /2010-04-01/Accounts/{AccountSid}/Calls/{CallSid}/Payments.json"]}]}

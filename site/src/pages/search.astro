@@ -215,8 +215,7 @@ const total = apis.reduce((n, a) => n + a.intervals.reduce((m, i) => m + (i.gap 
     text-decoration: underline;
   }
 
-  .results :global(.meta span),
-  .results :global(.beta) {
+  .results :global(.meta .beta) {
     margin-left: 0.35rem;
     padding: 0 0.35rem;
     border: 1px solid var(--rule);
@@ -227,6 +226,7 @@ const total = apis.reduce((n, a) => n + a.intervals.reduce((m, i) => m + (i.gap 
     color: var(--ink-3);
   }
 
+  .results :global(.meta span:not(.beta)),
   .results :global(.more) {
     color: var(--ink-3);
     font-size: var(--t-1);

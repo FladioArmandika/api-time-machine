@@ -1,1 +1,0 @@
-{"hard":0,"soft":1,"info":7,"raw":{"hard":0,"soft":2,"info":7},"hardOperations":0,"changes":[{"id":"request-property-removed","level":"soft","text":"removed the request property `devicePostureChecks`","occurrences":2,"operationCount":2,"operations":["POST /api/v1/device-assurances","PUT /api/v1/device-assurances/{deviceAssuranceId}"]}]}

@@ -19,10 +19,46 @@ export interface SpecInfo {
   error?: string;
 }
 
+function readSpec(file: string) {
+  const text = readFileSync(file, "utf8");
+  return /\.ya?ml$/.test(file) ? parseYaml(text, { maxAliasCount: -1 }) : JSON.parse(text);
+}
+
+const PRERELEASE = /^(alpha|beta|experimental|draft|preview|ea)$/i;
+
+/**
+ * Whether the vendor marks an operation as not yet stable, by the extension each one uses:
+ * Datadog `x-unstable`, Cloudflare `x-stability: beta`, Box `x-stability-level`, Okta
+ * `x-okta-lifecycle: EA`, Sentry `x-sentry-experimental`, GitHub `x-github.previews`.
+ */
+function isUnstable(op: Record<string, any>): boolean {
+  if (op["x-unstable"] || op["x-sentry-experimental"] === true) return true;
+  for (const key of ["x-stability", "x-stability-level"]) if (PRERELEASE.test(String(op[key] ?? ""))) return true;
+  if (PRERELEASE.test(String(op["x-okta-lifecycle"]?.lifecycle ?? ""))) return true;
+  return Array.isArray(op["x-github"]?.previews) && op["x-github"].previews.length > 0;
+}
+
+/** "GET /v1/things" for every operation the base spec marks as unstable. */
+function unstableOperations(file: string): Set<string> {
+  const out = new Set<string>();
+  try {
+    const doc = readSpec(file);
+    for (const [path, item] of Object.entries<Record<string, any>>(doc?.paths ?? {})) {
+      for (const [method, op] of Object.entries<any>(item ?? {})) {
+        if (METHODS.has(method) && op && typeof op === "object" && (isUnstable(op) || isUnstable(item))) {
+          out.add(`${method.toUpperCase()} ${path}`);
+        }
+      }
+    }
+  } catch {
+    // An unreadable spec is diffed (or fails) as before; it just has no unstable operations.
+  }
+  return out;
+}
+
 export function inspectSpec(file: string): SpecInfo {
   try {
-    const text = readFileSync(file, "utf8");
-    const doc = /\.ya?ml$/.test(file) ? parseYaml(text, { maxAliasCount: -1 }) : JSON.parse(text);
+    const doc = readSpec(file);
     const openapi: unknown = doc?.openapi;
     if (typeof openapi !== "string" || !openapi.startsWith("3.")) {
       return { valid: false, error: doc?.swagger ? `Swagger ${doc.swagger}` : "not an OpenAPI 3 document" };
@@ -58,6 +94,10 @@ export interface Change {
   operationCount: number;
   /** Up to 5 example operations, "GET /v1/customers". */
   operations: string[];
+  /** Every affected operation. The site's endpoint search reads these. */
+  allOperations?: string[];
+  /** Every affected operation is one the vendor marks as beta or unstable; left out of the hard count. */
+  unstable?: true;
   /** For enum changes: how many values were added/removed, and up to 10 of them. */
   enumValueCount?: number;
   enumValues?: string[];
@@ -71,6 +111,8 @@ export interface DiffSummary {
   raw: { hard: number; soft: number; info: number };
   /** Distinct operations with at least one hard break. */
   hardOperations: number;
+  /** Hard changes confined to beta or unstable operations, not counted in `hard`. */
+  hardUnstable: number;
   changes: Change[];
   /** Broken `$ref`s replaced with empty schemas so oasdiff could load the specs (see sanitize.ts). */
   repairedRefs?: number;
@@ -154,6 +196,7 @@ export async function diffSpecs(base: string, revision: string): Promise<DiffSum
     }
   }
 
+  const unstable = unstableOperations(base);
   const raw = { hard: 0, soft: 0, info: 0 };
   const hardOps = new Set<string>();
   const groups = new Map<string, { change: Change; ops: Set<string>; values: Set<string> }>();
@@ -163,7 +206,7 @@ export async function diffSpecs(base: string, revision: string): Promise<DiffSum
     const level = f.level === 3 ? "hard" : "soft";
     raw[level]++;
     const op = f.operation && f.path ? `${f.operation} ${f.path}` : undefined;
-    if (level === "hard" && op) hardOps.add(op);
+    if (level === "hard" && op && !unstable.has(op)) hardOps.add(op);
 
     const text = normalizeText(f.id, f.text);
     const key = `${f.id}\u0000${text}`;
@@ -182,12 +225,15 @@ export async function diffSpecs(base: string, revision: string): Promise<DiffSum
     ...change,
     operationCount: ops.size,
     operations: [...ops].slice(0, 5),
+    allOperations: [...ops],
+    ...(ops.size && [...ops].every((o) => unstable.has(o)) ? { unstable: true as const } : {}),
     ...(values.size ? { enumValueCount: values.size, enumValues: [...values].slice(0, 10) } : {}),
   }));
   changes.sort((a, b) => (a.level === b.level ? b.operationCount - a.operationCount : a.level === "hard" ? -1 : 1));
 
   return {
-    hard: changes.filter((c) => c.level === "hard").length,
+    hard: changes.filter((c) => c.level === "hard" && !c.unstable).length,
+    hardUnstable: changes.filter((c) => c.level === "hard" && c.unstable).length,
     soft: changes.filter((c) => c.level === "soft").length,
     info: raw.info,
     raw,
@@ -198,5 +244,5 @@ export async function diffSpecs(base: string, revision: string): Promise<DiffSum
 }
 
 function emptySummary(error: string): DiffSummary {
-  return { hard: 0, soft: 0, info: 0, raw: { hard: 0, soft: 0, info: 0 }, hardOperations: 0, changes: [], error };
+  return { hard: 0, soft: 0, info: 0, raw: { hard: 0, soft: 0, info: 0 }, hardOperations: 0, hardUnstable: 0, changes: [], error };
 }

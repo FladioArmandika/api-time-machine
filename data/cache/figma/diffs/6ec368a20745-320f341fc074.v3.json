@@ -1,1 +1,0 @@
-{"hard":0,"soft":1,"info":2161,"raw":{"hard":0,"soft":128,"info":2161},"hardOperations":0,"changes":[{"id":"response-property-type-changed","level":"soft","text":"the `easing` response's property `type` changed from `string` to `object` for status `200`","occurrences":128,"operationCount":2,"operations":["GET /v1/files/{file_key}","GET /v1/files/{file_key}/nodes"]}]}

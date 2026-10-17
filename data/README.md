@@ -30,6 +30,10 @@ oasdiff's own rules decide, with one adjustment, in [`pipeline/config/severity-l
 
 oasdiff reports a schema change once for every endpoint and nesting path that uses it. Stripe adding one enum value can produce 7,000 findings. API Weather groups them by rule and by the change's text with schema paths shortened, so that becomes **one change** affecting N endpoints. Counts on the site are these grouped changes. The raw counts are kept too.
 
+Each API file lists every endpoint any change touched once, in `endpoints`. Each change keeps up to five examples in `operations` and points at every endpoint it touched with `opIds`, indexes into `endpoints`.
+
+A hard change whose endpoints are all marked beta or unstable by the vendor (`x-unstable`, `x-stability: beta`, `x-stability-level`, Okta's early-access `x-okta-lifecycle`, `x-sentry-experimental`, `x-github.previews`) is flagged `unstable: true`. It stays in `changes` but is left out of `hard`, the totals and the score; intervals count it in `hardUnstable` instead.
+
 ## Stability score
 
 ```

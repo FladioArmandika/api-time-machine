@@ -1,1 +1,0 @@
-{"hard":1,"soft":0,"info":19,"raw":{"hard":3,"soft":0,"info":19},"hardOperations":3,"changes":[{"id":"new-required-request-parameter","level":"hard","text":"added the new required `header` request parameter `from`","occurrences":3,"operationCount":3,"operations":["POST /response_plays","DELETE /response_plays/{id}","PUT /response_plays/{id}"]}]}

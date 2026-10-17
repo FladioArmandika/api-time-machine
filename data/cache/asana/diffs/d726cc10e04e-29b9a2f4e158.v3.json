@@ -1,1 +1,0 @@
-{"hard":1,"soft":0,"info":5,"raw":{"hard":2,"soft":0,"info":5},"hardOperations":2,"changes":[{"id":"api-security-scope-added","level":"hard","text":"the security scope `workspaces:read` was added to the endpoint's security scheme `oauth2`","occurrences":2,"operationCount":2,"operations":["GET /workspaces","GET /workspaces/{workspace_gid}"]}]}

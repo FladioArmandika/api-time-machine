@@ -1,1 +1,0 @@
-{"hard":0,"soft":1,"info":308,"raw":{"hard":0,"soft":1,"info":308},"hardOperations":0,"changes":[{"id":"response-property-enum-value-added","level":"soft","text":"added the new `…` enum value to the `allOf[subschema #1: Event Type]` response property","occurrences":1,"operationCount":1,"operations":["GET /events"],"enumValueCount":1,"enumValues":["SHIELD_PREVIEW_BLOCKED"]}]}

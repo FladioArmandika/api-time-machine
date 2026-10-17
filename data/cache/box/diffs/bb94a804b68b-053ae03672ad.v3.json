@@ -1,1 +1,0 @@
-{"hard":0,"soft":1,"info":85,"raw":{"hard":0,"soft":1,"info":85},"hardOperations":0,"changes":[{"id":"response-property-list-of-types-widened","level":"soft","text":"response property `next_stream_position` list-of-types was widened by adding types `integer` to media type `json` of response `200`","occurrences":1,"operationCount":1,"operations":["GET /events"]}]}
