@@ -44,6 +44,7 @@ const path = Astro.url.pathname.replace(base, "") || "/";
       <a class="brand" href={`${base}/`}>API Weather</a>
       <nav aria-label="Site">
         <a href={`${base}/#ranking`}>Ranking</a>
+        <a href={`${base}/search/`} aria-current={path.startsWith("/search") ? "page" : undefined}>Search</a>
         <a href={`${base}/methodology/`} aria-current={path.startsWith("/methodology") ? "page" : undefined}>Methodology</a>
         <a href={REPO_URL}>GitHub</a>
       </nav>

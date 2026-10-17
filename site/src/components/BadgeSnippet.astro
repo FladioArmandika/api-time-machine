@@ -1,0 +1,91 @@
+---
+// Embed snippet for an API's stability badge, with a copy button.
+import type { ApiData } from "../lib/data";
+
+interface Props {
+  api: ApiData;
+}
+const { api } = Astro.props;
+const site = new URL(import.meta.env.BASE_URL, Astro.site).href.replace(/\/$/, "");
+const img = `${site}/badge/${api.id}.svg`;
+const page = `${site}/api/${api.id}/`;
+const markdown = `[![${api.name} API stability](${img})](${page})`;
+---
+
+<div class="badge-embed">
+  <img src={img.replace(site, import.meta.env.BASE_URL.replace(/\/$/, ""))} alt={`${api.name} API stability ${api.score.value}/100`} height="20" />
+  <div class="snippet">
+    <code>{markdown}</code>
+    <button type="button" data-copy={markdown}>Copy</button>
+  </div>
+</div>
+
+<script>
+  for (const b of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
+    b.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(b.dataset.copy!);
+        b.textContent = "Copied";
+        b.classList.add("done");
+      } catch {
+        b.textContent = "Press Ctrl+C";
+      }
+      setTimeout(() => {
+        b.textContent = "Copy";
+        b.classList.remove("done");
+      }, 1600);
+    });
+  }
+</script>
+
+<style>
+  .badge-embed {
+    display: grid;
+    gap: 0.75rem;
+    justify-items: start;
+  }
+
+  .snippet {
+    display: flex;
+    align-items: stretch;
+    max-width: 100%;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .snippet code {
+    padding: 0.55rem 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--ink-2);
+    background: var(--wash);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  button {
+    flex: none;
+    border: 0;
+    border-left: 1px solid var(--rule);
+    background: var(--bg);
+    color: var(--ink);
+    font: 500 0.8125rem var(--sans);
+    padding: 0 0.9rem;
+    cursor: pointer;
+    min-width: 5.5rem;
+    transition: background-color 150ms ease-out, color 150ms ease-out;
+  }
+
+  button:hover {
+    background: var(--wash);
+  }
+
+  button:active {
+    transform: translateY(1px);
+  }
+
+  button.done {
+    color: var(--bg);
+    background: var(--ink);
+  }
+</style>

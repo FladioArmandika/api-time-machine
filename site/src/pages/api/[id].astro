@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import BadgeSnippet from "../../components/BadgeSnippet.astro";
 import Timeline from "../../components/Timeline.astro";
 import {
   apis, codeParts, leaderboard, monthLong, monthShortYear, plural, rawJsonUrl, ruleName,
@@ -165,6 +166,12 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
           })
         }
       </div>
+    </section>
+
+    <section aria-labelledby="badge">
+      <h2 id="badge">Badge</h2>
+      <p class="intro">Show this API's score in your README. It updates with the data every day.</p>
+      <BadgeSnippet api={api} />
     </section>
 
     <section aria-labelledby="source">
@@ -360,10 +367,24 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
     cursor: pointer;
     list-style: none;
     padding-block: 0.8rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.25rem;
+    display: grid;
+    grid-template-columns: auto minmax(11rem, auto) 1fr;
+    gap: 0.25rem 1rem;
     align-items: baseline;
+  }
+
+  .soft-list summary {
+    display: flex;
+  }
+
+  @media (max-width: 40rem) {
+    summary {
+      grid-template-columns: auto 1fr;
+    }
+
+    summary .counts {
+      grid-column: 2;
+    }
   }
 
   summary::-webkit-details-marker {

@@ -1,0 +1,259 @@
+---
+import Base from "../layouts/Base.astro";
+import { apis } from "../lib/data";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const total = apis.reduce((n, a) => n + a.intervals.reduce((m, i) => m + (i.gap || i.error ? 0 : i.changes.filter((c) => c.level === "hard").length), 0), 0);
+---
+
+<Base title="Search breaking changes: API Weather" description="Search every breaking change on record by endpoint, field name or keyword.">
+  <header class="head">
+    <h1>Search breaking changes</h1>
+    <p>
+      Look up an endpoint, a field or a word across {total.toLocaleString("en-US")} breaking changes in {apis.length} APIs. Try
+      <a href="?q=total_tokens">total_tokens</a>, <a href="?q=%2Fv1%2Fcharges">/v1/charges</a> or
+      <a href="?q=became+required">became required</a>.
+    </p>
+  </header>
+
+  <form class="box" role="search" data-base={base}>
+    <label for="q" class="sr">Search</label>
+    <input id="q" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="Endpoint, field or keyword" />
+    <select name="api" aria-label="API">
+      <option value="">All APIs</option>
+      {[...apis].sort((a, b) => a.name.localeCompare(b.name)).map((a) => <option value={a.id}>{a.name}</option>)}
+    </select>
+  </form>
+
+  <p class="status" aria-live="polite"></p>
+  <ol class="results"></ol>
+  <p class="note">
+    Each change lists up to five example endpoints, so an endpoint search finds changes where it was one of the examples. Field
+    names and wording match every change.
+  </p>
+</Base>
+
+<script>
+  type Index = { apis: { id: string; name: string }[]; rows: [number, string, string, string[], number][] };
+  const form = document.querySelector<HTMLFormElement>("form.box")!;
+  const input = form.querySelector<HTMLInputElement>("input")!;
+  const select = form.querySelector<HTMLSelectElement>("select")!;
+  const status = document.querySelector<HTMLElement>(".status")!;
+  const list = document.querySelector<HTMLOListElement>(".results")!;
+  const base = form.dataset.base!;
+  const LIMIT = 100;
+  let index: Index | null = null;
+
+  const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const monthLong = (m: string) => `${months[Number(m.slice(5)) - 1]} ${m.slice(0, 4)}`;
+  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const mark = (s: string, terms: string[]) => {
+    let out = esc(s);
+    for (const t of terms) {
+      const re = new RegExp(esc(t).replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+      out = out.replace(re, (m) => `<mark>${m}</mark>`);
+    }
+    return out;
+  };
+  const textHtml = (s: string, terms: string[]) =>
+    s.split("`").map((p, i) => (i % 2 ? `<code>${mark(p, terms)}</code>` : mark(p, terms))).join("");
+
+  function render() {
+    if (!index) return;
+    const q = input.value.trim().toLowerCase();
+    const api = select.value;
+    const params = new URLSearchParams();
+    if (q) params.set("q", input.value.trim());
+    if (api) params.set("api", api);
+    history.replaceState(null, "", params.size ? `?${params}` : location.pathname);
+
+    if (!q && !api) {
+      status.textContent = "";
+      list.innerHTML = "";
+      return;
+    }
+    const terms = q.split(/\s+/).filter(Boolean);
+    const apiIdx = api ? index.apis.findIndex((a) => a.id === api) : -1;
+    const hits = index.rows.filter(([a, , text, ops]) => {
+      if (apiIdx >= 0 && a !== apiIdx) return false;
+      const hay = `${text} ${ops.join(" ")}`.toLowerCase();
+      return terms.every((t) => hay.includes(t));
+    });
+    status.textContent = hits.length
+      ? `${hits.length.toLocaleString("en-US")} breaking change${hits.length === 1 ? "" : "s"}${hits.length > LIMIT ? `, newest ${LIMIT} shown` : ""}`
+      : "No breaking changes match. Try a shorter word or a different API.";
+    list.innerHTML = hits
+      .slice(0, LIMIT)
+      .map(([a, m, text, ops, count]) => {
+        const name = index!.apis[a];
+        const op = ops[0] ? `<div><code class="op">${mark(ops[0], terms)}</code>${count > 1 ? ` <span class="more">and ${(count - 1).toLocaleString("en-US")} more</span>` : ""}</div>` : "";
+        return `<li><div class="meta"><a href="${base}/api/${name.id}/">${esc(name.name)}</a><span>${monthLong(m)}</span></div><div class="body">${op}<p>${textHtml(text, terms)}</p></div></li>`;
+      })
+      .join("");
+  }
+
+  let t: number | undefined;
+  input.addEventListener("input", () => {
+    clearTimeout(t);
+    t = window.setTimeout(render, 120);
+  });
+  select.addEventListener("change", render);
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    render();
+  });
+
+  const params = new URLSearchParams(location.search);
+  input.value = params.get("q") ?? "";
+  select.value = params.get("api") ?? "";
+  status.textContent = "Loading the change log…";
+  fetch(`${base}/search-index.json`)
+    .then((r) => r.json())
+    .then((d: Index) => {
+      index = d;
+      status.textContent = "";
+      render();
+      if (!input.value) input.focus();
+    })
+    .catch(() => (status.textContent = "The change log didn't load. Reload the page to try again."));
+</script>
+
+<style>
+  .head {
+    padding-top: clamp(2rem, 5vw, 3.5rem);
+    display: grid;
+    gap: 0.75rem;
+    max-width: 44rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4.4vw, var(--t5));
+    letter-spacing: -0.035em;
+  }
+
+  .head p {
+    color: var(--ink-2);
+  }
+
+  .box {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    padding-block: 0.75rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--ink);
+  }
+
+  input,
+  select {
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 0.6rem 0.8rem;
+    transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    font-size: var(--t1);
+  }
+
+  input:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--ink);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ink) 12%, transparent);
+  }
+
+  .status {
+    margin: 1rem 0 0.5rem;
+    font-size: var(--t-1);
+    color: var(--ink-3);
+    min-height: 1.4em;
+  }
+
+  .results {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .results :global(li) {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    gap: 0.25rem 1.5rem;
+    padding-block: 0.8rem;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .results :global(.meta) {
+    display: grid;
+    align-content: start;
+    font-size: 0.875rem;
+  }
+
+  .results :global(.meta a) {
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .results :global(.meta a:hover) {
+    text-decoration: underline;
+  }
+
+  .results :global(.meta span),
+  .results :global(.more) {
+    color: var(--ink-3);
+    font-size: var(--t-1);
+  }
+
+  .results :global(.body) {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .results :global(.op) {
+    font-size: 0.8125rem;
+  }
+
+  .results :global(.body p) {
+    font-size: 0.875rem;
+    color: var(--ink-2);
+  }
+
+  .results :global(mark) {
+    background: var(--red-wash);
+    color: var(--red);
+    border-radius: 2px;
+    padding: 0 1px;
+  }
+
+  .note {
+    margin-top: 2rem;
+    font-size: var(--t-1);
+    color: var(--ink-3);
+  }
+
+  @media (max-width: 40rem) {
+    .box {
+      flex-direction: column;
+    }
+
+    .results :global(li) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .results :global(.meta) {
+      display: flex;
+      gap: 0.75rem;
+      align-items: baseline;
+    }
+  }
+</style>
