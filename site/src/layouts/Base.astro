@@ -62,6 +62,9 @@ const path = Astro.url.pathname.replace(base, "") || "/";
         Data refreshed daily from each vendor's published OpenAPI spec and diffed with
         <a href="https://github.com/oasdiff/oasdiff">oasdiff</a>. Last updated {updatedOn}.
       </p>
+      <p>
+        <a href={`${base}/data/`}>Data API</a> · <a href={`${base}/feed.xml`}>RSS</a> · <a href={REPO_URL}>Source</a>
+      </p>
       <p>A side project by <a href="https://github.com/FladioArmandika">Fladio Armandika</a>.</p>
       </div>
     </footer>

@@ -1,0 +1,45 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "Fixture", "version": "1" },
+  "paths": {
+    "/customers": {
+      "get": {
+        "operationId": "listCustomers",
+        "responses": { "200": { "description": "ok", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Customer" } } } } }
+      }
+    },
+    "/customers/{id}": {
+      "get": {
+        "operationId": "getCustomer",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "responses": { "200": { "description": "ok", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Customer" } } } } }
+      }
+    },
+    "/invoices": {
+      "post": {
+        "operationId": "createInvoice",
+        "requestBody": { "content": { "application/json": { "schema": { "type": "object", "properties": { "memo": { "type": "string" } } } } } },
+        "responses": { "200": { "description": "ok" } }
+      }
+    },
+    "/previews": {
+      "get": {
+        "operationId": "listPreviews",
+        "x-unstable": "This endpoint is in preview.",
+        "responses": { "200": { "description": "ok", "content": { "application/json": { "schema": { "type": "object", "required": ["name"], "properties": { "name": { "type": "string" } } } } } } }
+      }
+    },
+    "/legacy": {
+      "get": { "operationId": "legacy", "responses": { "200": { "description": "ok" } } }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Customer": {
+        "type": "object",
+        "required": ["id", "email"],
+        "properties": { "id": { "type": "string" }, "email": { "type": "string" }, "status": { "type": "string", "enum": ["active", "closed"] } }
+      }
+    }
+  }
+}

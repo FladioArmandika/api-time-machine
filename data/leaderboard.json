@@ -97,6 +97,30 @@
   },
   {
     "rank": 5,
+    "id": "square",
+    "name": "Square",
+    "score": {
+      "value": 76,
+      "pressure": 4.029,
+      "label": "Fair",
+      "icon": "🌤"
+    },
+    "last12": {
+      "hard": 18,
+      "soft": 15,
+      "breakingMonths": 2,
+      "changedMonths": 4,
+      "hardUnstable": 0
+    },
+    "operations": 332,
+    "worstMonth": {
+      "month": "2026-05",
+      "hard": 13,
+      "hardOperations": 13
+    }
+  },
+  {
+    "rank": 6,
     "id": "discord",
     "name": "Discord",
     "score": {
@@ -120,7 +144,7 @@
     }
   },
   {
-    "rank": 6,
+    "rank": 7,
     "id": "asana",
     "name": "Asana",
     "score": {
@@ -144,7 +168,7 @@
     }
   },
   {
-    "rank": 7,
+    "rank": 8,
     "id": "github",
     "name": "GitHub",
     "score": {
@@ -168,7 +192,7 @@
     }
   },
   {
-    "rank": 8,
+    "rank": 9,
     "id": "datadog",
     "name": "Datadog",
     "score": {
@@ -192,7 +216,7 @@
     }
   },
   {
-    "rank": 9,
+    "rank": 10,
     "id": "figma",
     "name": "Figma",
     "score": {
@@ -216,7 +240,7 @@
     }
   },
   {
-    "rank": 10,
+    "rank": 11,
     "id": "stripe",
     "name": "Stripe",
     "score": {
@@ -240,7 +264,31 @@
     }
   },
   {
-    "rank": 11,
+    "rank": 12,
+    "id": "adyen",
+    "name": "Adyen",
+    "score": {
+      "value": 41,
+      "pressure": 13.221,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 7,
+      "soft": 8,
+      "breakingMonths": 4,
+      "changedMonths": 10,
+      "hardUnstable": 0
+    },
+    "operations": 28,
+    "worstMonth": {
+      "month": "2024-03",
+      "hard": 25,
+      "hardOperations": 13
+    }
+  },
+  {
+    "rank": 13,
     "id": "plaid",
     "name": "Plaid",
     "score": {
@@ -264,7 +312,7 @@
     }
   },
   {
-    "rank": 12,
+    "rank": 14,
     "id": "resend",
     "name": "Resend",
     "score": {
@@ -288,7 +336,7 @@
     }
   },
   {
-    "rank": 13,
+    "rank": 15,
     "id": "cloudflare",
     "name": "Cloudflare",
     "score": {
@@ -312,7 +360,7 @@
     }
   },
   {
-    "rank": 14,
+    "rank": 16,
     "id": "openai",
     "name": "OpenAI",
     "score": {
@@ -336,7 +384,7 @@
     }
   },
   {
-    "rank": 15,
+    "rank": 17,
     "id": "sentry",
     "name": "Sentry",
     "score": {
@@ -357,6 +405,54 @@
       "month": "2026-06",
       "hard": 86,
       "hardOperations": 40
+    }
+  },
+  {
+    "rank": 18,
+    "id": "supabase",
+    "name": "Supabase",
+    "score": {
+      "value": 0,
+      "pressure": 82.318,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 174,
+      "soft": 58,
+      "breakingMonths": 9,
+      "changedMonths": 11,
+      "hardUnstable": 0
+    },
+    "operations": 170,
+    "worstMonth": {
+      "month": "2026-08",
+      "hard": 126,
+      "hardOperations": 167
+    }
+  },
+  {
+    "rank": 19,
+    "id": "vercel",
+    "name": "Vercel",
+    "score": {
+      "value": 0,
+      "pressure": 87.722,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 358,
+      "soft": 426,
+      "breakingMonths": 12,
+      "changedMonths": 12,
+      "hardUnstable": 0
+    },
+    "operations": 458,
+    "worstMonth": {
+      "month": "2026-09",
+      "hard": 216,
+      "hardOperations": 25
     }
   }
 ]

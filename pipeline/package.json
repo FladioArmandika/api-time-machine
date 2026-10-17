@@ -4,7 +4,8 @@
   "description": "Walks OpenAPI spec history and runs oasdiff between monthly snapshots",
   "scripts": {
     "build": "tsx src/build.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test test/*.test.ts"
   },
   "license": "MIT",
   "devDependencies": {

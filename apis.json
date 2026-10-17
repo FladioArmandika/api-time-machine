@@ -112,5 +112,37 @@
     "repo": "resend/resend-openapi",
     "branch": "main",
     "path": "resend.yaml"
+  },
+  {
+    "id": "vercel",
+    "name": "Vercel",
+    "repo": "vercel/sdk",
+    "branch": "main",
+    "path": "vercel-spec.json",
+    "notes": "From the copy of the spec kept in Vercel's SDK repo, refreshed whenever the SDK is regenerated, so changes can show up a few days late. September 2026's spike is mostly response fields that stopped being marked required in a regenerated spec."
+  },
+  {
+    "id": "square",
+    "name": "Square",
+    "repo": "square/connect-api-specification",
+    "branch": "master",
+    "path": "api.json",
+    "notes": "Square versions its API by date; this file tracks the latest version. Before November 2024 the file was Swagger 2.0, so earlier months have no data."
+  },
+  {
+    "id": "supabase",
+    "name": "Supabase",
+    "repo": "supabase/supabase",
+    "branch": "master",
+    "path": "apps/docs/spec/api_v1_openapi.json",
+    "notes": "The Management API (v1) for projects and organizations. The database, auth and storage APIs have separate spec files. Most of August 2026's breaking changes are permission scopes removed from endpoints, which oasdiff counts as breaking."
+  },
+  {
+    "id": "adyen",
+    "name": "Adyen",
+    "repo": "Adyen/adyen-openapi",
+    "branch": "main",
+    "path": "json/CheckoutService-v71.json",
+    "notes": "Checkout API v71. Adyen publishes each major version as a new file, so this tracks changes within v71 only."
   }
 ]

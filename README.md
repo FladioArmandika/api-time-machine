@@ -1,8 +1,10 @@
 # API Weather
 
+[![CI](https://github.com/FladioArmandika/api-time-machine/actions/workflows/ci.yml/badge.svg)](https://github.com/FladioArmandika/api-time-machine/actions/workflows/ci.yml)
+
 **How often do popular APIs break the code that depends on them?**
 
-API Weather tracks the public OpenAPI specs of 15 well-known APIs, compares every month with the one before, and counts the changes that would break an existing client. It updates itself every day.
+API Weather tracks the public OpenAPI specs of 19 well-known APIs, compares every month with the one before, and counts the changes that would break an existing client. It updates itself every day.
 
 **→ [See the live site](https://fladioarmandika.github.io/api-time-machine/)**
 
@@ -12,7 +14,7 @@ API Weather tracks the public OpenAPI specs of 15 well-known APIs, compares ever
 
 As of October 2026:
 
-- **These 15 APIs shipped more than 1,300 breaking changes in the past year.** September 2026 was the worst month since all of them had a public spec.
+- **These 19 APIs shipped more than 1,800 breaking changes in the past year.** September 2026 was the worst month since all of them had a public spec.
 - **Cloudflare shipped a breaking change every single month** of the past year. **Twilio didn't ship one.**
 - **The roughest month on record** was Stripe in May 2018: 223 breaking changes across 191 endpoints.
 
@@ -23,6 +25,7 @@ The live site has the current numbers, a page for every API with its full histor
 - **[Your stack](https://fladioarmandika.github.io/api-time-machine/stack/):** pick the APIs your product depends on to see their combined record and compare them side by side. The link keeps your picks, so you can share it.
 - **[Search](https://fladioarmandika.github.io/api-time-machine/search/):** find every breaking change that touched an endpoint or a field, for example `/v1/charges` or `total_tokens`.
 - **RSS feeds:** follow [every API](https://fladioarmandika.github.io/api-time-machine/feed.xml) or just one, such as [Stripe](https://fladioarmandika.github.io/api-time-machine/feed/stripe.xml), to hear about each month that broke something.
+- **[Data API](https://fladioarmandika.github.io/api-time-machine/data/):** every number as JSON, rebuilt daily. Start at [`/data/index.json`](https://fladioarmandika.github.io/api-time-machine/data/index.json).
 - **README badges:** each API's page has a badge with its stability score, like ![Stripe API stability](https://fladioarmandika.github.io/api-time-machine/badge/stripe.svg), that updates with the data.
 
 ## The APIs tracked
@@ -44,6 +47,10 @@ The live site has the current numbers, a page for every API with its full histor
 | Sentry | [getsentry/sentry-api-schema](https://github.com/getsentry/sentry-api-schema) |
 | Okta | [okta/okta-management-openapi-spec](https://github.com/okta/okta-management-openapi-spec) |
 | Resend | [resend/resend-openapi](https://github.com/resend/resend-openapi) |
+| Vercel | [vercel/sdk](https://github.com/vercel/sdk) |
+| Square | [square/connect-api-specification](https://github.com/square/connect-api-specification) |
+| Supabase | [supabase/supabase](https://github.com/supabase/supabase) (Management API) |
+| Adyen | [Adyen/adyen-openapi](https://github.com/Adyen/adyen-openapi) (Checkout v71) |
 
 The exact file for each one is in [`apis.json`](apis.json).
 
@@ -90,6 +97,7 @@ cd pipeline
 npm install
 npm run build
 ONLY=stripe npm run build   # just one API
+npm test                    # unit tests, plus an end-to-end diff when oasdiff is installed
 
 # Run the site locally
 cd ../site

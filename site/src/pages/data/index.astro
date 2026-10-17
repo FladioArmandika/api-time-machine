@@ -1,0 +1,135 @@
+---
+// Docs for the public data: what each JSON file holds and how to use it.
+import Base from "../../layouts/Base.astro";
+import { REPO_URL, apis, leaderboard, meta } from "../../lib/data";
+import { SITE } from "../../lib/feed";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const example = `curl -s ${SITE}/data/index.json | jq '.apis[] | {name, score}'`;
+// The first entry of the real index, so the example always matches what the endpoint returns.
+const top = leaderboard[0];
+const sample = JSON.stringify(
+  {
+    version: 1,
+    generatedAt: meta.generatedAt,
+    apis: [
+      {
+        id: top.id, name: top.name, rank: top.rank, score: top.score.value, last12: top.last12, endpoints: top.operations,
+        page: `${SITE}/api/${top.id}/`, data: `${SITE}/data/${top.id}.json`, feed: `${SITE}/feed/${top.id}.xml`, badge: `${SITE}/badge/${top.id}.svg`,
+      },
+      "…",
+    ],
+  },
+  null,
+  2,
+);
+---
+
+<Base title="Data: API Weather" description="Every number on API Weather as free JSON: scores, monthly counts and every breaking change, updated daily.">
+  <article class="prose">
+    <h1>Data</h1>
+    <p class="lede">
+      Every number on this site is free to use as JSON. The files are static, served from GitHub Pages, and rebuilt every day
+      after the pipeline runs. No key, no rate limit beyond GitHub's, and CORS is open.
+    </p>
+
+    <h2>Endpoints</h2>
+    <dl>
+      <dt><a href={`${base}/data/index.json`}><code>/data/index.json</code></a></dt>
+      <dd>All {apis.length} APIs, ranked, with each one's score, last-12-month totals and links to everything below.</dd>
+      <dt><code>/data/&#123;id&#125;.json</code>, e.g. <a href={`${base}/data/stripe.json`}><code>/data/stripe.json</code></a></dt>
+      <dd>
+        One API's full record: every monthly snapshot, every interval with its breaking and soft changes, per-year totals, and
+        the score. Changes list up to five example endpoints in <code>operations</code> and every endpoint they touched in
+        <code>opIds</code>, which index into the file's <code>endpoints</code> list.
+      </dd>
+      <dt><code>/feed/&#123;id&#125;.xml</code> and <a href={`${base}/feed.xml`}><code>/feed.xml</code></a></dt>
+      <dd>RSS: one item per month that broke something, for one API or all of them.</dd>
+      <dt><code>/badge/&#123;id&#125;.svg</code></dt>
+      <dd>A README badge with the current score.</dd>
+    </dl>
+
+    <h2>Example</h2>
+    <pre><code>{example}</code></pre>
+    <pre><code>{sample}</code></pre>
+
+    <h2>Fields worth knowing</h2>
+    <ul>
+      <li><code>hard</code> is breaking changes, after grouping one schema change across all the endpoints it touches.</li>
+      <li><code>soft</code> is additive changes that can still trip strict clients, such as a new enum value.</li>
+      <li><code>hardUnstable</code> is breaking changes that only touched endpoints the vendor marks beta; they're not in <code>hard</code> or the score.</li>
+      <li><code>gap</code> marks months with no readable spec, and <code>error</code> months the diff couldn't complete. Neither counts as zero.</li>
+      <li><code>partial</code> marks the current month, which changes daily until it ends.</li>
+    </ul>
+
+    <h2>Stability</h2>
+    <p>
+      Fields are only added, never renamed or removed, while <code>version</code> is 1. The same files are in the repo under
+      <a href={`${REPO_URL}/tree/main/data`}><code>data/</code></a>, with a write-up of the format in its README. If you build
+      something with it, a link back is appreciated.
+    </p>
+  </article>
+</Base>
+
+<style>
+  .prose {
+    padding-top: clamp(2rem, 6vw, 4rem);
+    max-width: 44rem;
+    display: grid;
+    gap: 1rem;
+  }
+
+  h1 {
+    font-size: clamp(2.5rem, 7vw, var(--t5));
+    letter-spacing: -0.04em;
+    margin-bottom: 0.5rem;
+  }
+
+  .lede {
+    font-size: var(--t1);
+    color: var(--ink-2);
+  }
+
+  h2 {
+    font-size: var(--t2);
+    margin-top: 1.75rem;
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  dt {
+    margin-top: 0.75rem;
+    font-weight: 600;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--ink-2);
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  pre {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    background: var(--wash);
+    border-radius: 6px;
+    overflow-x: auto;
+    line-height: 1.6;
+    font-size: 0.8125rem;
+  }
+
+  pre code {
+    background: none;
+    padding: 0;
+  }
+</style>

@@ -1,0 +1,1 @@
+{"hard":1,"hardUnstable":0,"soft":0,"info":9,"raw":{"hard":1,"soft":0,"info":9},"hardOperations":1,"changes":[{"id":"request-property-max-length-set","level":"hard","text":"the `returnUrl` request property's maxLength was set to `8000`","occurrences":1,"operationCount":1,"operations":["POST /payments"],"allOperations":["POST /payments"]}]}

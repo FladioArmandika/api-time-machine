@@ -9,6 +9,8 @@ export const REPOS_DIR = join(CACHE_DIR, "repos");
 export const TMP_DIR = join(CACHE_DIR, "tmp");
 export const SEVERITY_LEVELS = join(ROOT, "pipeline/config/severity-levels.txt");
 export const OASDIFF = process.env.OASDIFF ?? "oasdiff";
+/** The version CI installs. `go install` builds report "main" as their version, so this is recorded instead. */
+export const OASDIFF_VERSION = "1.33.0";
 
 /** How many oasdiff processes run at once. Each can use a couple of GB on the largest specs. */
 export const CONCURRENCY = Number(process.env.CONCURRENCY ?? 3);

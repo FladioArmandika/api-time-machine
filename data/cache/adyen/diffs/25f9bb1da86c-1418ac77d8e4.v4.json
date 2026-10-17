@@ -1,0 +1,1 @@
+{"hard":1,"hardUnstable":0,"soft":0,"info":4,"raw":{"hard":1,"soft":0,"info":4},"hardOperations":1,"changes":[{"id":"request-property-max-length-set","level":"hard","text":"the `displayName` request property's maxLength was set to `64`","occurrences":1,"operationCount":1,"operations":["POST /applePay/sessions"],"allOperations":["POST /applePay/sessions"]}]}

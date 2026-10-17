@@ -31,7 +31,7 @@ const PRERELEASE = /^(alpha|beta|experimental|draft|preview|ea)$/i;
  * Datadog `x-unstable`, Cloudflare `x-stability: beta`, Box `x-stability-level`, Okta
  * `x-okta-lifecycle: EA`, Sentry `x-sentry-experimental`, GitHub `x-github.previews`.
  */
-function isUnstable(op: Record<string, any>): boolean {
+export function isUnstable(op: Record<string, any>): boolean {
   if (op["x-unstable"] || op["x-sentry-experimental"] === true) return true;
   for (const key of ["x-stability", "x-stability-level"]) if (PRERELEASE.test(String(op[key] ?? ""))) return true;
   if (PRERELEASE.test(String(op["x-okta-lifecycle"]?.lifecycle ?? ""))) return true;
@@ -39,7 +39,7 @@ function isUnstable(op: Record<string, any>): boolean {
 }
 
 /** "GET /v1/things" for every operation the base spec marks as unstable. */
-function unstableOperations(file: string): Set<string> {
+export function unstableOperations(file: string): Set<string> {
   const out = new Set<string>();
   try {
     const doc = readSpec(file);
@@ -167,14 +167,65 @@ const errorText = (e: unknown) => {
   return (err.stderr?.trim() || (err.signal ? "oasdiff ran out of time or memory on this pair" : "") || err.message).slice(0, 500);
 };
 
+/**
+ * Path groups for a chunked diff: "/v1/customers/{id}" → "/v1/customers", "/users/{id}" → "/users".
+ * A leading version segment stays with the resource after it.
+ */
+export function pathGroups(...files: string[]): string[] {
+  const groups = new Set<string>();
+  for (const file of files) {
+    for (const path of Object.keys(readSpec(file)?.paths ?? {})) {
+      const parts = path.split("/").filter(Boolean);
+      const n = /^v\d+(\.\d+)?$/i.test(parts[0] ?? "") ? 2 : 1;
+      groups.add("/" + parts.slice(0, n).join("/"));
+    }
+  }
+  return [...groups].sort();
+}
+
+const escapeRegex = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/**
+ * A few pairs (Stripe, spring 2019) produce millions of findings, and oasdiff runs out of memory
+ * holding them. Diffing one path group at a time keeps each run small. Findings that aren't tied
+ * to an operation come back from every group, so they're kept once.
+ */
+async function oasdiffByPathGroup(base: string, revision: string): Promise<{ findings: OasdiffChange[]; info: number }> {
+  const findings: OasdiffChange[] = [];
+  const seen = new Set<string>();
+  let info = 0;
+  for (const group of pathGroups(base, revision)) {
+    for (const f of await oasdiff(base, revision, ["--match-path", `^${escapeRegex(group)}(/|$)`])) {
+      if (!f.operation) {
+        const key = `${f.id}\u0000${f.text}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+      }
+      // Info findings are only counted, so they aren't kept.
+      if (f.level === 1) info++;
+      else findings.push(f);
+    }
+  }
+  return { findings, info };
+}
+
 export async function diffSpecs(base: string, revision: string): Promise<DiffSummary> {
   let findings: OasdiffChange[];
   let repairedRefs: number | undefined;
+  let chunkedInfo = 0;
   try {
     findings = await oasdiff(base, revision);
   } catch (first) {
     const msg = errorText(first);
-    if (!/failed to load|duplicate endpoint/.test(msg) || /out of memory|ran out of/.test(msg)) return emptySummary(msg);
+    if (/out of memory/.test(msg)) {
+      try {
+        ({ findings, info: chunkedInfo } = await oasdiffByPathGroup(base, revision));
+      } catch (chunked) {
+        return emptySummary(errorText(chunked));
+      }
+      return summarize(findings, base, undefined, chunkedInfo);
+    }
+    if (!/failed to load|duplicate endpoint/.test(msg) || /ran out of/.test(msg)) return emptySummary(msg);
     // Retry once on repaired copies. Duplicate endpoints (paths that differ only in parameter names)
     // need --include-path-params so oasdiff can tell them apart.
     const a = base.replace(/(\.[^.]+)$/, ".fixed.json");
@@ -196,8 +247,12 @@ export async function diffSpecs(base: string, revision: string): Promise<DiffSum
     }
   }
 
+  return summarize(findings, base, repairedRefs, chunkedInfo);
+}
+
+function summarize(findings: OasdiffChange[], base: string, repairedRefs: number | undefined, extraInfo: number): DiffSummary {
   const unstable = unstableOperations(base);
-  const raw = { hard: 0, soft: 0, info: 0 };
+  const raw = { hard: 0, soft: 0, info: extraInfo };
   const hardOps = new Set<string>();
   const groups = new Map<string, { change: Change; ops: Set<string>; values: Set<string> }>();
 

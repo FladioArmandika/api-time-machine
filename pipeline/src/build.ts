@@ -2,7 +2,7 @@ import { execFile } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { extname, join } from "node:path";
 import { promisify } from "node:util";
-import { CACHE_DIR, CONCURRENCY, DATA_DIR, OASDIFF, TMP_DIR, loadApis, type ApiConfig } from "./config.ts";
+import { CACHE_DIR, CONCURRENCY, DATA_DIR, OASDIFF, OASDIFF_VERSION, TMP_DIR, loadApis, type ApiConfig } from "./config.ts";
 import { type Change, diffSpecs, inspectSpec, type DiffSummary, type SpecInfo } from "./diff.ts";
 import { monthlySnapshots, syncRepo, writeBlob, type Snapshot } from "./git.ts";
 import { buildHeadlines } from "./headlines.ts";
@@ -247,7 +247,7 @@ async function main() {
     const { stdout: version } = await run(OASDIFF, ["--version"]).catch(() => ({ stdout: "unknown" }));
     writeJson(join(DATA_DIR, "meta.json"), {
       generatedAt: now.toISOString(),
-      oasdiff: version.trim(),
+      oasdiff: /\d+\.\d+/.test(version) ? version.trim() : `oasdiff version ${OASDIFF_VERSION}`,
       score: { softWeight: SOFT_WEIGHT, halfLifeMonths: HALF_LIFE_MONTHS, windowMonths: WINDOW_MONTHS, k: K },
     });
   }
