@@ -3,7 +3,7 @@ import Base from "../layouts/Base.astro";
 import { apis } from "../lib/data";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const total = apis.reduce((n, a) => n + a.intervals.reduce((m, i) => m + (i.gap || i.error ? 0 : i.changes.filter((c) => c.level === "hard").length), 0), 0);
+const total = apis.reduce((n, a) => n + a.intervals.reduce((m, i) => m + (i.gap || i.error ? 0 : i.changes.filter((c) => c.level === "hard" && !c.unstable).length), 0), 0);
 ---
 
 <Base title="Search breaking changes: API Weather" description="Search every breaking change on record by endpoint, field name or keyword.">
@@ -28,13 +28,13 @@ const total = apis.reduce((n, a) => n + a.intervals.reduce((m, i) => m + (i.gap 
   <p class="status" aria-live="polite"></p>
   <ol class="results"></ol>
   <p class="note">
-    Each change lists up to five example endpoints, so an endpoint search finds changes where it was one of the examples. Field
-    names and wording match every change.
+    Searches match the wording of each change and every endpoint it touched. Changes marked beta only touched endpoints the
+    vendor labels beta or unstable, so they aren't counted as breaking elsewhere on the site.
   </p>
 </Base>
 
 <script>
-  type Index = { apis: { id: string; name: string }[]; rows: [number, string, string, string[], number][] };
+  type Index = { apis: { id: string; name: string; endpoints: string[] }[]; rows: [number, string, string, number[], 0 | 1][] };
   const form = document.querySelector<HTMLFormElement>("form.box")!;
   const input = form.querySelector<HTMLInputElement>("input")!;
   const select = form.querySelector<HTMLSelectElement>("select")!;
@@ -74,20 +74,27 @@ const total = apis.reduce((n, a) => n + a.intervals.reduce((m, i) => m + (i.gap 
     }
     const terms = q.split(/\s+/).filter(Boolean);
     const apiIdx = api ? index.apis.findIndex((a) => a.id === api) : -1;
+    // For each API and term, the endpoints containing that term; a change matches when every term is in its
+    // wording or in one of its endpoints.
+    const epHits = index.apis.map((a) => terms.map((t) => new Set(a.endpoints.flatMap((e, i) => (e.toLowerCase().includes(t) ? [i] : [])))));
     const hits = index.rows.filter(([a, , text, ops]) => {
       if (apiIdx >= 0 && a !== apiIdx) return false;
-      const hay = `${text} ${ops.join(" ")}`.toLowerCase();
-      return terms.every((t) => hay.includes(t));
+      const lower = text.toLowerCase();
+      return terms.every((t, ti) => lower.includes(t) || (epHits[a][ti].size > 0 && ops.some((o) => epHits[a][ti].has(o))));
     });
     status.textContent = hits.length
       ? `${hits.length.toLocaleString("en-US")} breaking change${hits.length === 1 ? "" : "s"}${hits.length > LIMIT ? `, newest ${LIMIT} shown` : ""}`
       : "No breaking changes match. Try a shorter word or a different API.";
     list.innerHTML = hits
       .slice(0, LIMIT)
-      .map(([a, m, text, ops, count]) => {
+      .map(([a, m, text, ops, beta]) => {
         const name = index!.apis[a];
-        const op = ops[0] ? `<div><code class="op">${mark(ops[0], terms)}</code>${count > 1 ? ` <span class="more">and ${(count - 1).toLocaleString("en-US")} more</span>` : ""}</div>` : "";
-        return `<li><div class="meta"><a href="${base}/api/${name.id}/">${esc(name.name)}</a><span>${monthLong(m)}</span></div><div class="body">${op}<p>${textHtml(text, terms)}</p></div></li>`;
+        // Show the endpoint the search matched, when it matched one.
+        const shown = ops.find((o) => epHits[a].some((set) => set.has(o))) ?? ops[0];
+        const count = ops.length;
+        const op = shown !== undefined ? `<div><code class="op">${mark(name.endpoints[shown], terms)}</code>${count > 1 ? ` <span class="more">and ${(count - 1).toLocaleString("en-US")} more</span>` : ""}</div>` : "";
+        const tag = beta ? ` <span class="beta">beta</span>` : "";
+        return `<li><div class="meta"><a href="${base}/api/${name.id}/#m-${m}">${esc(name.name)}</a><span>${monthLong(m)}${tag}</span></div><div class="body">${op}<p>${textHtml(text, terms)}</p></div></li>`;
       })
       .join("");
   }
@@ -209,6 +216,17 @@ const total = apis.reduce((n, a) => n + a.intervals.reduce((m, i) => m + (i.gap 
   }
 
   .results :global(.meta span),
+  .results :global(.beta) {
+    margin-left: 0.35rem;
+    padding: 0 0.35rem;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+  }
+
   .results :global(.more) {
     color: var(--ink-3);
     font-size: var(--t-1);

@@ -33,16 +33,17 @@ const lede =
 // Months with anything to report, newest first. Large months are capped; the full list is in the JSON.
 const HARD_CAP = 25;
 const SOFT_CAP = 10;
-const log = api.intervals.filter((i) => !i.gap && !i.error && i.hard + i.soft > 0).reverse();
+const log = api.intervals.filter((i) => !i.gap && !i.error && i.hard + i.soft + (i.hardUnstable ?? 0) > 0).reverse();
 const years = Object.entries(api.byYear).sort(([a], [b]) => b.localeCompare(a));
 const problems = api.intervals.filter((i) => i.gap || i.error);
 const repaired = api.intervals.filter((i) => i.repairedRefs).length;
 
-const hardOf = (cs: Change[]) => cs.filter((c) => c.level === "hard");
+const hardOf = (cs: Change[]) => cs.filter((c) => c.level === "hard" && !c.unstable);
+const betaOf = (cs: Change[]) => cs.filter((c) => c.level === "hard" && c.unstable);
 const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 ---
 
-<Base title={`${api.name}: API Weather`} image={`og/${api.id}.png`} description={`${api.name}: ${lede} Stability score ${api.score.value}/100.`}>
+<Base title={`${api.name}: API Weather`} image={`og/${api.id}.png`} feed={`feed/${api.id}.xml`} description={`${api.name}: ${lede} Stability score ${api.score.value}/100.`}>
   <article>
     <header class="api-head">
       <p class="crumb"><a href={`${base}/#ranking`}>Ranking</a>: {rank} of {apis.length}</p>
@@ -55,11 +56,19 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
         <div><dt>Endpoints</dt><dd class="num">{api.operations.toLocaleString("en-US")}</dd></div>
       </dl>
       {api.notes && <p class="note">{api.notes}</p>}
+      {
+        (l12.hardUnstable ?? 0) > 0 && (
+          <p class="note">
+            Not counted: {plural(l12.hardUnstable!, "breaking change")} in the last 12 months to endpoints {api.name} marks as beta or
+            unstable. They're listed in the change log.
+          </p>
+        )
+      }
       <nav class="jump" aria-label="On this page">
         <a href="#history">History</a>
         <a href="#years">By year</a>
         <a href="#log">Change log</a>
-        <a href="#badge">Badge</a>
+        <a href="#follow">Follow</a>
         <a href="#source">Source</a>
       </nav>
     </header>
@@ -122,13 +131,15 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
           log.map((i, idx) => {
             const hard = hardOf(i.changes);
             const soft = softOf(i.changes);
+            const beta = betaOf(i.changes);
             return (
-              <details open={idx === 0}>
+              <details open={idx === 0} id={`m-${i.to}`}>
                 <summary>
                   <span class="m">{monthLong(i.to)}{i.partial ? " so far" : ""}</span>
                   <span class="counts num">
                     {i.hard > 0 && <span class="c-hard">{i.hard.toLocaleString("en-US")} breaking</span>}
                     {i.soft > 0 && <span class="c-soft">{i.soft.toLocaleString("en-US")} soft</span>}
+                    {beta.length > 0 && <span class="c-soft">{beta.length.toLocaleString("en-US")} beta</span>}
                   </span>
                 </summary>
                 {hard.length > 0 && (
@@ -175,6 +186,29 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
                     )}
                   </details>
                 )}
+                {beta.length > 0 && (
+                  <details class="soft-list">
+                    <summary>Breaking changes to beta endpoints, not counted ({beta.length.toLocaleString("en-US")})</summary>
+                    <ul class="changes soft">
+                      {beta.slice(0, SOFT_CAP).map((c) => (
+                        <li>
+                          {c.operations.length > 0 && (
+                            <p class="op">
+                              <code>{c.operations[0]}</code>
+                              {c.operationCount > 1 && <span> and {plural(c.operationCount - 1, "more endpoint")}</span>}
+                            </p>
+                          )}
+                          <p class="what">{codeParts(c.text).map((p) => (p.code ? <code>{p.text}</code> : p.text))}</p>
+                        </li>
+                      ))}
+                    </ul>
+                    {beta.length > SOFT_CAP && (
+                      <p class="more">
+                        {plural(beta.length - SOFT_CAP, "more")} in the <a href={rawJsonUrl(api)}>raw data</a>.
+                      </p>
+                    )}
+                  </details>
+                )}
               </details>
             );
           })
@@ -182,8 +216,14 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
       </div>
     </section>
 
-    <section aria-labelledby="badge">
-      <h2 id="badge">Badge</h2>
+    <section aria-labelledby="follow" class="follow">
+      <h2 id="follow">Follow</h2>
+      <p class="intro">
+        Hear about {api.name}'s breaking changes as they're found: add the
+        <a href={`${base}/feed/${api.id}.xml`}>{api.name} RSS feed</a> to your feed reader, or Slack's and Discord's RSS apps.
+        There's also a <a href={`${base}/feed.xml`}>feed for every API</a>.
+      </p>
+      <h3>Badge</h3>
       <p class="intro">Show this API's score in your README. It updates with the data every day.</p>
       <BadgeSnippet api={api} />
     </section>
@@ -227,6 +267,17 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 </Base>
 
 <script>
+  // A link to one month (from search or a feed) opens that month.
+  const openHash = () => {
+    const el = location.hash.startsWith("#m-") ? document.getElementById(location.hash.slice(1)) : null;
+    if (el instanceof HTMLDetailsElement) {
+      el.open = true;
+      el.scrollIntoView();
+    }
+  };
+  openHash();
+  window.addEventListener("hashchange", openHash);
+
   // One button opens or closes every month of the change log.
   const btn = document.querySelector<HTMLButtonElement>(".toggle-all");
   const months = document.querySelectorAll<HTMLDetailsElement>(".log details");
@@ -395,6 +446,11 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 
   section > h2 {
     margin-bottom: 1rem;
+  }
+
+  .follow h3 {
+    font-size: var(--t1);
+    margin: 1.75rem 0 0.5rem;
   }
 
   .section-head {

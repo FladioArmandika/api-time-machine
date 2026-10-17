@@ -6,8 +6,10 @@ interface Props {
   description: string;
   /** Path of this page's link-preview image, relative to the site base. */
   image?: string;
+  /** Path of the RSS feed for this page, relative to the site base. */
+  feed?: string;
 }
-const { title, description, image = "og/index.png" } = Astro.props;
+const { title, description, image = "og/index.png", feed = "feed.xml" } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const path = Astro.url.pathname.replace(base, "") || "/";
 ---
@@ -30,6 +32,7 @@ const path = Astro.url.pathname.replace(base, "") || "/";
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(`${base}/${image}`, Astro.site).href} />
+    <link rel="alternate" type="application/rss+xml" title={title} href={`${base}/${feed}`} />
     <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,6 +47,7 @@ const path = Astro.url.pathname.replace(base, "") || "/";
       <a class="brand" href={`${base}/`}>API Weather</a>
       <nav aria-label="Site">
         <a href={`${base}/#ranking`}>Ranking</a>
+        <a href={`${base}/stack/`} aria-current={path.startsWith("/stack") ? "page" : undefined}>Your stack</a>
         <a href={`${base}/search/`} aria-current={path.startsWith("/search") ? "page" : undefined} aria-keyshortcuts="/">Search <kbd>/</kbd></a>
         <a href={`${base}/methodology/`} aria-current={path.startsWith("/methodology") ? "page" : undefined}>Methodology</a>
         <a href={REPO_URL}>GitHub</a>
@@ -261,13 +265,26 @@ const path = Astro.url.pathname.replace(base, "") || "/";
 
   .site-header nav {
     display: flex;
-    gap: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
     font-size: var(--t0);
   }
 
   .site-header nav a {
     color: var(--ink-2);
     text-decoration: none;
+    white-space: nowrap;
+  }
+
+  /* Phones: tighter spacing, and the keyboard hint goes (there's rarely a keyboard). */
+  @media (max-width: 40rem) {
+    .site-header nav {
+      gap: 0.25rem 1.1rem;
+    }
+
+    .site-header kbd {
+      display: none;
+    }
   }
 
   .site-header nav a:hover,

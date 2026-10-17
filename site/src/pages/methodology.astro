@@ -53,6 +53,14 @@ const s = meta.score;
       produce 7,000 findings. They're grouped back into one change, with a count of the endpoints it touches. Every number on this
       site is a grouped count.
     </p>
+    <p>
+      Vendors that ship preview endpoints usually warn that those may break. When every endpoint a breaking change touches is
+      marked beta or unstable in the spec, it's listed on the API's page but left out of the totals and the score. The markers
+      read are Datadog's <code>x-unstable</code>, Cloudflare's <code>x-stability: beta</code>, Box's
+      <code>x-stability-level</code>, Okta's early-access <code>x-okta-lifecycle</code>, Sentry's
+      <code>x-sentry-experimental</code> and GitHub's <code>x-github.previews</code>. The other APIs don't mark preview
+      endpoints in their specs, so all of their changes count.
+    </p>
 
     <h2>The stability score</h2>
     <p>For each of the last {s.windowMonths} months, the penalty is breaking changes plus soft changes at {s.softWeight} weight, per 100 endpoints:</p>

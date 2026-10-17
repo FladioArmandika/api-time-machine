@@ -12,6 +12,10 @@ export interface Change {
   operations: string[];
   enumValueCount?: number;
   enumValues?: string[];
+  /** Index into the API's `endpoints` for every affected operation. */
+  opIds?: number[];
+  /** Every affected operation is one the vendor marks beta or unstable; not counted as breaking. */
+  unstable?: true;
 }
 
 export interface Interval {
@@ -21,6 +25,8 @@ export interface Interval {
   partial: boolean;
   operations: number;
   hard: number;
+  /** Hard changes confined to beta or unstable operations; not in `hard`. */
+  hardUnstable?: number;
   soft: number;
   info: number;
   hardOperations: number;
@@ -38,6 +44,7 @@ export interface Score {
 
 export interface Window12 {
   hard: number;
+  hardUnstable?: number;
   soft: number;
   breakingMonths: number;
   changedMonths: number;
@@ -58,6 +65,8 @@ export interface ApiData {
   worstMonth: { month: string; hard: number; hardOperations: number } | null;
   byYear: Record<string, { hard: number; soft: number; breakingMonths: number; changedMonths: number }>;
   gaps: { from: string; to: string }[];
+  /** Every endpoint a change touched; changes refer to these by index. */
+  endpoints?: string[];
   intervals: Interval[];
 }
 
@@ -189,7 +198,7 @@ export function lastMonthBreaks() {
     .map((api) => {
       const i = api.intervals.find((x) => x.to === lastFullMonth && !x.gap && !x.error && x.hard > 0);
       if (!i) return null;
-      const hard = i.changes.filter((c) => c.level === "hard" && c.operations.length > 0);
+      const hard = i.changes.filter((c) => c.level === "hard" && !c.unstable && c.operations.length > 0);
       const pick = [...hard].sort(
         (a, b) =>
           Number(!b.text.includes("…")) - Number(!a.text.includes("…")) ||

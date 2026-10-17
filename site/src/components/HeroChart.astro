@@ -67,6 +67,9 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
         ))
       }
     </ul>
+    <p class="stack-link">
+      Depend on a few of these? <a href={`${base}/stack/`}>See your stack's record together</a>.
+    </p>
   </nav>
 </figure>
 
@@ -274,6 +277,14 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
     .labels .long {
       display: none;
     }
+  }
+
+  .legend .stack-link {
+    margin: 0.9rem 0 0;
+  }
+
+  .legend .stack-link a {
+    color: var(--ink-2);
   }
 
   .legend p {

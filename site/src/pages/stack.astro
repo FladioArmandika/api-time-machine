@@ -1,0 +1,490 @@
+---
+// Pick the APIs a product depends on: their combined record, each one's monthly breaks on a shared axis, and a side-by-side table.
+import Base from "../layouts/Base.astro";
+import { addMonths, apis, leaderboard, monthRange, nowMonth } from "../lib/data";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const months = monthRange(addMonths(nowMonth, -24), nowMonth);
+const data = leaderboard.map((row) => {
+  const api = apis.find((a) => a.id === row.id)!;
+  const by = new Map(api.intervals.map((i) => [i.to, i]));
+  const lastBreak = api.intervals.filter((i) => !i.gap && !i.error && i.hard > 0).at(-1)?.to ?? null;
+  return {
+    id: api.id,
+    name: api.name,
+    rank: row.rank,
+    score: api.score.value,
+    hard12: api.last12.hard,
+    months12: api.last12.breakingMonths,
+    soft12: api.last12.soft,
+    unstable12: api.last12.hardUnstable ?? 0,
+    endpoints: api.operations,
+    worst: api.worstMonth,
+    lastBreak,
+    // null: no readable spec that month, so the row shows a gap rather than a zero.
+    hard: months.map((m) => {
+      const i = by.get(m);
+      if (!i) return m < api.firstMonth ? null : 0;
+      return i.gap || i.error ? null : i.hard;
+    }),
+  };
+});
+// A sensible starting stack for first-time visitors: three APIs many products use together.
+const starter = ["stripe", "github", "openai"];
+---
+
+<Base title="Your stack: API Weather" description="Pick the APIs your product depends on and see how often they break, together and side by side.">
+  <header class="head">
+    <h1>Your stack</h1>
+    <p>Pick the APIs your product depends on to see how often they break, together and side by side. The link keeps your picks, so you can share it.</p>
+  </header>
+
+  <fieldset class="picker">
+    <legend>APIs in your stack</legend>
+    <div class="chips">
+      {[...data].sort((a, b) => a.name.localeCompare(b.name)).map((a) => (
+        <button type="button" data-id={a.id} aria-pressed="false">{a.name}</button>
+      ))}
+    </div>
+    <div class="actions">
+      <button type="button" class="link" data-act="clear">Clear</button>
+      <button type="button" class="link" data-act="share">Copy link</button>
+    </div>
+  </fieldset>
+
+  <div class="out" data-base={base} data-starter={starter.join(",")}>
+    <p class="summary" aria-live="polite"></p>
+
+    <section aria-labelledby="months-title" class="months-sec">
+      <h2 id="months-title">Breaking changes per month, last two years</h2>
+      <div class="grid" role="img"></div>
+      <p class="cap">One row per API on a shared scale. The top row adds them up. Hatched months had no readable spec.</p>
+    </section>
+
+    <section aria-labelledby="table-title">
+      <h2 id="table-title">Side by side</h2>
+      <div class="table-wrap"><table class="cmp"></table></div>
+    </section>
+  </div>
+
+  <p class="empty" hidden>Pick at least one API above.</p>
+</Base>
+
+<script is:inline type="application/json" id="stack-data" set:html={JSON.stringify({ months, apis: data })} />
+
+<script>
+  type Api = {
+    id: string; name: string; rank: number; score: number; hard12: number; months12: number; soft12: number;
+    unstable12: number; endpoints: number; worst: { month: string; hard: number } | null; lastBreak: string | null;
+    hard: (number | null)[];
+  };
+  const { months, apis } = JSON.parse(document.getElementById("stack-data")!.textContent!) as { months: string[]; apis: Api[] };
+  const byId = new Map(apis.map((a) => [a.id, a]));
+  const out = document.querySelector<HTMLElement>(".out")!;
+  const empty = document.querySelector<HTMLElement>(".empty")!;
+  const base = out.dataset.base!;
+  const chips = [...document.querySelectorAll<HTMLButtonElement>(".chips button")];
+  const summary = out.querySelector<HTMLElement>(".summary")!;
+  const grid = out.querySelector<HTMLElement>(".grid")!;
+  const table = out.querySelector<HTMLTableElement>(".cmp")!;
+  const KEY = "api-weather-stack";
+
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const mShort = (m: string) => `${MONTHS[Number(m.slice(5)) - 1]} ${m.slice(0, 4)}`;
+  const n = (x: number) => x.toLocaleString("en-US");
+  const plural = (x: number, w: string) => `${n(x)} ${w}${x === 1 ? "" : "s"}`;
+  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const partial = months.length - 1;
+
+  const store = {
+    get: () => { try { return localStorage.getItem(KEY); } catch { return null; } },
+    set: (v: string) => { try { localStorage.setItem(KEY, v); } catch {} },
+  };
+
+  const fromUrl = new URLSearchParams(location.search).get("apis");
+  let picked = (fromUrl ?? store.get() ?? out.dataset.starter!).split(",").filter((id) => byId.has(id));
+
+  function bars(values: (number | null)[], top: number, name: string) {
+    return values.map((v, i) => {
+      const label = `${name}, ${mShort(months[i])}${i === partial ? " so far" : ""}: ${v === null ? "no readable spec" : plural(v, "breaking change")}`;
+      const cls = ["m", v === null ? "gap" : "", i === partial ? "partial" : ""].join(" ");
+      const h = v ? Math.max(4, Math.sqrt(v / top) * 100) : 0;
+      return `<span class="${cls}" data-tip="${esc(label)}">${v ? `<span class="bar" style="height:${h}%"></span>` : ""}</span>`;
+    }).join("");
+  }
+
+  function render() {
+    for (const c of chips) c.setAttribute("aria-pressed", String(picked.includes(c.dataset.id!)));
+    const url = new URL(location.href);
+    if (picked.length) url.searchParams.set("apis", picked.join(","));
+    else url.searchParams.delete("apis");
+    history.replaceState(null, "", url);
+    store.set(picked.join(","));
+
+    out.hidden = picked.length === 0;
+    empty.hidden = picked.length > 0;
+    if (!picked.length) return;
+
+    // Stack order follows the ranking, so the steadiest API reads first everywhere on the page.
+    const sel = apis.filter((a) => picked.includes(a.id));
+    const total = months.map((_, i) => sel.reduce((s, a) => s + (a.hard[i] ?? 0), 0));
+    const sum12 = sel.reduce((s, a) => s + a.hard12, 0);
+    const broken = total.slice(-13, -1).filter((v) => v > 0).length;
+    const names = sel.length === 1 ? sel[0].name : `${sel.slice(0, -1).map((a) => a.name).join(", ")} and ${sel.at(-1)!.name}`;
+    summary.innerHTML = sum12
+      ? `${esc(names)} shipped <strong class="red">${plural(sum12, "breaking change")}</strong> in the past year. Something in ${sel.length === 1 ? "it" : "your stack"} broke in <strong>${broken} of 12 months</strong>.`
+      : `${esc(names)} shipped <strong>no breaking changes</strong> in the past year.`;
+
+    const top = Math.max(1, ...total);
+    const yearMarks = months.map((m, i) => (m.endsWith("-01") ? `<span class="yr" style="left:${(i / months.length) * 100}%">${m.slice(0, 4)}</span>` : "")).join("");
+    const row = (name: string, vals: (number | null)[], extra: string, href?: string, cls = "") =>
+      `<div class="row ${cls}">
+        ${href ? `<a class="name" href="${href}">${esc(name)}</a>` : `<span class="name">${esc(name)}</span>`}
+        <span class="plot"><span class="bars" style="--n:${months.length}">${bars(vals, top, name)}</span></span>
+        <span class="num r">${extra}</span>
+      </div>`;
+    grid.setAttribute("aria-label", summary.textContent!);
+    grid.innerHTML =
+      `<div class="row axis"><span></span><span class="plot">${yearMarks}</span><span class="r">Last 12 mo</span></div>` +
+      (sel.length > 1 ? row("All together", total, n(sum12), undefined, "sum") : "") +
+      sel.map((a) => row(a.name, a.hard, n(a.hard12), `${base}/api/${a.id}/`)).join("");
+
+    // Best value in each row gets a mark, so the table answers "which one is steadiest" at a glance.
+    const best = (vals: number[], low: boolean) => { const b = low ? Math.min(...vals) : Math.max(...vals); return vals.map((v) => sel.length > 1 && v === b); };
+    const rows: [string, (a: Api) => string, boolean[] | null][] = [
+      ["Stability score", (a) => `${a.score}<span class="unit">/100</span>`, best(sel.map((a) => a.score), false)],
+      ["Rank", (a) => `${a.rank} of ${apis.length}`, null],
+      ["Breaking, last 12 months", (a) => n(a.hard12), best(sel.map((a) => a.hard12), true)],
+      ["Months with a break", (a) => `${a.months12} of 12`, best(sel.map((a) => a.months12), true)],
+      ["Soft, last 12 months", (a) => n(a.soft12), null],
+      ["In beta endpoints, not counted", (a) => n(a.unstable12), null],
+      ["Last breaking change", (a) => (a.lastBreak ? mShort(a.lastBreak) : "None"), null],
+      ["Worst month on record", (a) => (a.worst && a.worst.hard ? `${n(a.worst.hard)} in ${mShort(a.worst.month)}` : "None"), null],
+      ["Endpoints", (a) => n(a.endpoints), null],
+    ];
+    const showUnstable = sel.some((a) => a.unstable12 > 0);
+    table.innerHTML =
+      `<thead><tr><td></td>${sel.map((a) => `<th scope="col"><a href="${base}/api/${a.id}/">${esc(a.name)}</a></th>`).join("")}</tr></thead><tbody>` +
+      rows
+        .filter(([label]) => showUnstable || !label.startsWith("In beta"))
+        .map(([label, f, marks]) => `<tr><th scope="row">${label}</th>${sel.map((a, i) => `<td class="num${marks?.[i] ? " best" : ""}">${f(a)}</td>`).join("")}</tr>`)
+        .join("") +
+      `</tbody>`;
+  }
+
+  for (const c of chips) {
+    c.addEventListener("click", () => {
+      const id = c.dataset.id!;
+      picked = picked.includes(id) ? picked.filter((x) => x !== id) : [...picked, id];
+      render();
+    });
+  }
+  document.querySelector('[data-act="clear"]')!.addEventListener("click", () => { picked = []; render(); });
+  const share = document.querySelector<HTMLButtonElement>('[data-act="share"]')!;
+  share.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      share.textContent = "Copied";
+    } catch {
+      share.textContent = "Copy failed";
+    }
+    setTimeout(() => (share.textContent = "Copy link"), 1600);
+  });
+  render();
+</script>
+
+<style>
+  .head {
+    padding-block: clamp(2rem, 5vw, 3.5rem) 1.5rem;
+    display: grid;
+    gap: 0.75rem;
+    max-width: 44rem;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 4.4vw, var(--t4));
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+  }
+
+  .head p {
+    color: var(--ink-2);
+    font-size: var(--t1);
+  }
+
+  .picker {
+    border: 0;
+    margin: 0 0 2.5rem;
+    padding: 0;
+  }
+
+  legend {
+    padding: 0;
+    margin-bottom: 0.6rem;
+    font-size: var(--t-1);
+    color: var(--ink-3);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .chips button {
+    font: inherit;
+    font-size: var(--t-1);
+    font-weight: 500;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--ink-2);
+    cursor: pointer;
+    transition: border-color 160ms ease-out, background-color 160ms ease-out, color 160ms ease-out;
+  }
+
+  .chips button:hover {
+    border-color: var(--ink-3);
+    color: var(--ink);
+  }
+
+  .chips button[aria-pressed="true"] {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--bg);
+  }
+
+  .chips button[aria-pressed="true"]::before {
+    content: "✓ ";
+  }
+
+  .actions {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 0.85rem;
+  }
+
+  .link {
+    font: inherit;
+    font-size: var(--t-1);
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .link:hover {
+    color: var(--ink);
+    text-decoration-color: currentColor;
+  }
+
+  .summary {
+    font-size: var(--t2);
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    max-width: 44rem;
+    margin-bottom: 3rem;
+  }
+
+  .summary :global(.red) {
+    color: var(--red);
+  }
+
+  section {
+    margin-bottom: 3.5rem;
+  }
+
+  h2 {
+    font-size: var(--t1);
+    margin-bottom: 1rem;
+  }
+
+  .grid :global(.row) {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr) 5rem;
+    column-gap: 1rem;
+    align-items: end;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .grid :global(.row.axis) {
+    border-bottom: 1px solid var(--ink);
+    font-size: var(--t-1);
+    color: var(--ink-3);
+    padding-bottom: 0.4rem;
+  }
+
+  .grid :global(.row.sum) {
+    border-bottom: 1px solid var(--ink-3);
+  }
+
+  .grid :global(.name) {
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    padding-bottom: 0.45rem;
+  }
+
+  .grid :global(a.name:hover) {
+    text-decoration: underline;
+  }
+
+  .grid :global(.r) {
+    text-align: right;
+    padding-bottom: 0.45rem;
+    color: var(--ink-2);
+  }
+
+  .grid :global(.sum .r),
+  .grid :global(.sum .name) {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .grid :global(.plot) {
+    position: relative;
+    display: block;
+    height: 3.25rem;
+  }
+
+  .grid :global(.axis .plot) {
+    height: 1.1rem;
+  }
+
+  .grid :global(.sum .plot) {
+    height: 4.5rem;
+  }
+
+  .grid :global(.yr) {
+    position: absolute;
+    bottom: 0;
+    padding-left: 0.3rem;
+    border-left: 1px solid var(--rule);
+  }
+
+  .grid :global(.bars) {
+    position: absolute;
+    inset: 0.4rem 0 0 0;
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    column-gap: 2px;
+    align-items: end;
+  }
+
+  .grid :global(.m) {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .grid :global(.bar) {
+    width: 100%;
+    background: var(--red);
+  }
+
+  .grid :global(.partial .bar) {
+    background: transparent;
+    box-shadow: inset 0 0 0 1px var(--red);
+  }
+
+  .grid :global(.m:hover .bar) {
+    background: var(--ink);
+  }
+
+  .grid :global(.gap) {
+    background: repeating-linear-gradient(135deg, var(--rule) 0 1px, transparent 1px 4px);
+  }
+
+  .cap {
+    margin-top: 0.75rem;
+    font-size: var(--t-1);
+    color: var(--ink-3);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  .cmp {
+    border-collapse: collapse;
+    min-width: 100%;
+    font-size: 0.9375rem;
+  }
+
+  .cmp :global(th),
+  .cmp :global(td) {
+    padding: 0.6rem 1rem 0.6rem 0;
+    border-bottom: 1px solid var(--rule);
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .cmp :global(thead th) {
+    border-bottom: 1px solid var(--ink);
+  }
+
+  .cmp :global(thead a) {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .cmp :global(thead a:hover) {
+    text-decoration: underline;
+  }
+
+  .cmp :global(tbody th) {
+    font-weight: 400;
+    color: var(--ink-3);
+    font-size: var(--t-1);
+  }
+
+  .cmp :global(td.best) {
+    font-weight: 600;
+  }
+
+  .cmp :global(td.best)::after {
+    content: " best";
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-left: 0.25rem;
+  }
+
+  .cmp :global(.unit) {
+    color: var(--ink-3);
+    font-weight: 400;
+  }
+
+  .empty {
+    color: var(--ink-3);
+    margin-bottom: 4rem;
+  }
+
+  @media (max-width: 40rem) {
+    .grid :global(.row) {
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas: "name r" "plot plot";
+      padding-top: 0.6rem;
+      align-items: baseline;
+    }
+
+    .grid :global(.row.axis) {
+      grid-template-areas: "plot plot";
+    }
+
+    .grid :global(.row.axis > :not(.plot)) {
+      display: none;
+    }
+
+    .grid :global(.name) { grid-area: name; padding-bottom: 0; }
+    .grid :global(.r) { grid-area: r; padding-bottom: 0; }
+    .grid :global(.plot) { grid-area: plot; }
+  }
+</style>
