@@ -1,0 +1,1 @@
+{"hard":1,"soft":0,"info":17,"raw":{"hard":1,"soft":0,"info":17},"hardOperations":1,"changes":[{"id":"response-required-property-removed","level":"hard","text":"removed the required property `allowBackgroundAgentDelegation` from the response with the `200` status","occurrences":1,"operationCount":1,"operations":["PUT /api/0/organizations/{organization_id_or_slug}/"]}]}

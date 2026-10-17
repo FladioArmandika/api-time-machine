@@ -2,7 +2,7 @@
 
 **How often do popular APIs break the code that depends on them?**
 
-API Weather tracks the public OpenAPI specs of 10 well-known APIs, compares every month with the one before, and counts the changes that would break an existing client. It updates itself every day.
+API Weather tracks the public OpenAPI specs of 15 well-known APIs, compares every month with the one before, and counts the changes that would break an existing client. It updates itself every day.
 
 **→ [See the live site](https://fladioarmandika.github.io/api-time-machine/)**
 
@@ -12,7 +12,7 @@ API Weather tracks the public OpenAPI specs of 10 well-known APIs, compares ever
 
 As of October 2026:
 
-- **These 10 APIs shipped more than 1,000 breaking changes in the past year.** September 2026 was the worst month since all ten had a public spec.
+- **These 15 APIs shipped nearly 1,500 breaking changes in the past year.** September 2026 was the worst month since all of them had a public spec.
 - **Cloudflare shipped a breaking change every single month** of the past year. **Twilio didn't ship one.**
 - **The roughest month on record** was Stripe in May 2018: 223 breaking changes across 191 endpoints.
 
@@ -32,6 +32,11 @@ The live site has the current numbers, a page for every API with its full histor
 | Plaid | [plaid/plaid-openapi](https://github.com/plaid/plaid-openapi) |
 | Asana | [Asana/openapi](https://github.com/Asana/openapi) |
 | Box | [box/box-openapi](https://github.com/box/box-openapi) |
+| Figma | [figma/rest-api-spec](https://github.com/figma/rest-api-spec) |
+| Datadog | [DataDog/datadog-api-client-go](https://github.com/DataDog/datadog-api-client-go) (API v2) |
+| Sentry | [getsentry/sentry-api-schema](https://github.com/getsentry/sentry-api-schema) |
+| Okta | [okta/okta-management-openapi-spec](https://github.com/okta/okta-management-openapi-spec) |
+| Resend | [resend/resend-openapi](https://github.com/resend/resend-openapi) |
 
 The exact file for each one is in [`apis.json`](apis.json).
 

@@ -24,6 +24,29 @@
   },
   {
     "rank": 2,
+    "id": "okta",
+    "name": "Okta",
+    "score": {
+      "value": 92,
+      "pressure": 1.234,
+      "label": "Clear",
+      "icon": "☀️"
+    },
+    "last12": {
+      "hard": 14,
+      "soft": 5,
+      "breakingMonths": 2,
+      "changedMonths": 6
+    },
+    "operations": 731,
+    "worstMonth": {
+      "month": "2024-09",
+      "hard": 57,
+      "hardOperations": 61
+    }
+  },
+  {
+    "rank": 3,
     "id": "box",
     "name": "Box",
     "score": {
@@ -46,7 +69,7 @@
     }
   },
   {
-    "rank": 3,
+    "rank": 4,
     "id": "pagerduty",
     "name": "PagerDuty",
     "score": {
@@ -69,7 +92,7 @@
     }
   },
   {
-    "rank": 4,
+    "rank": 5,
     "id": "discord",
     "name": "Discord",
     "score": {
@@ -92,7 +115,7 @@
     }
   },
   {
-    "rank": 5,
+    "rank": 6,
     "id": "asana",
     "name": "Asana",
     "score": {
@@ -115,7 +138,7 @@
     }
   },
   {
-    "rank": 6,
+    "rank": 7,
     "id": "github",
     "name": "GitHub",
     "score": {
@@ -138,7 +161,30 @@
     }
   },
   {
-    "rank": 7,
+    "rank": 8,
+    "id": "figma",
+    "name": "Figma",
+    "score": {
+      "value": 64,
+      "pressure": 6.795,
+      "label": "Showers",
+      "icon": "🌧"
+    },
+    "last12": {
+      "hard": 4,
+      "soft": 5,
+      "breakingMonths": 1,
+      "changedMonths": 8
+    },
+    "operations": 54,
+    "worstMonth": {
+      "month": "2025-04",
+      "hard": 9,
+      "hardOperations": 22
+    }
+  },
+  {
+    "rank": 9,
     "id": "stripe",
     "name": "Stripe",
     "score": {
@@ -161,7 +207,30 @@
     }
   },
   {
-    "rank": 8,
+    "rank": 10,
+    "id": "datadog",
+    "name": "Datadog",
+    "score": {
+      "value": 47,
+      "pressure": 11.43,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 203,
+      "soft": 113,
+      "breakingMonths": 12,
+      "changedMonths": 12
+    },
+    "operations": 1670,
+    "worstMonth": {
+      "month": "2026-08",
+      "hard": 47,
+      "hardOperations": 32
+    }
+  },
+  {
+    "rank": 11,
     "id": "plaid",
     "name": "Plaid",
     "score": {
@@ -184,7 +253,30 @@
     }
   },
   {
-    "rank": 9,
+    "rank": 12,
+    "id": "resend",
+    "name": "Resend",
+    "score": {
+      "value": 29,
+      "pressure": 18.357,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 24,
+      "soft": 12,
+      "breakingMonths": 7,
+      "changedMonths": 11
+    },
+    "operations": 142,
+    "worstMonth": {
+      "month": "2026-07",
+      "hard": 10,
+      "hardOperations": 29
+    }
+  },
+  {
+    "rank": 13,
     "id": "cloudflare",
     "name": "Cloudflare",
     "score": {
@@ -207,7 +299,7 @@
     }
   },
   {
-    "rank": 10,
+    "rank": 14,
     "id": "openai",
     "name": "OpenAI",
     "score": {
@@ -227,6 +319,29 @@
       "month": "2026-09",
       "hard": 61,
       "hardOperations": 48
+    }
+  },
+  {
+    "rank": 15,
+    "id": "sentry",
+    "name": "Sentry",
+    "score": {
+      "value": 1,
+      "pressure": 66.696,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 230,
+      "soft": 53,
+      "breakingMonths": 12,
+      "changedMonths": 12
+    },
+    "operations": 256,
+    "worstMonth": {
+      "month": "2026-06",
+      "hard": 86,
+      "hardOperations": 40
     }
   }
 ]

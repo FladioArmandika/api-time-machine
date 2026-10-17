@@ -1,0 +1,102 @@
+{
+  "642715e9a9dcc9c2de407f8534e4cc78c5c529af": {
+    "valid": true,
+    "openapi": "3.1.0",
+    "operations": 1
+  },
+  "43a03bf2abec3d690e07fba8dea73df575b1e950": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 11
+  },
+  "a41617316b9cbd812b84cfd6323918835f2d5569": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 21
+  },
+  "0f3b879808ac576cc3c129729d7808e0f52d8f95": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 22
+  },
+  "8ab1359b5a3a58faed4e5deb5f2378fe0ca4860e": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 22
+  },
+  "5b6d097bb1bb1e8a4344959f74a548ad2051fc83": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 24
+  },
+  "5f61ba9ba7a2e2738ff88a780384b923ee40137c": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 29
+  },
+  "1d2595f30bb4b0224012c81579257512cf923aa6": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 31
+  },
+  "f7ce68268e9a024ca79d26c9395bfaf4be4fe951": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 49
+  },
+  "6f2afa0ce01858bef78004a73a5a19ca93c63db6": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 49
+  },
+  "f4deb64c582806a255727b729499d10ac7c730e2": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 70
+  },
+  "096f844d6a88b61558021e1510eaefbbf5ada121": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 67
+  },
+  "ce66e985cc9e505c60f4c0ff499102d9e1b610f1": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 69
+  },
+  "a6f376400a6a5292885081f094f74f4f60b1608e": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 83
+  },
+  "f6739efd3a4cf9f1f3124a20bae721cb36df73d8": {
+    "valid": true,
+    "openapi": "3.1.2",
+    "operations": 83
+  },
+  "c1a9d677ac97e5729b5abcf70751c1199099f6c5": {
+    "valid": true,
+    "openapi": "3.1.2",
+    "operations": 89
+  },
+  "ce7789646f93a9fc4d3f4f173abec594c7dddf84": {
+    "valid": true,
+    "openapi": "3.1.2",
+    "operations": 97
+  },
+  "074fc8e95f5bcea90467d16fc77850dd83fc7aa4": {
+    "valid": true,
+    "openapi": "3.1.2",
+    "operations": 108
+  },
+  "5e1e8bbe2781e3b73869b14c0ea194f186d867ab": {
+    "valid": true,
+    "openapi": "3.1.2",
+    "operations": 113
+  },
+  "b8abc922c01f395b502f8d9f49ef3b40a546aee6": {
+    "valid": true,
+    "openapi": "3.1.2",
+    "operations": 142
+  }
+}

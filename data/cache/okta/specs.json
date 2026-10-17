@@ -1,0 +1,66 @@
+{
+  "28634d0353f24afa584c83c74625a319fca58275": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 585
+  },
+  "f859adee803a91a65e53083156521938bb12fb04": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 585
+  },
+  "e041cfbfb2ca71961ab9e58e9b4910d249081e4c": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 615
+  },
+  "f66841292d41a18a187329b5b34ff235c7c2d849": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 651
+  },
+  "087c2ce998960b4aaec11a1fec1a69f64a1eb9ba": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 705
+  },
+  "b022200b5464e6ff4b20b3455f045b672e59f315": {
+    "valid": false,
+    "error": "unparseable: Map keys must be unique at line 55483, column 5:\n\n        type: string\n    pathIdentitySourceExternalId:\n    ^\n"
+  },
+  "fc5a94ac9d23a1414c1938c014e55a34e2b7498f": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 727
+  },
+  "9484081498295f8fc218140fe2d2c9b0c5e1b327": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 732
+  },
+  "edcc106f7e57994726fe05f3694f57e89e633c89": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 732
+  },
+  "42417d9a061c54e2abd83a7988fd82ce36a856b2": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 734
+  },
+  "041860aae34f2f67539f165196661d3ff1ab5c4a": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 734
+  },
+  "8843ac38b0ab88c192a22e8831b8d3d9f429f6df": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 734
+  },
+  "9e49b3729ba61b6954ed4ae720e93e3ece0c49ee": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 731
+  }
+}

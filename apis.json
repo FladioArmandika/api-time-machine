@@ -74,5 +74,43 @@
     "branch": "main",
     "path": "openapi.json",
     "notes": "Compiled spec at the repo root, published since September 2023."
+  },
+  {
+    "id": "figma",
+    "name": "Figma",
+    "repo": "figma/rest-api-spec",
+    "branch": "main",
+    "path": "openapi/openapi.yaml"
+  },
+  {
+    "id": "datadog",
+    "name": "Datadog",
+    "repo": "DataDog/datadog-api-client-go",
+    "branch": "master",
+    "path": ".generator/schemas/v2/openapi.yaml",
+    "notes": "Datadog API v2, from the spec its Go client is generated from. v1 endpoints are in a separate file."
+  },
+  {
+    "id": "sentry",
+    "name": "Sentry",
+    "repo": "getsentry/sentry-api-schema",
+    "branch": "main",
+    "path": "openapi-derefed.json",
+    "notes": "Generated from Sentry's code and covers the endpoints Sentry documents publicly. oasdiff counts newly required auth scopes as breaking, which accounts for some of the busiest months."
+  },
+  {
+    "id": "okta",
+    "name": "Okta",
+    "repo": "okta/okta-management-openapi-spec",
+    "branch": "master",
+    "path": "dist/current/management-minimal.yaml",
+    "notes": "Management API. Okta has published the current spec at this path since June 2024. The November 2025 version had duplicate keys and could not be read, so August 2025 to March 2026 is one gap."
+  },
+  {
+    "id": "resend",
+    "name": "Resend",
+    "repo": "resend/resend-openapi",
+    "branch": "main",
+    "path": "resend.yaml"
   }
 ]

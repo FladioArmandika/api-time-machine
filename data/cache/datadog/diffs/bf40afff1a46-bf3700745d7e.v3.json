@@ -1,0 +1,1 @@
+{"hard":0,"soft":1,"info":27,"raw":{"hard":0,"soft":2,"info":27},"hardOperations":0,"changes":[{"id":"request-property-removed","level":"soft","text":"removed the request property `agentRule`","occurrences":2,"operationCount":2,"operations":["POST /api/v2/security_monitoring/rules","PUT /api/v2/security_monitoring/rules/{rule_id}"]}]}

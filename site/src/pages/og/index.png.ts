@@ -15,7 +15,7 @@ export const GET: APIRoute = async () => {
     h(
       "div",
       { marginTop: 14, fontSize: 22, color: C.ink3 },
-      "Breaking changes per month across Stripe, GitHub, OpenAI, Cloudflare and 6 more",
+      `Breaking changes per month across Stripe, GitHub, OpenAI, Cloudflare and ${apis.length - 4} more`,
     ),
   );
   return new Response(await png(card), { headers: { "Content-Type": "image/png" } });
