@@ -189,13 +189,13 @@
     "name": "Cloudflare",
     "score": {
       "value": 27,
-      "pressure": 19.499,
+      "pressure": 19.745,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 636,
-      "soft": 1346,
+      "hard": 643,
+      "soft": 1355,
       "breakingMonths": 12,
       "changedMonths": 12
     },
