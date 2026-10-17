@@ -11,7 +11,7 @@ const hero = heroSeries();
 
 <Base title="API Weather: how often popular APIs break their clients" description={`${lead.first} ${lead.second}`}>
   <header class="intro">
-    <h1>{apis.length} popular APIs shipped {hero.last12.toLocaleString("en-US")} breaking changes in the past year.</h1>
+    <h1>{apis.length} popular APIs shipped <span class="num" data-count={hero.last12}>{hero.last12.toLocaleString("en-US")}</span> breaking changes in the past year.</h1>
     <p class="standfirst">
       {monthLong(hero.peak.m)} was the worst month since all {apis.length} published a spec, with {hero.peak.total}. Over the
       past year, {lead.first} {lead.second}

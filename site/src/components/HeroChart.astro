@@ -3,19 +3,28 @@
 import { apis, heroSeries, monthLong, monthShort, plural } from "../lib/data";
 
 const { start, cols, peak, top } = heroSeries();
+// Each API's total over the charted months, for the caption that answers a hover.
+const totals = new Map<string, { name: string; n: number }>();
+for (const c of cols) for (const s of c.segs) {
+  const t = totals.get(s.api.id) ?? { name: s.api.name, n: 0 };
+  t.n += s.n;
+  totals.set(s.api.id, t);
+}
+const caption = `Breaking changes per month, all ${apis.length} APIs stacked, largest contributor at the base. Hover a bar to follow one API.`;
 const summary = `Breaking changes per month across all ${apis.length} APIs since ${monthLong(start)}. Peak: ${monthLong(peak.m)} with ${peak.total}.`;
 ---
 
 <figure class="hero-chart" aria-label={summary}>
   <div class="bars" style={`--n:${cols.length}`} aria-hidden="true">
     {
-      cols.map((c) => (
-        <div class:list={["col", { partial: c.partial, peak: c === peak }]}>
+      cols.map((c, i) => (
+        <div class:list={["col", { partial: c.partial, peak: c === peak }]} style={`--i:${i}`}>
           {c === peak && <span class="val num">{c.total}</span>}
           <div class="stack" style={`height:${(c.total / top) * 100}%`}>
             {c.segs.map((s) => (
               <span
                 class="seg"
+                data-api={s.api.id}
                 style={`flex-grow:${s.n}`}
                 data-tip={`${s.api.name}, ${monthLong(c.m)}${c.partial ? " so far" : ""}: ${plural(s.n, "breaking change")}`}
               />
@@ -36,10 +45,50 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
       )
     }
   </div>
-  <figcaption>
-    Breaking changes per month, all {apis.length} APIs stacked, largest contributor at the base. Hover a bar to see who.
+  <figcaption
+    aria-live="polite"
+    data-default={caption}
+    data-totals={JSON.stringify(Object.fromEntries(totals))}
+    data-since={monthLong(start)}
+  >
+    {caption}
   </figcaption>
 </figure>
+
+<script>
+  // Hovering any segment focuses that API across every month and names its total in the caption.
+  for (const fig of document.querySelectorAll<HTMLElement>(".hero-chart")) {
+    const bars = fig.querySelector<HTMLElement>(".bars")!;
+    const cap = fig.querySelector<HTMLElement>("figcaption")!;
+    const totals: Record<string, { name: string; n: number }> = JSON.parse(cap.dataset.totals!);
+    let focus = "";
+    const set = (id: string) => {
+      if (id === focus) return;
+      focus = id;
+      for (const s of bars.querySelectorAll<HTMLElement>(".seg")) s.classList.toggle("on", s.dataset.api === id);
+      bars.classList.toggle("focused", !!id);
+      cap.textContent = id
+        ? `${totals[id].name}: ${totals[id].n.toLocaleString("en-US")} breaking changes since ${cap.dataset.since}.`
+        : cap.dataset.default!;
+    };
+    bars.addEventListener("pointerover", (e) => set((e.target as HTMLElement).closest<HTMLElement>(".seg")?.dataset.api ?? focus));
+    bars.addEventListener("pointerleave", () => set(""));
+  }
+
+  // The headline total counts up while the bars rise; the server-rendered number is the no-JS fallback.
+  const el = document.querySelector<HTMLElement>("[data-count]");
+  if (el && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const end = Number(el.dataset.count);
+    const t0 = performance.now();
+    const dur = 1400;
+    const step = (t: number) => {
+      const p = Math.min(1, (t - t0) / dur);
+      el.textContent = Math.round(end * (1 - (1 - p) ** 3)).toLocaleString("en-US");
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+</script>
 
 <style>
   .hero-chart {
@@ -71,21 +120,43 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
   .stack {
     display: flex;
     flex-direction: column-reverse;
+    transform-origin: bottom;
+    animation: rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i) * 18ms);
+  }
+
+  @keyframes rise {
+    from {
+      transform: scaleY(0);
+    }
+  }
+
+  .val {
+    animation: appear 300ms ease-out both;
+    animation-delay: calc(var(--i) * 18ms + 650ms);
+  }
+
+  @keyframes appear {
+    from {
+      opacity: 0;
+      transform: translateY(4px);
+    }
   }
 
   .seg {
     flex-basis: 0;
     min-height: 1px;
     background: var(--red);
+    transition: opacity 160ms ease-out;
+  }
+
+  .focused .seg:not(.on) {
+    opacity: 0.18;
   }
 
   /* A hairline of page colour between APIs, so each segment can be hovered on its own. */
   .seg + .seg {
     border-bottom: 1px solid var(--bg);
-  }
-
-  .seg:hover {
-    background: var(--ink);
   }
 
   .partial .seg {
@@ -133,6 +204,7 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
   }
 
   figcaption {
+    min-height: 1.5em;
     margin-top: 1rem;
     font-size: var(--t-1);
     color: var(--ink-3);

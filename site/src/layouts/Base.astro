@@ -49,35 +49,46 @@ const path = Astro.url.pathname.replace(base, "") || "/";
       <p>A side project by <a href="https://github.com/FladioArmandika">Fladio Armandika</a>.</p>
       </div>
     </footer>
-    <div class="tip" role="tooltip" hidden></div>
+    <div class="tip" role="tooltip"></div>
     <script>
-      // One shared tooltip for every element with data-tip (forecast cells, chart columns).
+      // One shared tooltip for every element with data-tip. It follows the pointer along a chart and fades between values.
       const tip = document.querySelector<HTMLElement>(".tip")!;
-      const show = (el: HTMLElement, x: number, y: number) => {
-        tip.textContent = el.dataset.tip ?? "";
-        tip.hidden = false;
+      let current: HTMLElement | null = null;
+      const place = (x: number, top: number) => {
         const w = tip.offsetWidth;
         const left = Math.min(Math.max(8, x - w / 2), window.innerWidth - w - 8);
-        tip.style.left = `${left}px`;
-        tip.style.top = `${y - tip.offsetHeight - 12}px`;
+        tip.style.transform = `translate(${left}px, ${top - tip.offsetHeight - 10}px)`;
+      };
+      const show = (el: HTMLElement, x: number) => {
+        current = el;
+        tip.textContent = el.dataset.tip ?? "";
+        place(x, el.getBoundingClientRect().top);
+        tip.classList.add("on");
+      };
+      const hide = () => {
+        current = null;
+        tip.classList.remove("on");
       };
       document.addEventListener("pointerover", (e) => {
         const el = (e.target as HTMLElement).closest<HTMLElement>("[data-tip]");
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        show(el, r.left + r.width / 2, r.top);
+        if (el) show(el, e.clientX);
+      });
+      document.addEventListener("pointermove", (e) => {
+        if (current) place(e.clientX, current.getBoundingClientRect().top);
       });
       document.addEventListener("pointerout", (e) => {
-        if ((e.target as HTMLElement).closest("[data-tip]")) tip.hidden = true;
+        const to = (e.relatedTarget as HTMLElement | null)?.closest?.("[data-tip]");
+        if (!to) hide();
       });
       document.addEventListener("focusin", (e) => {
         const el = (e.target as HTMLElement).closest<HTMLElement>("[data-tip]");
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        show(el, r.left + r.width / 2, r.top);
+        if (el) {
+          const r = el.getBoundingClientRect();
+          show(el, r.left + r.width / 2);
+        }
       });
-      document.addEventListener("focusout", () => (tip.hidden = true));
-      window.addEventListener("scroll", () => (tip.hidden = true), { passive: true });
+      document.addEventListener("focusout", hide);
+      window.addEventListener("scroll", hide, { passive: true });
     </script>
   </body>
 </html>
@@ -262,8 +273,13 @@ const path = Astro.url.pathname.replace(base, "") || "/";
 
   .tip {
     position: fixed;
+    top: 0;
+    left: 0;
     z-index: 20;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 120ms ease-out;
+    will-change: transform;
     max-width: 18rem;
     padding: 0.35rem 0.55rem;
     border-radius: 4px;
@@ -273,8 +289,25 @@ const path = Astro.url.pathname.replace(base, "") || "/";
     line-height: 1.4;
   }
 
+  .tip.on {
+    opacity: 1;
+  }
+
   .num {
     font-variant-numeric: tabular-nums;
+  }
+
+  a {
+    transition: text-decoration-color 150ms ease-out, color 150ms ease-out;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 
   .sr {

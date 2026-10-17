@@ -106,6 +106,20 @@ const x = (i: number) => `${(i / n) * 100}%`;
 
   li {
     border-bottom: 1px solid var(--rule);
+    transition: background-color 160ms ease-out;
+  }
+
+  /* Pointing at one API quiets the others, so its record can be read against the shared axis. */
+  .bar {
+    transition: opacity 160ms ease-out;
+  }
+
+  ol:hover li:not(:hover) .bar {
+    opacity: 0.3;
+  }
+
+  li:hover {
+    background: var(--wash);
   }
 
   li > * {
@@ -171,13 +185,13 @@ const x = (i: number) => `${(i / n) * 100}%`;
     align-items: flex-end;
   }
 
-  .m:not(.before):hover {
-    background: var(--wash);
-  }
-
   .bar {
     width: 100%;
     background: var(--red);
+  }
+
+  .m:hover .bar {
+    background: var(--ink);
   }
 
   .gap {

@@ -112,8 +112,8 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
                 <summary>
                   <span class="m">{monthLong(i.to)}{i.partial ? " so far" : ""}</span>
                   <span class="counts num">
-                    {i.hard > 0 && <span class="c-hard">{plural(i.hard, "breaking")}</span>}
-                    {i.soft > 0 && <span class="c-soft">{plural(i.soft, "soft")}</span>}
+                    {i.hard > 0 && <span class="c-hard">{i.hard.toLocaleString("en-US")} breaking</span>}
+                    {i.soft > 0 && <span class="c-soft">{i.soft.toLocaleString("en-US")} soft</span>}
                   </span>
                 </summary>
                 {hard.length > 0 && (
@@ -358,11 +358,57 @@ const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 
   summary {
     cursor: pointer;
+    list-style: none;
     padding-block: 0.8rem;
     display: flex;
     flex-wrap: wrap;
     gap: 0.25rem 1.25rem;
     align-items: baseline;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* A plus that turns into a minus as the month opens. */
+  .log > details > summary::before,
+  .soft-list > summary::before {
+    content: "";
+    width: 0.6rem;
+    height: 0.6rem;
+    align-self: center;
+    background:
+      linear-gradient(currentColor, currentColor) center / 100% 1.5px no-repeat,
+      linear-gradient(currentColor, currentColor) center / 1.5px 100% no-repeat;
+    color: var(--ink-3);
+    transition: transform 200ms ease-out;
+  }
+
+  details[open] > summary::before {
+    transform: rotate(90deg);
+    background: linear-gradient(currentColor, currentColor) center / 100% 1.5px no-repeat;
+  }
+
+  summary:hover .m {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  /* Opening a month eases its height where the browser supports animating to auto. */
+  @supports (interpolate-size: allow-keywords) {
+    .log {
+      interpolate-size: allow-keywords;
+    }
+
+    details::details-content {
+      height: 0;
+      overflow: clip;
+      transition: height 260ms ease-out, content-visibility 260ms allow-discrete;
+    }
+
+    details[open]::details-content {
+      height: auto;
+    }
   }
 
   .m {
