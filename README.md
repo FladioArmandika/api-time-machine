@@ -8,7 +8,7 @@ API Weather tracks the public OpenAPI specs of 19 well-known APIs, compares ever
 
 **→ [See the live site](https://fladioarmandika.github.io/api-time-machine/)**
 
-![The API Weather home page: a stacked bar chart of breaking changes per month across 10 APIs](docs/home.png)
+![The API Weather home page: a stacked bar chart of breaking changes per month across 19 APIs](docs/home.png)
 
 ## What the data shows
 

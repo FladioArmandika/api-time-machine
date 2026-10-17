@@ -79,7 +79,7 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
     const bars = fig.querySelector<HTMLElement>(".bars")!;
     const cap = fig.querySelector<HTMLElement>("figcaption")!;
     const totals: Record<string, { name: string; n: number }> = JSON.parse(cap.dataset.totals!);
-    const chips = fig.querySelectorAll<HTMLElement>(".legend a");
+    const chips = fig.querySelectorAll<HTMLElement>(".legend li a");
     let focus = "";
     const set = (id: string) => {
       if (id === focus) return;
@@ -302,7 +302,7 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
     gap: 0.4rem;
   }
 
-  .legend a {
+  .legend li a {
     display: inline-flex;
     align-items: baseline;
     gap: 0.45rem;
@@ -316,13 +316,13 @@ const summary = `Breaking changes per month across all ${apis.length} APIs since
     transition: border-color 160ms ease-out, background-color 160ms ease-out;
   }
 
-  .legend a span {
+  .legend li a span {
     color: var(--red);
     font-weight: 600;
   }
 
-  .legend a:hover,
-  .legend a.on {
+  .legend li a:hover,
+  .legend li a.on {
     border-color: var(--red-line);
     background: var(--red-wash);
   }
