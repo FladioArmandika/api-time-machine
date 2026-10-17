@@ -9,5 +9,10 @@
   },
   "dependencies": {
     "astro": "^5.18.2"
+  },
+  "devDependencies": {
+    "@fontsource/geist-sans": "^5.1.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "satori": "^0.12.2"
   }
 }

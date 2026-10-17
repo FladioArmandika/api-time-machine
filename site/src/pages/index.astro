@@ -22,6 +22,29 @@ const hero = heroSeries();
     <HeroChart />
   </section>
 
+  <section class="defs" aria-labelledby="defs-title">
+    <h2 id="defs-title">What counts as breaking</h2>
+    <p class="defs-lead">A change that can make working client code fail. Three kinds make up almost all of them:</p>
+    <dl>
+      <div>
+        <dt>Something is removed</dt>
+        <dd>An endpoint, a response field or an accepted value disappears, and code that used it gets an error.</dd>
+      </div>
+      <div>
+        <dt>Something changes shape</dt>
+        <dd>A field's type changes, say from <code>string</code> to <code>object</code>, and parsing code no longer fits.</dd>
+      </div>
+      <div>
+        <dt>Something gets stricter</dt>
+        <dd>A parameter becomes required, or a field that was always there can now be missing or <code>null</code>.</dd>
+      </div>
+    </dl>
+    <p class="defs-foot">
+      Additions, like a new enum value, are counted as soft changes and kept out of the totals above.
+      <a href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/methodology/`}>Full methodology</a>
+    </p>
+  </section>
+
   <section id="ranking" class="ranking" aria-labelledby="ranking-title">
     <header class="sec-head">
       <h2 id="ranking-title">Who's breaking things</h2>
@@ -64,6 +87,52 @@ const hero = heroSeries();
 
   .ranking {
     margin-bottom: 5.5rem;
+  }
+
+  .defs {
+    margin-bottom: 5.5rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .defs h2 {
+    font-size: var(--t2);
+  }
+
+  .defs-lead,
+  .defs-foot {
+    color: var(--ink-2);
+  }
+
+  .defs-foot {
+    font-size: var(--t-1);
+    color: var(--ink-3);
+  }
+
+  .defs-foot a {
+    color: inherit;
+  }
+
+  dl {
+    margin: 0.75rem 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem 2.5rem;
+  }
+
+  dl div {
+    border-top: 2px solid var(--red);
+    padding-top: 0.75rem;
+  }
+
+  dt {
+    font-weight: 600;
+  }
+
+  dd {
+    margin: 0.25rem 0 0;
+    color: var(--ink-2);
+    font-size: 0.875rem;
   }
 
   .sec-head {

@@ -37,7 +37,7 @@ const hardOf = (cs: Change[]) => cs.filter((c) => c.level === "hard");
 const softOf = (cs: Change[]) => cs.filter((c) => c.level === "soft");
 ---
 
-<Base title={`${api.name}: API Weather`} description={`${api.name}: ${lede} Stability score ${api.score.value}/100.`}>
+<Base title={`${api.name}: API Weather`} image={`og/${api.id}.png`} description={`${api.name}: ${lede} Stability score ${api.score.value}/100.`}>
   <article>
     <header class="api-head">
       <p class="crumb"><a href={`${base}/#ranking`}>Ranking</a>: {rank} of {apis.length}</p>
