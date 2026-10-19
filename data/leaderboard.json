@@ -197,7 +197,7 @@
     "name": "Datadog",
     "score": {
       "value": 67,
-      "pressure": 6.005,
+      "pressure": 6.004,
       "label": "Showers",
       "icon": "🌧"
     },
@@ -208,7 +208,7 @@
       "changedMonths": 12,
       "hardUnstable": 107
     },
-    "operations": 1670,
+    "operations": 1681,
     "worstMonth": {
       "month": "2026-08",
       "hard": 18,
