@@ -73,30 +73,6 @@
   },
   {
     "rank": 4,
-    "id": "pagerduty",
-    "name": "PagerDuty",
-    "score": {
-      "value": 79,
-      "pressure": 3.476,
-      "label": "Fair",
-      "icon": "🌤"
-    },
-    "last12": {
-      "hard": 15,
-      "soft": 21,
-      "breakingMonths": 3,
-      "changedMonths": 11,
-      "hardUnstable": 0
-    },
-    "operations": 466,
-    "worstMonth": {
-      "month": "2020-08",
-      "hard": 43,
-      "hardOperations": 45
-    }
-  },
-  {
-    "rank": 5,
     "id": "square",
     "name": "Square",
     "score": {
@@ -117,6 +93,30 @@
       "month": "2026-05",
       "hard": 13,
       "hardOperations": 13
+    }
+  },
+  {
+    "rank": 5,
+    "id": "pagerduty",
+    "name": "PagerDuty",
+    "score": {
+      "value": 71,
+      "pressure": 5.139,
+      "label": "Fair",
+      "icon": "🌤"
+    },
+    "last12": {
+      "hard": 22,
+      "soft": 24,
+      "breakingMonths": 4,
+      "changedMonths": 11,
+      "hardUnstable": 0
+    },
+    "operations": 466,
+    "worstMonth": {
+      "month": "2020-08",
+      "hard": 43,
+      "hardOperations": 45
     }
   },
   {
@@ -196,19 +196,19 @@
     "id": "datadog",
     "name": "Datadog",
     "score": {
-      "value": 67,
-      "pressure": 6.033,
+      "value": 66,
+      "pressure": 6.137,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
-      "hard": 96,
-      "soft": 115,
+      "hard": 97,
+      "soft": 118,
       "breakingMonths": 11,
       "changedMonths": 12,
-      "hardUnstable": 108
+      "hardUnstable": 110
     },
-    "operations": 1685,
+    "operations": 1686,
     "worstMonth": {
       "month": "2026-08",
       "hard": 18,
@@ -341,18 +341,18 @@
     "name": "Cloudflare",
     "score": {
       "value": 29,
-      "pressure": 18.369,
+      "pressure": 18.572,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 585,
-      "soft": 1355,
+      "hard": 592,
+      "soft": 1358,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 58
     },
-    "operations": 3761,
+    "operations": 3767,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -389,7 +389,7 @@
     "name": "Sentry",
     "score": {
       "value": 1,
-      "pressure": 66.305,
+      "pressure": 66.303,
       "label": "Storms",
       "icon": "⛈"
     },
@@ -400,7 +400,7 @@
       "changedMonths": 12,
       "hardUnstable": 1
     },
-    "operations": 256,
+    "operations": 257,
     "worstMonth": {
       "month": "2026-06",
       "hard": 86,
@@ -413,15 +413,15 @@
     "name": "Supabase",
     "score": {
       "value": 0,
-      "pressure": 82.318,
+      "pressure": 82.907,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 174,
+      "hard": 175,
       "soft": 58,
-      "breakingMonths": 9,
-      "changedMonths": 11,
+      "breakingMonths": 10,
+      "changedMonths": 12,
       "hardUnstable": 0
     },
     "operations": 170,
@@ -437,18 +437,18 @@
     "name": "Vercel",
     "score": {
       "value": 0,
-      "pressure": 87.74,
+      "pressure": 87.756,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
       "hard": 358,
-      "soft": 428,
+      "soft": 429,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 0
     },
-    "operations": 465,
+    "operations": 468,
     "worstMonth": {
       "month": "2026-09",
       "hard": 216,
