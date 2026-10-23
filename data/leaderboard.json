@@ -148,19 +148,19 @@
     "id": "asana",
     "name": "Asana",
     "score": {
-      "value": 71,
-      "pressure": 5.187,
-      "label": "Fair",
-      "icon": "🌤"
+      "value": 68,
+      "pressure": 5.675,
+      "label": "Showers",
+      "icon": "🌧"
     },
     "last12": {
       "hard": 13,
-      "soft": 37,
+      "soft": 42,
       "breakingMonths": 8,
       "changedMonths": 12,
       "hardUnstable": 0
     },
-    "operations": 251,
+    "operations": 254,
     "worstMonth": {
       "month": "2023-07",
       "hard": 7,
@@ -197,12 +197,12 @@
     "name": "Datadog",
     "score": {
       "value": 66,
-      "pressure": 6.152,
+      "pressure": 6.27,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
-      "hard": 97,
+      "hard": 99,
       "soft": 119,
       "breakingMonths": 11,
       "changedMonths": 12,
@@ -221,7 +221,7 @@
     "name": "Figma",
     "score": {
       "value": 64,
-      "pressure": 6.795,
+      "pressure": 6.678,
       "label": "Showers",
       "icon": "🌧"
     },
@@ -232,7 +232,7 @@
       "changedMonths": 8,
       "hardUnstable": 0
     },
-    "operations": 54,
+    "operations": 59,
     "worstMonth": {
       "month": "2025-04",
       "hard": 9,
@@ -341,13 +341,13 @@
     "name": "Cloudflare",
     "score": {
       "value": 29,
-      "pressure": 18.685,
+      "pressure": 18.751,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 594,
-      "soft": 1367,
+      "hard": 596,
+      "soft": 1369,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 58
@@ -389,7 +389,7 @@
     "name": "Sentry",
     "score": {
       "value": 1,
-      "pressure": 67.433,
+      "pressure": 67.414,
       "label": "Storms",
       "icon": "⛈"
     },
@@ -400,7 +400,7 @@
       "changedMonths": 12,
       "hardUnstable": 1
     },
-    "operations": 263,
+    "operations": 266,
     "worstMonth": {
       "month": "2026-06",
       "hard": 86,
@@ -437,18 +437,18 @@
     "name": "Vercel",
     "score": {
       "value": 0,
-      "pressure": 87.756,
+      "pressure": 87.864,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
       "hard": 358,
-      "soft": 429,
+      "soft": 432,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 0
     },
-    "operations": 468,
+    "operations": 472,
     "worstMonth": {
       "month": "2026-09",
       "hard": 216,
