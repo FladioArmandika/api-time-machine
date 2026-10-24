@@ -148,8 +148,8 @@
     "id": "asana",
     "name": "Asana",
     "score": {
-      "value": 68,
-      "pressure": 5.675,
+      "value": 69,
+      "pressure": 5.626,
       "label": "Showers",
       "icon": "🌧"
     },
@@ -160,7 +160,7 @@
       "changedMonths": 12,
       "hardUnstable": 0
     },
-    "operations": 254,
+    "operations": 271,
     "worstMonth": {
       "month": "2023-07",
       "hard": 7,
@@ -197,18 +197,18 @@
     "name": "Datadog",
     "score": {
       "value": 66,
-      "pressure": 6.27,
+      "pressure": 6.344,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
-      "hard": 99,
-      "soft": 119,
+      "hard": 100,
+      "soft": 120,
       "breakingMonths": 11,
       "changedMonths": 12,
       "hardUnstable": 110
     },
-    "operations": 1686,
+    "operations": 1687,
     "worstMonth": {
       "month": "2026-08",
       "hard": 18,
@@ -340,19 +340,19 @@
     "id": "cloudflare",
     "name": "Cloudflare",
     "score": {
-      "value": 29,
-      "pressure": 18.751,
+      "value": 28,
+      "pressure": 19.041,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 596,
-      "soft": 1369,
+      "hard": 600,
+      "soft": 1398,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 58
     },
-    "operations": 3767,
+    "operations": 3781,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -365,18 +365,18 @@
     "name": "OpenAI",
     "score": {
       "value": 7,
-      "pressure": 39.548,
+      "pressure": 39.22,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
       "hard": 124,
-      "soft": 105,
+      "soft": 107,
       "breakingMonths": 4,
       "changedMonths": 4,
       "hardUnstable": 0
     },
-    "operations": 361,
+    "operations": 371,
     "worstMonth": {
       "month": "2026-09",
       "hard": 61,
@@ -389,16 +389,16 @@
     "name": "Sentry",
     "score": {
       "value": 1,
-      "pressure": 67.414,
+      "pressure": 67.884,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 232,
-      "soft": 53,
+      "hard": 233,
+      "soft": 54,
       "breakingMonths": 12,
       "changedMonths": 12,
-      "hardUnstable": 1
+      "hardUnstable": 7
     },
     "operations": 266,
     "worstMonth": {
