@@ -124,19 +124,19 @@
     "id": "discord",
     "name": "Discord",
     "score": {
-      "value": 71,
-      "pressure": 5.107,
-      "label": "Fair",
-      "icon": "🌤"
+      "value": 69,
+      "pressure": 5.505,
+      "label": "Showers",
+      "icon": "🌧"
     },
     "last12": {
-      "hard": 16,
+      "hard": 17,
       "soft": 20,
-      "breakingMonths": 6,
+      "breakingMonths": 7,
       "changedMonths": 11,
       "hardUnstable": 0
     },
-    "operations": 246,
+    "operations": 250,
     "worstMonth": {
       "month": "2023-09",
       "hard": 53,
@@ -148,14 +148,14 @@
     "id": "asana",
     "name": "Asana",
     "score": {
-      "value": 69,
-      "pressure": 5.626,
+      "value": 68,
+      "pressure": 5.811,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
       "hard": 13,
-      "soft": 42,
+      "soft": 44,
       "breakingMonths": 8,
       "changedMonths": 12,
       "hardUnstable": 0
@@ -173,18 +173,18 @@
     "name": "GitHub",
     "score": {
       "value": 67,
-      "pressure": 5.9,
+      "pressure": 5.939,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
       "hard": 132,
-      "soft": 66,
+      "soft": 68,
       "breakingMonths": 11,
       "changedMonths": 12,
       "hardUnstable": 0
     },
-    "operations": 1242,
+    "operations": 1254,
     "worstMonth": {
       "month": "2021-04",
       "hard": 125,
@@ -197,18 +197,18 @@
     "name": "Datadog",
     "score": {
       "value": 65,
-      "pressure": 6.371,
+      "pressure": 6.386,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
       "hard": 100,
-      "soft": 122,
+      "soft": 123,
       "breakingMonths": 11,
       "changedMonths": 12,
       "hardUnstable": 112
     },
-    "operations": 1695,
+    "operations": 1696,
     "worstMonth": {
       "month": "2026-08",
       "hard": 18,
@@ -341,18 +341,18 @@
     "name": "Cloudflare",
     "score": {
       "value": 28,
-      "pressure": 19.232,
+      "pressure": 19.251,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 606,
+      "hard": 607,
       "soft": 1403,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 58
     },
-    "operations": 3782,
+    "operations": 3793,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -365,7 +365,7 @@
     "name": "OpenAI",
     "score": {
       "value": 7,
-      "pressure": 39.287,
+      "pressure": 39.062,
       "label": "Storms",
       "icon": "⛈"
     },
@@ -376,7 +376,7 @@
       "changedMonths": 4,
       "hardUnstable": 0
     },
-    "operations": 371,
+    "operations": 376,
     "worstMonth": {
       "month": "2026-09",
       "hard": 61,
