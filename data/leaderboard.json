@@ -25,30 +25,6 @@
   },
   {
     "rank": 2,
-    "id": "okta",
-    "name": "Okta",
-    "score": {
-      "value": 94,
-      "pressure": 1.004,
-      "label": "Clear",
-      "icon": "☀️"
-    },
-    "last12": {
-      "hard": 11,
-      "soft": 5,
-      "breakingMonths": 2,
-      "changedMonths": 6,
-      "hardUnstable": 3
-    },
-    "operations": 731,
-    "worstMonth": {
-      "month": "2024-09",
-      "hard": 57,
-      "hardOperations": 61
-    }
-  },
-  {
-    "rank": 3,
     "id": "box",
     "name": "Box",
     "score": {
@@ -69,6 +45,30 @@
       "month": "2023-11",
       "hard": 12,
       "hardOperations": 7
+    }
+  },
+  {
+    "rank": 3,
+    "id": "okta",
+    "name": "Okta",
+    "score": {
+      "value": 88,
+      "pressure": 1.922,
+      "label": "Clear",
+      "icon": "☀️"
+    },
+    "last12": {
+      "hard": 16,
+      "soft": 14,
+      "breakingMonths": 2,
+      "changedMonths": 6,
+      "hardUnstable": 3
+    },
+    "operations": 782,
+    "worstMonth": {
+      "month": "2024-09",
+      "hard": 57,
+      "hardOperations": 61
     }
   },
   {
@@ -197,13 +197,13 @@
     "name": "Datadog",
     "score": {
       "value": 65,
-      "pressure": 6.386,
+      "pressure": 6.4,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
       "hard": 100,
-      "soft": 123,
+      "soft": 124,
       "breakingMonths": 11,
       "changedMonths": 12,
       "hardUnstable": 112
@@ -341,13 +341,13 @@
     "name": "Cloudflare",
     "score": {
       "value": 28,
-      "pressure": 19.251,
+      "pressure": 19.271,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
       "hard": 607,
-      "soft": 1403,
+      "soft": 1406,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 58
@@ -389,7 +389,7 @@
     "name": "Sentry",
     "score": {
       "value": 1,
-      "pressure": 68.26,
+      "pressure": 68.224,
       "label": "Storms",
       "icon": "⛈"
     },
@@ -400,7 +400,7 @@
       "changedMonths": 12,
       "hardUnstable": 7
     },
-    "operations": 266,
+    "operations": 270,
     "worstMonth": {
       "month": "2026-06",
       "hard": 86,
