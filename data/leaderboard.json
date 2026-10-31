@@ -193,30 +193,6 @@
   },
   {
     "rank": 9,
-    "id": "datadog",
-    "name": "Datadog",
-    "score": {
-      "value": 65,
-      "pressure": 6.473,
-      "label": "Showers",
-      "icon": "🌧"
-    },
-    "last12": {
-      "hard": 101,
-      "soft": 125,
-      "breakingMonths": 11,
-      "changedMonths": 12,
-      "hardUnstable": 114
-    },
-    "operations": 1699,
-    "worstMonth": {
-      "month": "2026-08",
-      "hard": 18,
-      "hardOperations": 7
-    }
-  },
-  {
-    "rank": 10,
     "id": "figma",
     "name": "Figma",
     "score": {
@@ -240,7 +216,7 @@
     }
   },
   {
-    "rank": 11,
+    "rank": 10,
     "id": "stripe",
     "name": "Stripe",
     "score": {
@@ -261,6 +237,30 @@
       "month": "2018-05",
       "hard": 223,
       "hardOperations": 191
+    }
+  },
+  {
+    "rank": 11,
+    "id": "datadog",
+    "name": "Datadog",
+    "score": {
+      "value": 63,
+      "pressure": 6.862,
+      "label": "Showers",
+      "icon": "🌧"
+    },
+    "last12": {
+      "hard": 107,
+      "soft": 128,
+      "breakingMonths": 11,
+      "changedMonths": 12,
+      "hardUnstable": 114
+    },
+    "operations": 1712,
+    "worstMonth": {
+      "month": "2026-08",
+      "hard": 18,
+      "hardOperations": 7
     }
   },
   {
@@ -292,19 +292,19 @@
     "id": "plaid",
     "name": "Plaid",
     "score": {
-      "value": 38,
-      "pressure": 14.458,
+      "value": 36,
+      "pressure": 15.443,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 56,
-      "soft": 92,
+      "hard": 58,
+      "soft": 98,
       "breakingMonths": 10,
       "changedMonths": 11,
       "hardUnstable": 0
     },
-    "operations": 350,
+    "operations": 351,
     "worstMonth": {
       "month": "2021-08",
       "hard": 34,
@@ -340,19 +340,19 @@
     "id": "cloudflare",
     "name": "Cloudflare",
     "score": {
-      "value": 26,
-      "pressure": 20.05,
+      "value": 25,
+      "pressure": 20.574,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 628,
-      "soft": 1437,
+      "hard": 644,
+      "soft": 1451,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 58
     },
-    "operations": 3769,
+    "operations": 3763,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,

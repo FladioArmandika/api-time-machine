@@ -20,13 +20,13 @@
   {
     "id": "most-soft",
     "apiId": "cloudflare",
-    "figure": "1437",
-    "text": "Cloudflare made 1,437 \"soft\" changes in a year: new enum values and response types that strict clients can trip on."
+    "figure": "1451",
+    "text": "Cloudflare made 1,451 \"soft\" changes in a year: new enum values and response types that strict clients can trip on."
   },
   {
     "id": "this-year",
     "apiId": "cloudflare",
-    "figure": "578",
-    "text": "Cloudflare leads 2026 with 578 breaking changes so far."
+    "figure": "594",
+    "text": "Cloudflare leads 2026 with 594 breaking changes so far."
   }
 ]
