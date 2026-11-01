@@ -2,8 +2,8 @@
   {
     "id": "most-break-months",
     "apiId": "cloudflare",
-    "figure": "12/12",
-    "text": "Cloudflare shipped a breaking change in 12 of the last 12 months."
+    "figure": "11/12",
+    "text": "Cloudflare shipped a breaking change in 11 of the last 12 months."
   },
   {
     "id": "worst-month",
@@ -20,8 +20,8 @@
   {
     "id": "most-soft",
     "apiId": "cloudflare",
-    "figure": "1451",
-    "text": "Cloudflare made 1,451 \"soft\" changes in a year: new enum values and response types that strict clients can trip on."
+    "figure": "1392",
+    "text": "Cloudflare made 1,392 \"soft\" changes in a year: new enum values and response types that strict clients can trip on."
   },
   {
     "id": "this-year",

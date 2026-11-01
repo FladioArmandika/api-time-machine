@@ -5,7 +5,7 @@
     "name": "Twilio",
     "score": {
       "value": 100,
-      "pressure": 0.071,
+      "pressure": 0.063,
       "label": "Clear",
       "icon": "☀️"
     },
@@ -13,7 +13,7 @@
       "hard": 0,
       "soft": 1,
       "breakingMonths": 0,
-      "changedMonths": 10,
+      "changedMonths": 9,
       "hardUnstable": 0
     },
     "operations": 197,
@@ -28,8 +28,8 @@
     "id": "box",
     "name": "Box",
     "score": {
-      "value": 92,
-      "pressure": 1.312,
+      "value": 93,
+      "pressure": 1.169,
       "label": "Clear",
       "icon": "☀️"
     },
@@ -37,7 +37,7 @@
       "hard": 3,
       "soft": 13,
       "breakingMonths": 3,
-      "changedMonths": 12,
+      "changedMonths": 11,
       "hardUnstable": 0
     },
     "operations": 297,
@@ -52,8 +52,8 @@
     "id": "okta",
     "name": "Okta",
     "score": {
-      "value": 88,
-      "pressure": 1.922,
+      "value": 89,
+      "pressure": 1.713,
       "label": "Clear",
       "icon": "☀️"
     },
@@ -76,8 +76,8 @@
     "id": "square",
     "name": "Square",
     "score": {
-      "value": 76,
-      "pressure": 4.029,
+      "value": 79,
+      "pressure": 3.589,
       "label": "Fair",
       "icon": "🌤"
     },
@@ -100,8 +100,8 @@
     "id": "pagerduty",
     "name": "PagerDuty",
     "score": {
-      "value": 71,
-      "pressure": 5.114,
+      "value": 74,
+      "pressure": 4.556,
       "label": "Fair",
       "icon": "🌤"
     },
@@ -109,7 +109,7 @@
       "hard": 22,
       "soft": 24,
       "breakingMonths": 4,
-      "changedMonths": 11,
+      "changedMonths": 10,
       "hardUnstable": 0
     },
     "operations": 473,
@@ -124,10 +124,10 @@
     "id": "discord",
     "name": "Discord",
     "score": {
-      "value": 69,
-      "pressure": 5.605,
-      "label": "Showers",
-      "icon": "🌧"
+      "value": 72,
+      "pressure": 4.993,
+      "label": "Fair",
+      "icon": "🌤"
     },
     "last12": {
       "hard": 17,
@@ -148,16 +148,16 @@
     "id": "asana",
     "name": "Asana",
     "score": {
-      "value": 68,
-      "pressure": 5.811,
-      "label": "Showers",
-      "icon": "🌧"
+      "value": 71,
+      "pressure": 5.061,
+      "label": "Fair",
+      "icon": "🌤"
     },
     "last12": {
-      "hard": 13,
+      "hard": 12,
       "soft": 44,
-      "breakingMonths": 8,
-      "changedMonths": 12,
+      "breakingMonths": 7,
+      "changedMonths": 11,
       "hardUnstable": 0
     },
     "operations": 271,
@@ -172,16 +172,16 @@
     "id": "github",
     "name": "GitHub",
     "score": {
-      "value": 67,
-      "pressure": 5.939,
-      "label": "Showers",
-      "icon": "🌧"
+      "value": 70,
+      "pressure": 5.252,
+      "label": "Fair",
+      "icon": "🌤"
     },
     "last12": {
-      "hard": 132,
-      "soft": 68,
-      "breakingMonths": 11,
-      "changedMonths": 12,
+      "hard": 131,
+      "soft": 65,
+      "breakingMonths": 10,
+      "changedMonths": 11,
       "hardUnstable": 0
     },
     "operations": 1254,
@@ -196,8 +196,8 @@
     "id": "figma",
     "name": "Figma",
     "score": {
-      "value": 64,
-      "pressure": 6.678,
+      "value": 67,
+      "pressure": 5.949,
       "label": "Showers",
       "icon": "🌧"
     },
@@ -220,16 +220,16 @@
     "id": "stripe",
     "name": "Stripe",
     "score": {
-      "value": 63,
-      "pressure": 6.856,
+      "value": 67,
+      "pressure": 5.98,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
-      "hard": 45,
-      "soft": 101,
-      "breakingMonths": 7,
-      "changedMonths": 11,
+      "hard": 43,
+      "soft": 97,
+      "breakingMonths": 6,
+      "changedMonths": 10,
       "hardUnstable": 0
     },
     "operations": 612,
@@ -244,17 +244,17 @@
     "id": "datadog",
     "name": "Datadog",
     "score": {
-      "value": 63,
-      "pressure": 6.862,
+      "value": 67,
+      "pressure": 6.077,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
       "hard": 107,
-      "soft": 128,
+      "soft": 124,
       "breakingMonths": 11,
-      "changedMonths": 12,
-      "hardUnstable": 114
+      "changedMonths": 11,
+      "hardUnstable": 112
     },
     "operations": 1712,
     "worstMonth": {
@@ -268,16 +268,16 @@
     "id": "adyen",
     "name": "Adyen",
     "score": {
-      "value": 41,
-      "pressure": 13.221,
+      "value": 49,
+      "pressure": 10.853,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 7,
+      "hard": 6,
       "soft": 8,
-      "breakingMonths": 4,
-      "changedMonths": 10,
+      "breakingMonths": 3,
+      "changedMonths": 9,
       "hardUnstable": 0
     },
     "operations": 28,
@@ -292,16 +292,16 @@
     "id": "plaid",
     "name": "Plaid",
     "score": {
-      "value": 36,
-      "pressure": 15.443,
+      "value": 43,
+      "pressure": 12.779,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 58,
-      "soft": 98,
-      "breakingMonths": 10,
-      "changedMonths": 11,
+      "hard": 46,
+      "soft": 96,
+      "breakingMonths": 9,
+      "changedMonths": 10,
       "hardUnstable": 0
     },
     "operations": 351,
@@ -316,8 +316,8 @@
     "id": "resend",
     "name": "Resend",
     "score": {
-      "value": 29,
-      "pressure": 18.357,
+      "value": 34,
+      "pressure": 16.354,
       "label": "Storms",
       "icon": "⛈"
     },
@@ -340,16 +340,16 @@
     "id": "cloudflare",
     "name": "Cloudflare",
     "score": {
-      "value": 25,
-      "pressure": 20.574,
+      "value": 30,
+      "pressure": 17.902,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 644,
-      "soft": 1451,
-      "breakingMonths": 12,
-      "changedMonths": 12,
+      "hard": 616,
+      "soft": 1392,
+      "breakingMonths": 11,
+      "changedMonths": 11,
       "hardUnstable": 58
     },
     "operations": 3763,
@@ -364,8 +364,8 @@
     "id": "openai",
     "name": "OpenAI",
     "score": {
-      "value": 7,
-      "pressure": 39.062,
+      "value": 10,
+      "pressure": 34.8,
       "label": "Storms",
       "icon": "⛈"
     },
@@ -388,16 +388,16 @@
     "id": "sentry",
     "name": "Sentry",
     "score": {
-      "value": 1,
-      "pressure": 68.198,
+      "value": 2,
+      "pressure": 59.786,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 234,
-      "soft": 54,
-      "breakingMonths": 12,
-      "changedMonths": 12,
+      "hard": 227,
+      "soft": 52,
+      "breakingMonths": 11,
+      "changedMonths": 11,
       "hardUnstable": 7
     },
     "operations": 273,
@@ -412,16 +412,16 @@
     "id": "supabase",
     "name": "Supabase",
     "score": {
-      "value": 0,
-      "pressure": 83.054,
+      "value": 1,
+      "pressure": 72.42,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 175,
-      "soft": 59,
-      "breakingMonths": 10,
-      "changedMonths": 12,
+      "hard": 166,
+      "soft": 57,
+      "breakingMonths": 9,
+      "changedMonths": 11,
       "hardUnstable": 0
     },
     "operations": 170,
@@ -436,16 +436,16 @@
     "id": "vercel",
     "name": "Vercel",
     "score": {
-      "value": 0,
-      "pressure": 88.011,
+      "value": 1,
+      "pressure": 77.353,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 358,
-      "soft": 436,
-      "breakingMonths": 12,
-      "changedMonths": 12,
+      "hard": 352,
+      "soft": 423,
+      "breakingMonths": 11,
+      "changedMonths": 11,
       "hardUnstable": 0
     },
     "operations": 477,
