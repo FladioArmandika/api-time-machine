@@ -378,5 +378,10 @@
     "valid": true,
     "openapi": "3.0.3",
     "operations": 274
+  },
+  "603187f2263508fb413659d0cda3cb2a2098f536": {
+    "valid": true,
+    "openapi": "3.0.3",
+    "operations": 274
   }
 }
