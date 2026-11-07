@@ -109,7 +109,7 @@
       "hard": 22,
       "soft": 24,
       "breakingMonths": 4,
-      "changedMonths": 10,
+      "changedMonths": 11,
       "hardUnstable": 0
     },
     "operations": 473,
@@ -121,19 +121,43 @@
   },
   {
     "rank": 6,
+    "id": "github",
+    "name": "GitHub",
+    "score": {
+      "value": 69,
+      "pressure": 5.468,
+      "label": "Showers",
+      "icon": "🌧"
+    },
+    "last12": {
+      "hard": 132,
+      "soft": 72,
+      "breakingMonths": 11,
+      "changedMonths": 12,
+      "hardUnstable": 0
+    },
+    "operations": 1272,
+    "worstMonth": {
+      "month": "2021-04",
+      "hard": 125,
+      "hardOperations": 81
+    }
+  },
+  {
+    "rank": 7,
     "id": "discord",
     "name": "Discord",
     "score": {
-      "value": 72,
-      "pressure": 4.993,
-      "label": "Fair",
-      "icon": "🌤"
+      "value": 68,
+      "pressure": 5.793,
+      "label": "Showers",
+      "icon": "🌧"
     },
     "last12": {
-      "hard": 17,
+      "hard": 19,
       "soft": 21,
-      "breakingMonths": 7,
-      "changedMonths": 11,
+      "breakingMonths": 8,
+      "changedMonths": 12,
       "hardUnstable": 0
     },
     "operations": 250,
@@ -141,30 +165,6 @@
       "month": "2023-09",
       "hard": 53,
       "hardOperations": 57
-    }
-  },
-  {
-    "rank": 7,
-    "id": "github",
-    "name": "GitHub",
-    "score": {
-      "value": 70,
-      "pressure": 5.45,
-      "label": "Fair",
-      "icon": "🌤"
-    },
-    "last12": {
-      "hard": 132,
-      "soft": 71,
-      "breakingMonths": 11,
-      "changedMonths": 12,
-      "hardUnstable": 0
-    },
-    "operations": 1261,
-    "worstMonth": {
-      "month": "2021-04",
-      "hard": 125,
-      "hardOperations": 81
     }
   },
   {
@@ -245,7 +245,7 @@
     "name": "Datadog",
     "score": {
       "value": 56,
-      "pressure": 8.754,
+      "pressure": 8.739,
       "label": "Showers",
       "icon": "🌧"
     },
@@ -256,7 +256,7 @@
       "changedMonths": 12,
       "hardUnstable": 119
     },
-    "operations": 1774,
+    "operations": 1784,
     "worstMonth": {
       "month": "2026-11",
       "hard": 42,
@@ -341,18 +341,18 @@
     "name": "Cloudflare",
     "score": {
       "value": 27,
-      "pressure": 19.488,
+      "pressure": 19.764,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 649,
-      "soft": 1499,
+      "hard": 658,
+      "soft": 1505,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 60
     },
-    "operations": 3768,
+    "operations": 3774,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -413,13 +413,13 @@
     "name": "Vercel",
     "score": {
       "value": 1,
-      "pressure": 78.338,
+      "pressure": 78.805,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 354,
-      "soft": 434,
+      "hard": 355,
+      "soft": 439,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 0
@@ -437,13 +437,13 @@
     "name": "Sentry",
     "score": {
       "value": 0,
-      "pressure": 125.297,
+      "pressure": 126.118,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 399,
-      "soft": 82,
+      "hard": 401,
+      "soft": 83,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 8
@@ -451,8 +451,8 @@
     "operations": 274,
     "worstMonth": {
       "month": "2026-11",
-      "hard": 172,
-      "hardOperations": 60
+      "hard": 174,
+      "hardOperations": 62
     }
   }
 ]
