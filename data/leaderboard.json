@@ -341,7 +341,7 @@
     "name": "Cloudflare",
     "score": {
       "value": 27,
-      "pressure": 19.764,
+      "pressure": 19.762,
       "label": "Storms",
       "icon": "⛈"
     },
@@ -352,7 +352,7 @@
       "changedMonths": 12,
       "hardUnstable": 60
     },
-    "operations": 3774,
+    "operations": 3777,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -437,22 +437,22 @@
     "name": "Sentry",
     "score": {
       "value": 0,
-      "pressure": 126.118,
+      "pressure": 114.961,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 401,
-      "soft": 83,
+      "hard": 374,
+      "soft": 93,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 8
     },
-    "operations": 274,
+    "operations": 285,
     "worstMonth": {
       "month": "2026-11",
-      "hard": 174,
-      "hardOperations": 62
+      "hard": 147,
+      "hardOperations": 63
     }
   }
 ]
