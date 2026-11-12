@@ -244,23 +244,23 @@
     "id": "datadog",
     "name": "Datadog",
     "score": {
-      "value": 53,
-      "pressure": 9.472,
+      "value": 52,
+      "pressure": 9.688,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
-      "hard": 161,
+      "hard": 165,
       "soft": 151,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 123
     },
-    "operations": 1789,
+    "operations": 1793,
     "worstMonth": {
       "month": "2026-11",
-      "hard": 54,
-      "hardOperations": 32
+      "hard": 58,
+      "hardOperations": 37
     }
   },
   {
@@ -341,18 +341,18 @@
     "name": "Cloudflare",
     "score": {
       "value": 26,
-      "pressure": 19.929,
+      "pressure": 20.32,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 663,
-      "soft": 1511,
+      "hard": 674,
+      "soft": 1527,
       "breakingMonths": 12,
       "changedMonths": 12,
-      "hardUnstable": 60
+      "hardUnstable": 62
     },
-    "operations": 3787,
+    "operations": 3794,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -413,12 +413,12 @@
     "name": "Sentry",
     "score": {
       "value": 0,
-      "pressure": 120.253,
+      "pressure": 120.599,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 389,
+      "hard": 390,
       "soft": 103,
       "breakingMonths": 12,
       "changedMonths": 12,
@@ -427,7 +427,7 @@
     "operations": 289,
     "worstMonth": {
       "month": "2026-11",
-      "hard": 162,
+      "hard": 163,
       "hardOperations": 76
     }
   },
