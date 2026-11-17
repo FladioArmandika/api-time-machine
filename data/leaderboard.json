@@ -245,22 +245,22 @@
     "name": "Datadog",
     "score": {
       "value": 52,
-      "pressure": 9.752,
+      "pressure": 9.803,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
-      "hard": 166,
+      "hard": 167,
       "soft": 152,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 128
     },
-    "operations": 1796,
+    "operations": 1798,
     "worstMonth": {
       "month": "2026-11",
-      "hard": 59,
-      "hardOperations": 40
+      "hard": 60,
+      "hardOperations": 44
     }
   },
   {
@@ -341,18 +341,18 @@
     "name": "Cloudflare",
     "score": {
       "value": 26,
-      "pressure": 20.489,
+      "pressure": 20.367,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 679,
-      "soft": 1531,
+      "hard": 671,
+      "soft": 1544,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 62
     },
-    "operations": 3778,
+    "operations": 3773,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -437,13 +437,13 @@
     "name": "Vercel",
     "score": {
       "value": 0,
-      "pressure": 80.022,
+      "pressure": 80.125,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
       "hard": 360,
-      "soft": 443,
+      "soft": 445,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 0
