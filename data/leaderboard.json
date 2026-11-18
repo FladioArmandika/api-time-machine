@@ -61,7 +61,7 @@
       "hard": 18,
       "soft": 15,
       "breakingMonths": 2,
-      "changedMonths": 4,
+      "changedMonths": 5,
       "hardUnstable": 0
     },
     "operations": 332,
@@ -100,15 +100,15 @@
     "id": "pagerduty",
     "name": "PagerDuty",
     "score": {
-      "value": 73,
-      "pressure": 4.715,
+      "value": 72,
+      "pressure": 4.926,
       "label": "Fair",
       "icon": "🌤"
     },
     "last12": {
-      "hard": 22,
+      "hard": 23,
       "soft": 27,
-      "breakingMonths": 4,
+      "breakingMonths": 5,
       "changedMonths": 11,
       "hardUnstable": 0
     },
@@ -169,30 +169,6 @@
   },
   {
     "rank": 8,
-    "id": "asana",
-    "name": "Asana",
-    "score": {
-      "value": 68,
-      "pressure": 5.892,
-      "label": "Showers",
-      "icon": "🌧"
-    },
-    "last12": {
-      "hard": 14,
-      "soft": 45,
-      "breakingMonths": 8,
-      "changedMonths": 12,
-      "hardUnstable": 0
-    },
-    "operations": 271,
-    "worstMonth": {
-      "month": "2023-07",
-      "hard": 7,
-      "hardOperations": 23
-    }
-  },
-  {
-    "rank": 9,
     "id": "figma",
     "name": "Figma",
     "score": {
@@ -216,7 +192,7 @@
     }
   },
   {
-    "rank": 10,
+    "rank": 9,
     "id": "stripe",
     "name": "Stripe",
     "score": {
@@ -240,27 +216,51 @@
     }
   },
   {
-    "rank": 11,
-    "id": "datadog",
-    "name": "Datadog",
+    "rank": 10,
+    "id": "asana",
+    "name": "Asana",
     "score": {
-      "value": 52,
-      "pressure": 9.803,
+      "value": 67,
+      "pressure": 5.984,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
-      "hard": 167,
+      "hard": 14,
+      "soft": 46,
+      "breakingMonths": 8,
+      "changedMonths": 12,
+      "hardUnstable": 0
+    },
+    "operations": 271,
+    "worstMonth": {
+      "month": "2023-07",
+      "hard": 7,
+      "hardOperations": 23
+    }
+  },
+  {
+    "rank": 11,
+    "id": "datadog",
+    "name": "Datadog",
+    "score": {
+      "value": 51,
+      "pressure": 9.991,
+      "label": "Showers",
+      "icon": "🌧"
+    },
+    "last12": {
+      "hard": 171,
       "soft": 152,
       "breakingMonths": 12,
       "changedMonths": 12,
-      "hardUnstable": 128
+      "hardUnstable": 129
     },
-    "operations": 1798,
+    "operations": 1814,
     "worstMonth": {
       "month": "2026-11",
-      "hard": 60,
-      "hardOperations": 44
+      "hard": 64,
+      "hardOperations": 48
     }
   },
   {
@@ -313,44 +313,20 @@
   },
   {
     "rank": 14,
-    "id": "plaid",
-    "name": "Plaid",
-    "score": {
-      "value": 34,
-      "pressure": 16.269,
-      "label": "Storms",
-      "icon": "⛈"
-    },
-    "last12": {
-      "hard": 57,
-      "soft": 101,
-      "breakingMonths": 10,
-      "changedMonths": 11,
-      "hardUnstable": 0
-    },
-    "operations": 351,
-    "worstMonth": {
-      "month": "2021-08",
-      "hard": 34,
-      "hardOperations": 12
-    }
-  },
-  {
-    "rank": 15,
     "id": "cloudflare",
     "name": "Cloudflare",
     "score": {
       "value": 26,
-      "pressure": 20.367,
+      "pressure": 20.44,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 671,
-      "soft": 1544,
+      "hard": 672,
+      "soft": 1551,
       "breakingMonths": 12,
       "changedMonths": 12,
-      "hardUnstable": 62
+      "hardUnstable": 63
     },
     "operations": 3773,
     "worstMonth": {
@@ -360,17 +336,41 @@
     }
   },
   {
+    "rank": 15,
+    "id": "plaid",
+    "name": "Plaid",
+    "score": {
+      "value": 13,
+      "pressure": 30.371,
+      "label": "Storms",
+      "icon": "⛈"
+    },
+    "last12": {
+      "hard": 96,
+      "soft": 143,
+      "breakingMonths": 10,
+      "changedMonths": 11,
+      "hardUnstable": 0
+    },
+    "operations": 351,
+    "worstMonth": {
+      "month": "2026-11",
+      "hard": 50,
+      "hardOperations": 39
+    }
+  },
+  {
     "rank": 16,
     "id": "openai",
     "name": "OpenAI",
     "score": {
       "value": 3,
-      "pressure": 53.486,
+      "pressure": 53.744,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 189,
+      "hard": 190,
       "soft": 138,
       "breakingMonths": 5,
       "changedMonths": 5,
@@ -379,7 +379,7 @@
     "operations": 388,
     "worstMonth": {
       "month": "2026-11",
-      "hard": 65,
+      "hard": 66,
       "hardOperations": 48
     }
   },
@@ -437,13 +437,13 @@
     "name": "Vercel",
     "score": {
       "value": 0,
-      "pressure": 80.125,
+      "pressure": 80.433,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 360,
-      "soft": 445,
+      "hard": 361,
+      "soft": 447,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 0
