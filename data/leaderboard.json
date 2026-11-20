@@ -245,7 +245,7 @@
     "name": "Datadog",
     "score": {
       "value": 51,
-      "pressure": 10.145,
+      "pressure": 10.101,
       "label": "Showers",
       "icon": "🌧"
     },
@@ -254,9 +254,9 @@
       "soft": 152,
       "breakingMonths": 12,
       "changedMonths": 12,
-      "hardUnstable": 129
+      "hardUnstable": 136
     },
-    "operations": 1819,
+    "operations": 1839,
     "worstMonth": {
       "month": "2026-11",
       "hard": 67,
@@ -317,18 +317,18 @@
     "name": "Cloudflare",
     "score": {
       "value": 25,
-      "pressure": 20.509,
+      "pressure": 20.593,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 674,
-      "soft": 1554,
+      "hard": 677,
+      "soft": 1555,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 63
     },
-    "operations": 3778,
+    "operations": 3781,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -437,18 +437,18 @@
     "name": "Vercel",
     "score": {
       "value": 0,
-      "pressure": 80.433,
+      "pressure": 80.859,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 361,
-      "soft": 447,
+      "hard": 362,
+      "soft": 452,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 0
     },
-    "operations": 487,
+    "operations": 492,
     "worstMonth": {
       "month": "2026-09",
       "hard": 216,
