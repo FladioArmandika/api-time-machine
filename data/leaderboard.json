@@ -28,14 +28,14 @@
     "id": "box",
     "name": "Box",
     "score": {
-      "value": 92,
-      "pressure": 1.253,
+      "value": 91,
+      "pressure": 1.337,
       "label": "Clear",
       "icon": "☀️"
     },
     "last12": {
       "hard": 3,
-      "soft": 14,
+      "soft": 15,
       "breakingMonths": 3,
       "changedMonths": 12,
       "hardUnstable": 0
@@ -220,14 +220,14 @@
     "id": "asana",
     "name": "Asana",
     "score": {
-      "value": 67,
-      "pressure": 5.984,
+      "value": 66,
+      "pressure": 6.261,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
       "hard": 14,
-      "soft": 46,
+      "soft": 49,
       "breakingMonths": 8,
       "changedMonths": 12,
       "hardUnstable": 0
@@ -244,8 +244,8 @@
     "id": "datadog",
     "name": "Datadog",
     "score": {
-      "value": 50,
-      "pressure": 10.252,
+      "value": 51,
+      "pressure": 10.248,
       "label": "Showers",
       "icon": "🌧"
     },
@@ -254,9 +254,9 @@
       "soft": 153,
       "breakingMonths": 12,
       "changedMonths": 12,
-      "hardUnstable": 136
+      "hardUnstable": 146
     },
-    "operations": 1850,
+    "operations": 1852,
     "worstMonth": {
       "month": "2026-11",
       "hard": 70,
@@ -317,18 +317,18 @@
     "name": "Cloudflare",
     "score": {
       "value": 25,
-      "pressure": 20.877,
+      "pressure": 20.92,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 685,
-      "soft": 1583,
+      "hard": 686,
+      "soft": 1587,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 63
     },
-    "operations": 3925,
+    "operations": 3935,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
