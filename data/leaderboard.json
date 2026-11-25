@@ -244,23 +244,23 @@
     "id": "datadog",
     "name": "Datadog",
     "score": {
-      "value": 51,
-      "pressure": 10.248,
+      "value": 50,
+      "pressure": 10.333,
       "label": "Showers",
       "icon": "🌧"
     },
     "last12": {
-      "hard": 177,
-      "soft": 153,
+      "hard": 179,
+      "soft": 154,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 146
     },
-    "operations": 1852,
+    "operations": 1868,
     "worstMonth": {
       "month": "2026-11",
-      "hard": 70,
-      "hardOperations": 60
+      "hard": 72,
+      "hardOperations": 65
     }
   },
   {
@@ -317,18 +317,18 @@
     "name": "Cloudflare",
     "score": {
       "value": 25,
-      "pressure": 20.92,
+      "pressure": 21.003,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 686,
-      "soft": 1587,
+      "hard": 690,
+      "soft": 1584,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 63
     },
-    "operations": 3935,
+    "operations": 3934,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -364,14 +364,14 @@
     "id": "openai",
     "name": "OpenAI",
     "score": {
-      "value": 3,
-      "pressure": 54.903,
+      "value": 2,
+      "pressure": 62.442,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 194,
-      "soft": 140,
+      "hard": 223,
+      "soft": 141,
       "breakingMonths": 5,
       "changedMonths": 5,
       "hardUnstable": 0
@@ -379,8 +379,8 @@
     "operations": 388,
     "worstMonth": {
       "month": "2026-11",
-      "hard": 70,
-      "hardOperations": 56
+      "hard": 99,
+      "hardOperations": 61
     }
   },
   {
