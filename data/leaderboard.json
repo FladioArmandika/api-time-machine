@@ -317,18 +317,18 @@
     "name": "Cloudflare",
     "score": {
       "value": 25,
-      "pressure": 21.003,
+      "pressure": 21.062,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 690,
-      "soft": 1584,
+      "hard": 691,
+      "soft": 1591,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 63
     },
-    "operations": 3934,
+    "operations": 3948,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
@@ -437,18 +437,18 @@
     "name": "Vercel",
     "score": {
       "value": 0,
-      "pressure": 80.859,
+      "pressure": 82.373,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
-      "hard": 362,
-      "soft": 452,
+      "hard": 369,
+      "soft": 454,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 0
     },
-    "operations": 492,
+    "operations": 493,
     "worstMonth": {
       "month": "2026-09",
       "hard": 216,
