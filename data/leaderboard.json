@@ -317,7 +317,7 @@
     "name": "Cloudflare",
     "score": {
       "value": 25,
-      "pressure": 21.062,
+      "pressure": 21.06,
       "label": "Storms",
       "icon": "⛈"
     },
@@ -328,7 +328,7 @@
       "changedMonths": 12,
       "hardUnstable": 63
     },
-    "operations": 3948,
+    "operations": 3951,
     "worstMonth": {
       "month": "2026-09",
       "hard": 107,
