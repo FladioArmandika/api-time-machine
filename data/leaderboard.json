@@ -292,14 +292,14 @@
     "id": "resend",
     "name": "Resend",
     "score": {
-      "value": 34,
-      "pressure": 16.354,
+      "value": 33,
+      "pressure": 16.528,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
       "hard": 24,
-      "soft": 12,
+      "soft": 13,
       "breakingMonths": 7,
       "changedMonths": 12,
       "hardUnstable": 0
@@ -437,13 +437,13 @@
     "name": "Vercel",
     "score": {
       "value": 0,
-      "pressure": 82.373,
+      "pressure": 82.474,
       "label": "Storms",
       "icon": "⛈"
     },
     "last12": {
       "hard": 369,
-      "soft": 454,
+      "soft": 456,
       "breakingMonths": 12,
       "changedMonths": 12,
       "hardUnstable": 0
